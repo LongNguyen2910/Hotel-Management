@@ -1,7 +1,7 @@
 ﻿@model Hotel_Management.Models.Nhanvien
-
 @{
     ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
 }
 
 <h1>Create</h1>
@@ -49,8 +49,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Trangthai" class="control-label"></label>
-                <input asp-for="Trangthai" class="form-control" />
-                <span asp-validation-for="Trangthai" class="text-danger"></span>
+                <select asp-for="Trangthai" class="form-control" asp-items="ViewBag.Trangthai"></select>
             </div>
             <div class="form-group">
                 <label asp-for="Mabophan" class="control-label"></label>
@@ -59,6 +58,10 @@
             <div class="form-group">
                 <label asp-for="Tenchucvu" class="control-label"></label>
                 <select asp-for="Tenchucvu" class ="form-control" asp-items="ViewBag.Tenchucvu"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nhanvienlamcas" class="control-label"></label>
+                <select name="SelectedCalamviec" asp-for="Nhanvienlamcas" id="calamviec-select" class="form-control" asp-items="ViewBag.Calamviec"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -70,6 +73,11 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+<script>
+    document.getElementById('calamviec-select').removeAttribute('multiple');
+    document.getElementById('calamviec-select').setAttribute('size', '1');
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -1,0 +1,44 @@
+﻿@model Hotel_Management.Models.Bophan
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Bophan</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Mabophan" class="control-label"></label>
+                <input asp-for="Mabophan" class="form-control" />
+                <span asp-validation-for="Mabophan" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tenbophan" class="control-label"></label>
+                <input asp-for="Tenbophan" class="form-control" />
+                <span asp-validation-for="Tenbophan" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ngaythanhlap" class="control-label"></label>
+                <input asp-for="Ngaythanhlap" class="form-control" />
+                <span asp-validation-for="Ngaythanhlap" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

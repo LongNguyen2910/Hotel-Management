@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Hotel_Management.Models.Khachhang>
+
+@{
+    var currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
+}
+
+<div class="col-12">
+    <div class="card overflow-hidden">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Danh sách khách hàng</h5>
+            <div class="d-flex align-items-center">
+                <form asp-action="Index" method="get" class="d-flex me-3">
+                    <input name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm kiếm..." />
+                    <button type="submit" class="btn btn-sm btn-outline-primary">Tìm</button>
+                    @if (!string.IsNullOrWhiteSpace(currentFilter))
+                    {
+                        <a asp-action="Index" class="btn btn-sm btn-link ms-2">Xóa</a>
+                    }
+                </form>
+                <a asp-controller="Khachhangs" asp-action="Create" class="btn btn-sm btn-primary">Thêm khách hàng</a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-truncate">Mã khách hàng</th>
+                        <th class="text-truncate">Họ tên</th>
+                        <th class="text-truncate">Quốc tịch</th>
+                        <th class="text-truncate">Căn cước công dân</th>
+                        <th class="text-truncate">Số điện thoại</th>
+                        <th class="text-truncate">Hộ chiếu</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <h6 class="mb-0 text-truncate">@item.Makhachhang</h6>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-truncate">@item.Hoten</td>
+                            <td class="text-truncate">@item.Quoctich</td>
+                            <td class="text-truncate">@item.Cccd</td>
+                            <td class="text-truncate">@item.Sdt</td>
+                            <td class="text-truncate">@item.Hochieu</td>
+                            <td>
+                                <a asp-controller="Khachhangs" asp-action="Edit" asp-route-id="@item.Makhachhang" class="btn btn-sm btn-primary me-2">Sửa</a>
+                                <a asp-controller="Khachhangs" asp-action="Delete" asp-route-id="@item.Makhachhang" class="btn btn-sm btn-outline-danger">Xóa</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

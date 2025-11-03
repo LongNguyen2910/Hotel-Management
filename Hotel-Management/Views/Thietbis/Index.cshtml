@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<Hotel_Management.Models.Thietbi>
 
 @{
+    ViewData["Title"] = "Danh sách thiết bị";
     var currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
 }
 
@@ -34,13 +35,7 @@
 @foreach (var item in Model)
 {
                     <tr>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <div>
-                                    <h6 class="mb-0 text-truncate">@item.Mathietbi</h6>
-                                </div>
-                            </div>
-                        </td>
+                        <td><h6 class="mb-0 text-truncate">@item.Mathietbi</h6></td>
                         <td class="text-truncate">@item.Tenthietbi</td>
                         <td class="text-truncate">
                             @if (item.Tinhtrang == true)
@@ -53,6 +48,7 @@
                             }
                         </td>
                         <td>
+                            <a asp-controller="Thietbis" asp-action="Edit" asp-route-id="@item.Mathietbi" class="btn btn-sm btn-outline-primary me-2">Sửa</a>
                             <a asp-controller="Thietbis" asp-action="Delete" asp-route-id="@item.Mathietbi" class="btn btn-sm btn-outline-danger">Xóa</a>
                         </td>
                     </tr>

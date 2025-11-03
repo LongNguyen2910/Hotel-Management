@@ -10,7 +10,7 @@
             <h5 class="mb-0">Thêm phòng</h5>
         </div>
         <div class="card-body">
-            <form asp-action="Create" method="post">
+            <form asp-action="Create" method="post" form enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
 
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
@@ -47,8 +47,13 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Mã loại phòng</label>
+                    <label class="form-label">Loại phòng</label>
                     <select asp-for="Maloaiphong" class="form-select" asp-items="ViewBag.Maloaiphong"></select>
+                </div>
+
+                <div class="mb-6">
+                    <label for="formFile" class="form-label">Ảnh Phòng</label>
+                    <input class="form-control" type="file" id="formFile" name="AnhFile"/>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Lưu</button>

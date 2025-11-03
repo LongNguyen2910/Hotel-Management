@@ -19,9 +19,21 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Khachhangs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Khachhangs.ToListAsync());
+            ViewData["CurrentFilter"] = searchString;
+            var khachhangs = from k in _context.Khachhangs select k;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                khachhangs = khachhangs
+                    .Where(k => k.Hoten != null && k.Hoten.Contains(searchString));
+            }
+            var list = await khachhangs.ToListAsync();
+            if (!list.Any())
+            {
+                ViewData["NoResults"] = true;
+            }
+            return View(list);
         }
 
         // GET: Khachhangs/Details/5

@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<Hotel_Management.Models.Khachhang>
 
 @{
+    ViewData["Title"] = "Thông tin khách hàng";
     var currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
 }
 
@@ -12,10 +13,6 @@
                 <form asp-action="Index" method="get" class="d-flex me-3">
                     <input name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm kiếm..." />
                     <button type="submit" class="btn btn-sm btn-outline-primary">Tìm</button>
-                    @if (!string.IsNullOrWhiteSpace(currentFilter))
-                    {
-                        <a asp-action="Index" class="btn btn-sm btn-link ms-2">Xóa</a>
-                    }
                 </form>
                 <a asp-controller="Khachhangs" asp-action="Create" class="btn btn-sm btn-primary">Thêm khách hàng</a>
             </div>
@@ -33,28 +30,35 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @if (ViewData["NoResults"] != null)
                     {
                         <tr>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div>
-                                        <h6 class="mb-0 text-truncate">@item.Makhachhang</h6>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="text-truncate">@item.Hoten</td>
-                            <td class="text-truncate">@item.Quoctich</td>
-                            <td class="text-truncate">@item.Cccd</td>
-                            <td class="text-truncate">@item.Sdt</td>
-                            <td class="text-truncate">@item.Hochieu</td>
-                            <td>
-                                <a asp-controller="Khachhangs" asp-action="Edit" asp-route-id="@item.Makhachhang" class="btn btn-sm btn-primary me-2">Sửa</a>
-                                <a asp-controller="Khachhangs" asp-action="Delete" asp-route-id="@item.Makhachhang" class="btn btn-sm btn-outline-danger">Xóa</a>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                <i class="bi bi-exclamation-circle"></i> Không tìm thấy khách hàng phù hợp
                             </td>
                         </tr>
                     }
+                    else
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Makhachhang</td>
+                                <td>@item.Hoten</td>
+                                <td>@item.Quoctich</td>
+                                <td>@item.Cccd</td>
+                                <td>@item.Sdt</td>
+                                <td>@item.Hochieu</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Makhachhang" class="btn btn-sm btn-primary me-2">Sửa</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Makhachhang" class="btn btn-sm btn-outline-danger">Xóa</a>
+                                </td>
+                            </tr>
+                        }
+                    }
                 </tbody>
+
+
             </table>
         </div>
     </div>

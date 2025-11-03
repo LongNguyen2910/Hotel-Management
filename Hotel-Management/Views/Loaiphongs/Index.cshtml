@@ -47,6 +47,7 @@
                         <td class="text-truncate">@item.Succhua</td>
                         <td class="text-truncate">@(item.Gia.HasValue ? item.Gia.Value.ToString("C") : "")</td>
                         <td>
+                            <a asp-controller="Loaiphongs" asp-action="Edit" asp-route-id="@item.Maloaiphong" class="btn btn-sm btn-outline-primary me-2">Sửa</a>
                             <a asp-controller="Loaiphongs" asp-action="Delete" asp-route-id="@item.Maloaiphong" class="btn btn-sm btn-outline-danger">Xóa</a>
                         </td>
                     </tr>

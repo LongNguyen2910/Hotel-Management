@@ -1,0 +1,31 @@
+﻿@model Hotel_Management.Models.Bophan
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Bophan</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Tenbophan)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Tenbophan)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Ngaythanhlap)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Ngaythanhlap)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Mabophan">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

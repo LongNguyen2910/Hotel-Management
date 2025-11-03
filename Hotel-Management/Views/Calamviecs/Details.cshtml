@@ -1,0 +1,31 @@
+﻿@model Hotel_Management.Models.Calamviec
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Calamviec</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Thoigianbatdau)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Thoigianbatdau)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Thoigianketthuc)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Thoigianketthuc)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Macalamviec">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

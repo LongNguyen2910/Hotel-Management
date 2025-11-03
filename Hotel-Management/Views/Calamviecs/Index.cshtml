@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Hotel_Management.Models.Calamviec>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Macalamviec)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Thoigianbatdau)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Thoigianketthuc)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @(item.Macalamviec)
+            </td>
+            <td>
+                @(item.Thoigianbatdau)
+            </td>
+            <td>
+                @(item.Thoigianketthuc)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Macalamviec">Edit</a> 
+                <a asp-action="Delete" asp-route-id="@item.Macalamviec">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

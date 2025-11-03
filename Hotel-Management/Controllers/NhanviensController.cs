@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Hotel_Management.Models;
 
 namespace Hotel_Management.Controllers
@@ -18,14 +18,23 @@ namespace Hotel_Management.Controllers
             _context = context;
         }
 
-        // GET: Nhanviens
+        // GET: NhanVien
         public async Task<IActionResult> Index()
         {
-            var appDbContext = _context.Nhanviens.Include(n => n.MabophanNavigation).Include(n => n.TenchucvuNavigation);
-            return View(await appDbContext.ToListAsync());
+            var modelContext = _context.Nhanviens
+                .Include(n => n.MabophanNavigation)
+                .Include(n => n.TenchucvuNavigation)
+                .Include(n=> n.Nhanvienlamcas)
+                    .ThenInclude(nl => nl.MacalamviecNavigation);
+            ViewBag.Trangthai = new List<SelectListItem>()
+            {
+                new SelectListItem { Text = "Nghỉ việc", Value = "0" },
+                new SelectListItem { Text = "Đang làm", Value = "1" }
+            };
+            return View(await modelContext.ToListAsync());
         }
 
-        // GET: Nhanviens/Details/5
+        // GET: NhanVien/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -36,6 +45,8 @@ namespace Hotel_Management.Controllers
             var nhanvien = await _context.Nhanviens
                 .Include(n => n.MabophanNavigation)
                 .Include(n => n.TenchucvuNavigation)
+                .Include(n => n.Nhanvienlamcas)
+                    .ThenInclude(nl => nl.MacalamviecNavigation)
                 .FirstOrDefaultAsync(m => m.Manv == id);
             if (nhanvien == null)
             {
@@ -45,33 +56,59 @@ namespace Hotel_Management.Controllers
             return View(nhanvien);
         }
 
-        // GET: Nhanviens/Create
+        // GET: NhanVien/Create
         public IActionResult Create()
         {
             ViewData["Mabophan"] = new SelectList(_context.Bophans, "Mabophan", "Mabophan");
             ViewData["Tenchucvu"] = new SelectList(_context.Chucvus, "Tenchucvu", "Tenchucvu");
+            ViewData["Calamviec"] = new SelectList(_context.Calamviecs,"Macalamviec","Macalamviec");
+            ViewData["Trangthai"] = new SelectList(new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Nghỉ việc", Value = "0" },
+                new SelectListItem { Text = "Đang làm", Value = "1" }
+            }, "Value", "Text");
             return View();
         }
 
-        // POST: Nhanviens/Create
+        // POST: NhanVien/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Manv,Hoten,Gioitinh,Ngaysinh,Sodienthoai,Cccd,Ngayvaolam,Trangthai,Mabophan,Tenchucvu")] Nhanvien nhanvien)
+        public async Task<IActionResult> Create(
+            [Bind("Manv,Hoten,Gioitinh,Ngaysinh,Sodienthoai,Cccd,Ngayvaolam,Trangthai,Mabophan,Tenchucvu,Nhanvienlamcas")] Nhanvien nhanvien)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(nhanvien);
+                //if (SelectedCalamviec > 0)
+                //{
+                //    var nhanvienlamca = new Data.Nhanvienlamca
+                //    {
+                //        Manv = nhanvien.Manv,
+                //        Macalamviec = SelectedCalamviec.ToString()
+                //    };
+                //    _context.Nhanvienlamcas.Add(nhanvienlamca);
+                //}
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["Mabophan"] = new SelectList(_context.Bophans, "Mabophan", "Mabophan", nhanvien.Mabophan);
             ViewData["Tenchucvu"] = new SelectList(_context.Chucvus, "Tenchucvu", "Tenchucvu", nhanvien.Tenchucvu);
+            ViewData["Calamviec"] = new SelectList(
+               _context.Calamviecs,
+               "Macalamviec",
+               "Macalamviec",
+               nhanvien.Nhanvienlamcas?.FirstOrDefault());
+            ViewBag.Trangthai = new List<SelectListItem>()
+            {
+                new SelectListItem { Text = "Nghỉ việc", Value = "0" },
+                new SelectListItem { Text = "Đang làm", Value = "1" }
+            };
             return View(nhanvien);
         }
 
-        // GET: Nhanviens/Edit/5
+        // GET: NhanVien/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -86,15 +123,26 @@ namespace Hotel_Management.Controllers
             }
             ViewData["Mabophan"] = new SelectList(_context.Bophans, "Mabophan", "Mabophan", nhanvien.Mabophan);
             ViewData["Tenchucvu"] = new SelectList(_context.Chucvus, "Tenchucvu", "Tenchucvu", nhanvien.Tenchucvu);
+            ViewData["Calamviec"] = new SelectList(_context.Calamviecs, "Macalamviec", "Macalamviec");
+            ViewData["Calamviec"] = new SelectList(
+               _context.Calamviecs,
+               "Macalamviec",
+               "Macalamviec",
+               nhanvien.Nhanvienlamcas?.FirstOrDefault());
+            ViewBag.Trangthai = new List<SelectListItem>()
+            {
+                new SelectListItem { Text = "Nghỉ việc", Value = "0" },
+                new SelectListItem { Text = "Đang làm", Value = "1" }
+            };
             return View(nhanvien);
         }
 
-        // POST: Nhanviens/Edit/5
+        // POST: NhanVien/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Manv,Hoten,Gioitinh,Ngaysinh,Sodienthoai,Cccd,Ngayvaolam,Trangthai,Mabophan,Tenchucvu")] Nhanvien nhanvien)
+        public async Task<IActionResult> Edit(string id, [Bind("Manv,Hoten,Gioitinh,Ngaysinh,Sodienthoai,Cccd,Ngayvaolam,Trangthai,Mabophan,Tenchucvu,Nhanvienlamcas")] Nhanvien nhanvien)
         {
             if (id != nhanvien.Manv)
             {
@@ -123,10 +171,21 @@ namespace Hotel_Management.Controllers
             }
             ViewData["Mabophan"] = new SelectList(_context.Bophans, "Mabophan", "Mabophan", nhanvien.Mabophan);
             ViewData["Tenchucvu"] = new SelectList(_context.Chucvus, "Tenchucvu", "Tenchucvu", nhanvien.Tenchucvu);
+            ViewData["Calamviec"] = new SelectList(_context.Calamviecs, "Macalamviec", "Macalamviec");
+            ViewData["Calamviec"] = new SelectList(
+               _context.Calamviecs,
+               "Macalamviec",
+               "Macalamviec",
+               nhanvien.Nhanvienlamcas?.FirstOrDefault());
+            ViewBag.Trangthai = new List<SelectListItem>()
+            {
+                new SelectListItem { Text = "Nghỉ việc", Value = "0" },
+                new SelectListItem { Text = "Đang làm", Value = "1" }
+            };
             return View(nhanvien);
         }
 
-        // GET: Nhanviens/Delete/5
+        // GET: NhanVien/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -137,6 +196,8 @@ namespace Hotel_Management.Controllers
             var nhanvien = await _context.Nhanviens
                 .Include(n => n.MabophanNavigation)
                 .Include(n => n.TenchucvuNavigation)
+                .Include(n => n.Nhanvienlamcas)
+                    .ThenInclude(nl => nl.MacalamviecNavigation)
                 .FirstOrDefaultAsync(m => m.Manv == id);
             if (nhanvien == null)
             {
@@ -146,7 +207,7 @@ namespace Hotel_Management.Controllers
             return View(nhanvien);
         }
 
-        // POST: Nhanviens/Delete/5
+        // POST: NhanVien/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)

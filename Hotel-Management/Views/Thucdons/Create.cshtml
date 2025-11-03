@@ -1,0 +1,44 @@
+﻿@model Hotel_Management.Models.Thucdon
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Thucdon</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Mathucdon" class="control-label"></label>
+                <input asp-for="Mathucdon" class="form-control" />
+                <span asp-validation-for="Mathucdon" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ngayapdung" class="control-label"></label>
+                <input asp-for="Ngayapdung" class="form-control" />
+                <span asp-validation-for="Ngayapdung" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ngaytao" class="control-label"></label>
+                <input asp-for="Ngaytao" class="form-control" />
+                <span asp-validation-for="Ngaytao" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

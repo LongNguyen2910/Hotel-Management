@@ -2,12 +2,11 @@
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
 }
 
-<h1>Index</h1>
-
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" >Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -24,60 +23,44 @@
             <th>
                 @Html.DisplayNameFor(model => model.Sodienthoai)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cccd)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ngayvaolam)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Trangthai)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MabophanNavigation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TenchucvuNavigation)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Hoten)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Gioitinh)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ngaysinh)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Sodienthoai)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cccd)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ngayvaolam)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Trangthai)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MabophanNavigation.Mabophan)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TenchucvuNavigation.Tenchucvu)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Manv">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Manv">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Manv">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Manv })" style="cursor: pointer;">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Hoten)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gioitinh)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ngaysinh)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Sodienthoai)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Manv">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.Manv">Delete</a>
+                </td>
+            </tr>
+        }
+
+
     </tbody>
 </table>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.clickable-row').forEach(function(row) {
+            row.addEventListener('click', function(e) {
+                // Không kích hoạt nếu click vào Edit/Delete
+                if (e.target.tagName !== 'A') {
+                    window.location.href = this.dataset.href;
+                }
+            });
+        });
+    });
+</script>

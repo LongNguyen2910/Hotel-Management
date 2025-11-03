@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
 }
 
 <h1>Edit</h1>
@@ -59,6 +60,10 @@
                 <span asp-validation-for="Tenchucvu" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Nhanvienlamcas" class="control-label"></label>
+                <select asp-for="Nhanvienlamcas" id="calamviec-select" class="form-control" asp-items="ViewBag.Calamviec"></select>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -68,6 +73,11 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+<script>
+    document.getElementById('calamviec-select').removeAttribute('multiple');
+    document.getElementById('calamviec-select').setAttribute('size', '1');
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

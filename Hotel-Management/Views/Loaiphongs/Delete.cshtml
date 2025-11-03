@@ -1,0 +1,29 @@
+﻿@model Hotel_Management.Models.Loaiphong
+
+@{
+    ViewData["Title"] = "Delete Loại phòng";
+}
+
+<h1>Delete</h1>
+
+<h4>Loại phòng</h4>
+<hr />
+<dl class="row">
+    <dt class="col-sm-2">Mã</dt>
+    <dd class="col-sm-10">@Model.Maloaiphong</dd>
+
+    <dt class="col-sm-2">Tên</dt>
+    <dd class="col-sm-10">@Model.Tenloaiphong</dd>
+
+    <dt class="col-sm-2">Sức chứa</dt>
+    <dd class="col-sm-10">@Model.Succhua</dd>
+
+    <dt class="col-sm-2">Giá</dt>
+    <dd class="col-sm-10">@Model.Gia</dd>
+</dl>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Maloaiphong" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

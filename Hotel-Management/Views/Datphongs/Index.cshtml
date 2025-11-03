@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Hotel_Management.Models.Phong>
+
+@{
+    var currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
+}
+
+<div class="col-12">
+    <div class="card overflow-hidden">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Đặt phòng</h5>
+            <div class="d-flex align-items-center">
+                <form asp-action="Index" method="get" class="d-flex me-3">
+                    <input name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm theo mã phòng..." />
+                    <button type="submit" class="btn btn-sm btn-outline-primary">Tìm</button>
+                    @if (!string.IsNullOrWhiteSpace(currentFilter))
+                    {
+                        <a asp-action="Index" class="btn btn-sm btn-link ms-2">Xóa</a>
+                    }
+                </form>
+                <a asp-controller="Datphongs" asp-action="Create" class="btn btn-sm btn-primary">Thêm phòng</a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-truncate">Mã phòng</th>
+                        <th class="text-truncate">Tên phòng</th>
+                        <th class="text-truncate">Mã loại phòng</th>
+                        <th class="text-truncate">Tình trạng</th>
+                        <th class="text-truncate">Mô tả</th>
+                        <th class="text-truncate">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+@foreach (var item in Model)
+{
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div><h6 class="mb-0 text-truncate">@item.Maphong</h6></div>
+                            </div>
+                        </td>
+                        <td class="text-truncate">@item.Tenphong</td>
+                        <td class="text-truncate">@item.Maloaiphong</td>
+                        <td class="text-truncate">
+                            @if (item.Tinhtrang)
+                            {
+                                <span class="badge bg-label-success rounded-pill">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-label-secondary rounded-pill">Inactive</span>
+                            }
+                        </td>
+                        <td class="text-truncate">@item.Mota</td>
+                        <td>
+                            <a asp-controller="Datphongs" asp-action="Delete" asp-route-id="@item.Maphong" class="btn btn-sm btn-outline-danger">Xóa</a>
+                        </td>
+                    </tr>
+}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

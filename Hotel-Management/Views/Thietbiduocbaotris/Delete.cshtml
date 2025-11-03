@@ -1,0 +1,36 @@
+﻿@model Hotel_Management.Models.Thietbiduocbaotri
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Xóa bảo trì thiết bị</h5>
+        </div>
+        <div class="card-body">
+            <h6>Bạn có chắc muốn xóa bản ghi bảo trì này?</h6>
+
+            <dl class="row">
+                <dt class="col-sm-3">Mã thiết bị</dt>
+                <dd class="col-sm-9">@Model?.Mathietbi</dd>
+
+                <dt class="col-sm-3">Ngày bắt đầu</dt>
+                <dd class="col-sm-9">@Model?.Ngaybatdau.ToString("yyyy-MM-dd")</dd>
+
+                <dt class="col-sm-3">Ngày kết thúc</dt>
+                <dd class="col-sm-9">@Model?.Ngayketthuc.ToString("yyyy-MM-dd")</dd>
+            </dl>
+
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ngaybatdauticks" value="@Model.Ngaybatdau.Ticks" />
+                <input type="hidden" name="ngayketthucticks" value="@Model.Ngayketthuc.Ticks" />
+                <input type="hidden" name="mathietbi" value="@Model.Mathietbi" />
+                <button type="submit" class="btn btn-danger">Xóa</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </form>
+        </div>
+    </div>
+</div>

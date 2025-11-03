@@ -1,0 +1,56 @@
+﻿@model Hotel_Management.Models.Thietbi
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Thêm thiết bị</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label class="form-label">Mã thiết bị</label>
+                    <input asp-for="Mathietbi" class="form-control" type="number" />
+                    <span asp-validation-for="Mathietbi" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tên thiết bị</label>
+                    <input asp-for="Tenthietbi" class="form-control" />
+                    <span asp-validation-for="Tenthietbi" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Tình trạng</label>
+                    <select asp-for="Tinhtrang" class="form-select">
+                        <option value="">-- Chọn tình trạng --</option>
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                    <span asp-validation-for="Tinhtrang" class="text-danger"></span>
+                </div>
+
+                @* <div class="mb-3">
+                    <label class="form-label">Mã loại thiết bị (UI-only)</label>
+                    <input asp-for="Maloaithietbi" class="form-control" />
+                    <span asp-validation-for="Maloaithietbi" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tên loại thiết bị (UI-only)</label>
+                    <input asp-for="Tenloaithietbi" class="form-control" />
+                    <span asp-validation-for="Tenloaithietbi" class="text-danger"></span>
+                </div> *@
+                <button type="submit" class="btn btn-primary">Lưu</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<partial name="_ValidationScriptsPartial" />

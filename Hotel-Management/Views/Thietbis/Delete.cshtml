@@ -1,0 +1,34 @@
+﻿@model Hotel_Management.Models.Thietbi
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Xóa thiết bị</h5>
+        </div>
+        <div class="card-body">
+            <h6>Bạn có chắc muốn xóa thiết bị này?</h6>
+
+            <dl class="row">
+                <dt class="col-sm-3">Mã thiết bị</dt>
+                <dd class="col-sm-9">@Model?.Mathietbi</dd>
+
+                <dt class="col-sm-3">Tên thiết bị</dt>
+                <dd class="col-sm-9">@Model?.Tenthietbi</dd>
+
+                <dt class="col-sm-3">Tình trạng</dt>
+                <dd class="col-sm-9">@((Model?.Tinhtrang == true) ? "Active" : "Inactive")</dd>
+            </dl>
+
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Mathietbi" />
+                <button type="submit" class="btn btn-danger">Xóa</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </form>
+        </div>
+    </div>
+</div>

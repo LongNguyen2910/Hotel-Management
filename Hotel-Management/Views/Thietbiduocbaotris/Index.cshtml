@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Hotel_Management.Models.Thietbiduocbaotri>
+
+@{
+    var currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
+}
+
+<div class="col-12">
+    <div class="card overflow-hidden">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Bảo trì thiết bị</h5>
+            <div class="d-flex align-items-center">
+                <form asp-action="Index" method="get" class="d-flex me-3">
+                    <input name="searchMathietbi" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm kiếm..."/>
+                    <button type="submit" class="btn btn-sm btn-outline-primary">Tìm</button>
+                    @if (!string.IsNullOrWhiteSpace(currentFilter))
+                    {
+                        <a asp-action="Index" class="btn btn-sm btn-link ms-2">Xóa</a>
+                    }
+                </form>
+                <a asp-controller="Thietbiduocbaotris" asp-action="Create" class="btn btn-sm btn-primary">Thêm bảo trì</a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-truncate">Mã thiết bị</th>
+                        <th class="text-truncate">Ngày bắt đầu</th>
+                        <th class="text-truncate">Ngày kết thúc</th>
+                        <th class="text-truncate">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+@foreach (var item in Model)
+{
+                    <tr>
+                        <td class="text-truncate">@item.Mathietbi</td>
+                        <td class="text-truncate">@item.Ngaybatdau.ToString("yyyy-MM-dd")</td>
+                        <td class="text-truncate">@item.Ngayketthuc.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <a asp-controller="Thietbiduocbaotris" asp-action="Delete"
+                               asp-route-ngaybatdauticks="@item.Ngaybatdau.Ticks"
+                               asp-route-ngayketthucticks="@item.Ngayketthuc.Ticks"
+                               asp-route-mathietbi="@item.Mathietbi"
+                               class="btn btn-sm btn-outline-danger">Xóa</a>
+                        </td>
+                    </tr>
+}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

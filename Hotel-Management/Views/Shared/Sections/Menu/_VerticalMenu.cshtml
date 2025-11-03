@@ -99,6 +99,11 @@
                 <div>Quản lý phòng</div>
             </a>
             <ul class="menu-sub">
+                <li class='menu-item@(currentPage.StartsWith("/Phongs") ? " active" : "")'>
+                    <a asp-controller="Phongs" asp-action="Index" class="menu-link">
+                        <div>Phòng</div>
+                    </a>
+                </li>
                 <li class='menu-item@(currentPage.StartsWith("/Loaiphongs") ? " active" : "")'>
                     <a asp-controller="Loaiphongs" asp-action="Index" class="menu-link">
                         <div>Loại phòng</div>

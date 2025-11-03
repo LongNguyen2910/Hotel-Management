@@ -1,0 +1,66 @@
+﻿@model Hotel_Management.Models.Phong
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Thêm phòng</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label class="form-label">Mã phòng</label>
+                    <input asp-for="Maphong" class="form-control" type="number" />
+                    <span asp-validation-for="Maphong" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Tên phòng</label>
+                    <input asp-for="Tenphong" class="form-control" />
+                    <span asp-validation-for="Tenphong" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Tình trạng</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" asp-for="Tinhtrang" value="true" id="Tinhtrang_Active" />
+                        <label class="form-check-label" for="Tinhtrang_Active">Sẵn sàng</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" asp-for="Tinhtrang" value="false" id="Tinhtrang_Inactive" />
+                        <label class="form-check-label" for="Tinhtrang_Inactive">Không sẵn sàng</label>
+                    </div>
+                    <span asp-validation-for="Tinhtrang" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Mô tả</label>
+                    <input asp-for="Mota" class="form-control" />
+                    <span asp-validation-for="Mota" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Mã loại phòng</label>
+                    <select asp-for="Maloaiphong" class="form-select" asp-items="ViewBag.Maloaiphong"></select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Lưu</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

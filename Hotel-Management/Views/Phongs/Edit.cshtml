@@ -1,0 +1,54 @@
+﻿@model Hotel_Management.Models.Phong
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Phong</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Maphong" />
+            <div class="form-group">
+                <label asp-for="Tenphong" class="control-label"></label>
+                <input asp-for="Tenphong" class="form-control" />
+                <span asp-validation-for="Tenphong" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Tinhtrang" /> @Html.DisplayNameFor(model => model.Tinhtrang)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Mota" class="control-label"></label>
+                <input asp-for="Mota" class="form-control" />
+                <span asp-validation-for="Mota" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Maloaiphong" class="control-label"></label>
+                <select asp-for="Maloaiphong" class="form-control" asp-items="ViewBag.Maloaiphong"></select>
+                <span asp-validation-for="Maloaiphong" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Anhphong" class="control-label"></label>
+                <input asp-for="Anhphong" class="form-control" />
+                <span asp-validation-for="Anhphong" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

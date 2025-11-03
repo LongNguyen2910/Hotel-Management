@@ -6,5 +6,4 @@ namespace AspnetCoreMvcFull.Controllers;
 public class DashboardsController : Controller
 {
   public IActionResult Index() => View();
-  public IActionResult Test() => View("TableData");
 }

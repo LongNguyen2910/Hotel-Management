@@ -35,7 +35,7 @@ namespace Hotel_Management.Controllers
             if (!string.IsNullOrWhiteSpace(trimmed))
             {
                 // use SQL LIKE 
-                query = query.Where(p => EF.Functions.Like(p.MaloaiphongNavigation.Tenloaiphong, $"%{trimmed}%"));
+                query = query.Where(p => EF.Functions.Like(p.Maphong, $"%{trimmed}%"));
             }
 
             var list = await query.ToListAsync();

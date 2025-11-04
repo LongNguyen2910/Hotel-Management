@@ -174,6 +174,7 @@ namespace Hotel_Management.Controllers
                 .FirstOrDefaultAsync(m => m.Maphong == id);
             if (khachhangdatphong != null)
             {
+                khachhangdatphong.MaphongNavigation.Tinhtrang = true;
                 _context.Khachhangdatphongs.Remove(khachhangdatphong);
             }
 

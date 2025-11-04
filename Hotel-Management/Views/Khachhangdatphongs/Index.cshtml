@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Hotel_Management.Models.Phong>
+﻿@model IEnumerable<Hotel_Management.Models.Khachhangdatphong>
 
 @{
     ViewData["Title"] = "Index";
@@ -11,14 +11,13 @@
             <h5 class="mb-0">Danh sách phòng</h5>
             <div class="d-flex align-items-center">
                 <form asp-action="Index" method="get" class="d-flex me-3">
-                    <input name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm theo tên phòng..." />
+                    <input name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm theo mã khách hàng" />
                     <button type="submit" class="btn btn-sm btn-outline-primary">Tìm</button>
                     @if (!string.IsNullOrWhiteSpace(currentFilter))
                     {
                         <a asp-action="Index" class="btn btn-sm btn-outline-danger btn-link ms-2">Xóa</a>
                     }
                 </form>
-                <a asp-controller="Phongs" asp-action="Create" class="btn btn-sm btn-primary">Thêm phòng</a>
             </div>
         </div>
 
@@ -26,11 +25,12 @@
             <table class="table table-sm">
                 <thead>
                     <tr>
+                        <th class="text-truncate">Mã khách hàng</th>
                         <th class="text-truncate">Mã Phòng</th>
-                        <th class="text-truncate">Tên phòng</th>
-                        <th class="text-truncate">Loại phòng</th>
-                        <th class="text-truncate">Tình trạng</th>
-                        <th class="text-truncate">Mô tả</th>
+                        <th class="text-truncate">Ngày Đặt</th>
+                        <th class="text-truncate">Ngày Check-in</th>
+                        <th class="text-truncate">Ngày Check-out</th>
+                        <th class="text-truncate">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,37 +41,30 @@
                                 <i class="bi bi-exclamation-circle">Không tìm thấy phòng phù hợp</i>
                             </td>
                         </tr>
-                    } else @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td><h6 class="mb-0 text-truncate">@item.Maphong</h6></td>
-                            <td><h6 class="mb-0 text-truncate">@item.Tenphong</h6></td>
-                            <td><h6 class="mb-0 text-truncate">@item.MaloaiphongNavigation.Tenloaiphong</h6></td>
-                            <td class="text-truncate">
-                                @if (item.Tinhtrang == true)
-                                {
-                                    <span class="badge bg-label-success rounded-pill">Sẵn sàng</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-label-secondary rounded-pill">Không sẵn sàng</span>
-                                }
-                            </td>
-                            <td><h6 class="mb-0 text-truncate">@item.Mota</h6></td>
-                            <td>
-                                <!-- Trigger modal instead of navigating -->
-                                <button type="button"
-                                        class="btn btn-sm btn-outline-danger"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#confirmDeleteModal"
-                                        data-id="@item.Maphong"
-                                        data-name="@item.Tenphong">
-                                    Xóa
-                                </button>
-                                <a asp-controller="Phongs" asp-action="Details" asp-route-id="@item.Maphong" class="btn btn-sm btn-outline-danger">Chi tiết</a>
-                            </td>
-                        </tr>
                     }
+                    else
+     @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><h6 class="mb-0 text-truncate">@item.Makhachhang</h6></td>
+                                <td><h6 class="mb-0 text-truncate">@item.Maphong</h6></td>
+                                <td><h6 class="mb-0 text-truncate">@item.Ngaydat</h6></td>
+                                <td><h6 class="mb-0 text-truncate">@item.Ngaycheckin</h6></td>
+                                <td><h6 class="mb-0 text-truncate">@item.Ngaycheckout</h6></td>
+                                <td>
+                                    <!-- Trigger modal instead of navigating -->
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#confirmDeleteModal"
+                                            data-id="@item.Maphong"
+                                            data-name="@item.Makhachhang">
+                                        Xóa
+                                    </button>
+                                    <a asp-controller="Khachhangdatphongs" asp-action="Details" asp-route-id="@item.Maphong" class="btn btn-sm btn-outline-danger">Chi tiết</a>
+                                </td>
+                            </tr>
+                        }
                 </tbody>
             </table>
         </div>
@@ -87,12 +80,12 @@
             </div>
             <div class="modal-body">
                 <div class="alert alert-warning mb-0">
-                    Bạn có chắc chắn muốn xóa phòng <strong id="delete-item-name"></strong>
-                    (<code id="delete-item-id"></code>) không?
+                    Bạn có chắc chắn muốn xóa đơn đặt phòng <strong id="delete-item-id"></strong> do khách hàng
+                    <strong id="delete-item-name"></strong> đặt không?
                 </div>
             </div>
             <div class="modal-footer">
-                <form id="deleteForm" method="post" asp-controller="Phongs" asp-action="Delete" class="m-0">
+                <form id="deleteForm" method="post" asp-controller="Khachhangdatphongs" asp-action="Delete" class="m-0">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" id="delete-id" />
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
@@ -113,7 +106,7 @@
                 if (!button) return;
 
                 const id = button.getAttribute('data-id');
-                const name = button.getAttribute('data-name') || id;
+                const name = button.getAttribute('data-name') || data-id;
 
                 document.getElementById('delete-id').value = id;
                 document.getElementById('delete-item-id').textContent = id;

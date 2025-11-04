@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<Hotel_Management.Models.Phong>
 @{
     ViewData["Title"] = "Đặt phòng";
+    var currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
 }
 
 @* @{
@@ -73,12 +74,12 @@
     <h5 class="mb-0">Đặt phòng</h5>
     <div class="d-flex align-items-center">
         <form asp-action="Index" method="get" class="d-flex me-3">
-            <input name="searchString" value="" class="form-control form-control-sm me-2" placeholder="Tìm theo mã phòng..." />
+            <input name="searchString" value="" class="form-control form-control-sm me-2" placeholder="Tìm theo tên loại phòng..." />
             <button type="submit" class="btn btn-sm btn-outline-primary">Tìm</button>
-            @* @if (!string.IsNullOrWhiteSpace(currentFilter))
+            @if (!string.IsNullOrWhiteSpace(currentFilter))
             {
-                <a asp-action="Index" class="btn btn-sm btn-link ms-2">Xóa</a>
-            } *@
+                <a asp-action="Index" class="btn btn-sm btn-outline-danger btn-link ms-2">Xóa</a>
+            }
         </form>
     </div>
 </div>
@@ -91,7 +92,9 @@
                 <div class="card-body">
                     <h5 class="card-title">@item.MaloaiphongNavigation.Tenloaiphong - @item.Tenphong</h5>
                     <p class="card-text">@item.Mota</p>
-                    <a href="javascript:void(0)" class="btn btn-outline-primary">Đặt Phòng</a>
+                    <a asp-controller="Khachhangs" asp-action="Create" asp-route-maphong="@item.Maphong" class="btn btn-outline-primary">
+                        Đặt Phòng
+                    </a>
                 </div>
             </div>
         </div>

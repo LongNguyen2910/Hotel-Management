@@ -25,7 +25,7 @@ namespace Hotel_Management.Controllers
         public async Task<IActionResult> Index(string searchString)
         {
             ViewData["CurrentFilter"] = searchString ?? string.Empty;
-            var trimmed = (searchString ?? string.Empty).Trim();
+            var trimmed = (searchString ?? string.Empty).Trim().ToUpper();
 
             var query = _context.Phongs
                 .Include(p => p.MaloaiphongNavigation)
@@ -35,7 +35,7 @@ namespace Hotel_Management.Controllers
             if (!string.IsNullOrWhiteSpace(trimmed))
             {
                 // use SQL LIKE 
-                query = query.Where(p => EF.Functions.Like(p.Maphong, $"%{trimmed}%"));
+                query = query.Where(p => EF.Functions.Like(p.MaloaiphongNavigation.Tenloaiphong.ToUpper(), $"%{trimmed}%"));
             }
 
             var list = await query.ToListAsync();
@@ -72,7 +72,7 @@ namespace Hotel_Management.Controllers
                     .Select(t => new { t.Mathietbi, t.Tenthietbi })
                     .ToList();
 
-                return View(phong);
+                return View();
             }
 
             try

@@ -55,8 +55,12 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Khachhangs/Create
-        public IActionResult Create()
+        public IActionResult Create(string? maphong)
         {
+            var phong = _context.Phongs
+                .Include(p => p.MaloaiphongNavigation)
+                .FirstOrDefault(p => p.Maphong == maphong);
+            ViewBag.Phong = phong;
             return View();
         }
 
@@ -65,7 +69,7 @@ namespace Hotel_Management.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Hoten,Quoctich,Cccd,Sdt,Hochieu")] Khachhang khachhang)
+        public async Task<IActionResult> Create([Bind("Hoten,Quoctich,Cccd,Sdt,Hochieu")] Khachhang khachhang, string? maphong)
         {
             if (!ModelState.IsValid)
                 return View(khachhang);
@@ -86,6 +90,24 @@ namespace Hotel_Management.Controllers
             {
                 _context.Add(khachhang);
                 await _context.SaveChangesAsync();
+                if (maphong != null)
+                {
+                    Khachhangdatphong khdp = new Khachhangdatphong
+                    {
+                        Makhachhang = khachhang.Makhachhang,
+                        Maphong = maphong,
+                        Ngaydat = DateTime.Now
+                    };
+                    _context.Add(khdp);
+                    var phong = await _context.Phongs.FindAsync(maphong);
+                    if (phong != null)
+                    {
+                        phong.Tinhtrang = false;
+                    }
+
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index", "Datphongs");
+                }
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException ex)

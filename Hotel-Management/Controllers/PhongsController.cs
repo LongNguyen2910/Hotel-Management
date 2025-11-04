@@ -23,10 +23,27 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Phongs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var appDbContext = _context.Phongs.Include(p => p.MaloaiphongNavigation);
-            return View(await appDbContext.ToListAsync());
+            ViewData["CurrentFilter"] = searchString ?? string.Empty;
+            var trimmed = (searchString ?? string.Empty).Trim().ToUpper();
+
+            var query = _context.Phongs
+                .Include(p => p.MaloaiphongNavigation)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(trimmed))
+            {
+                // use SQL LIKE 
+                query = query.Where(p => EF.Functions.Like(p.Tenphong, $"%{trimmed}%"));
+            }
+
+            var list = await query.ToListAsync();
+            if (!list.Any())
+            {
+                ViewData["NoResults"] = true;
+            }
+            return View(list);
         }
 
         // GET: Phongs/Details/5
@@ -79,16 +96,21 @@ namespace Hotel_Management.Controllers
                         return View(phong);
                     }
 
-                    // Tạo tên file an toàn
-                    var fileName = Path.GetRandomFileName() + ext;
-                    var filePath = Path.Combine(folderPath, fileName);
+                    // Tạo tên file an 
+                    string fileName, filePath;
+                    do
+                    {
+                        fileName = Path.GetRandomFileName() + ext;
+                        filePath = Path.Combine(folderPath, fileName);
+                    }
+                    while (System.IO.File.Exists(filePath));
 
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await AnhFile.CopyToAsync(stream);
                     }
 
-                    // Lưu tên file hoặc đường dẫn tương đối vào DB
+                    // Lưu tên file vào DB
                     phong.Anhphong = fileName;
                 }
 

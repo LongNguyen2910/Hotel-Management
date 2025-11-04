@@ -1,0 +1,51 @@
+﻿@model Hotel_Management.Models.Khachhangdatphong
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Khachhangdatphong</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Makhachhang" class="control-label"></label>
+                <select asp-for="Makhachhang" class ="form-control" asp-items="ViewBag.Makhachhang"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Maphong" class="control-label"></label>
+                <select asp-for="Maphong" class ="form-control" asp-items="ViewBag.Maphong"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ngaydat" class="control-label"></label>
+                <input asp-for="Ngaydat" class="form-control" />
+                <span asp-validation-for="Ngaydat" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ngaycheckin" class="control-label"></label>
+                <input asp-for="Ngaycheckin" class="form-control" />
+                <span asp-validation-for="Ngaycheckin" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ngaycheckout" class="control-label"></label>
+                <input asp-for="Ngaycheckout" class="form-control" />
+                <span asp-validation-for="Ngaycheckout" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

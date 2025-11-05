@@ -53,6 +53,21 @@
                                 <td><h6 class="mb-0 text-truncate">@item.Ngaycheckout</h6></td>
                                 <td>
                                     <!-- Trigger modal instead of navigating -->
+                                    <form asp-controller="Khachhangdatphongs"
+                                          asp-action="CheckIn"
+                                          method="post"
+                                          class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="makhachhang" value="@item.Makhachhang" />
+                                        <input type="hidden" name="maphong" value="@item.Maphong" />
+                                        <button type="submit" class="btn btn-sm btn-primary">Check-in</button>
+                                    </form>
+                                    <a asp-controller="Khachhangdatphongs"
+                                       asp-action="CheckOut"
+                                       asp-route-makhachhang="@item.Makhachhang"
+                                       asp-route-maphong="@item.Maphong"
+                                       class="btn btn-sm btn-primary">Check-out
+                                    </a>
                                     <button type="button"
                                             class="btn btn-sm btn-outline-danger"
                                             data-bs-toggle="modal"
@@ -60,8 +75,7 @@
                                             data-id="@item.Maphong"
                                             data-name="@item.Makhachhang">
                                         Xóa
-                                    </button>
-                                    <a asp-controller="Khachhangdatphongs" asp-action="Details" asp-route-id="@item.Maphong" class="btn btn-sm btn-outline-danger">Chi tiết</a>
+                                    </button>  
                                 </td>
                             </tr>
                         }

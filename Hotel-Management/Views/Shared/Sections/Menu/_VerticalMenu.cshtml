@@ -43,7 +43,7 @@
       <span class="menu-header-text">Quản lý khách sạn</span>
     </li>
 
-    <li class='menu-item@(currentPage.StartsWith("/Datphongs") ? " active open" : "")'>
+    <li class='menu-item@(currentPage.StartsWith("/Auth") ? " active open" : "")'>
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <div>Đặt phòng</div>
       </a>
@@ -53,7 +53,7 @@
             <div>Đặt phòng</div>
           </a>
         </li>
-        <li class='menu-item@(currentPage == "Khachhangdatphongs/Index" ? " active" : "")'>
+         <li class='menu-item@(currentPage == "/Khachhangdatphongs/Index" ? " active" : "")'>
           <a asp-controller="Khachhangdatphongs" asp-action="Index" class="menu-link">
             <div>Danh sách đặt phòng</div>
           </a>

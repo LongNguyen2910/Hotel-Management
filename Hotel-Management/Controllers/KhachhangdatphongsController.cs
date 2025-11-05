@@ -186,5 +186,43 @@ namespace Hotel_Management.Controllers
         {
             return _context.Khachhangdatphongs.Any(e => e.Maphong == id);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CheckIn(int makhachhang, string maphong)
+        {
+            if (string.IsNullOrWhiteSpace(maphong))
+                return BadRequest();
+
+            var booking = await _context.Khachhangdatphongs
+                .FirstOrDefaultAsync(x => x.Makhachhang == makhachhang && x.Maphong == maphong);
+
+            if (booking == null)
+                return NotFound();
+
+            booking.Ngaycheckin = DateTime.Now;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CheckOut(int makhachhang, string maphong)
+        {
+            if (string.IsNullOrWhiteSpace(maphong))
+                return BadRequest();
+
+            var booking = await _context.Khachhangdatphongs
+                .FirstOrDefaultAsync(x => x.Makhachhang == makhachhang && x.Maphong == maphong);
+
+            if (booking == null)
+                return NotFound();
+
+            booking.Ngaycheckout = DateTime.Now;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

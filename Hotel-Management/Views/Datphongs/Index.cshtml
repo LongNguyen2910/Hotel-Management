@@ -1,4 +1,8 @@
 ﻿@model IEnumerable<Hotel_Management.Models.Phong>
+@{
+    ViewData["Title"] = "Đặt phòng";
+    var currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
+}
 
 @* @{
     var currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
@@ -70,24 +74,29 @@
     <h5 class="mb-0">Đặt phòng</h5>
     <div class="d-flex align-items-center">
         <form asp-action="Index" method="get" class="d-flex me-3">
-            <input name="searchString" value="" class="form-control form-control-sm me-2" placeholder="Tìm theo mã phòng..." />
+            <input name="searchString" value="" class="form-control form-control-sm me-2" placeholder="Tìm theo tên loại phòng..." />
             <button type="submit" class="btn btn-sm btn-outline-primary">Tìm</button>
-            @* @if (!string.IsNullOrWhiteSpace(currentFilter))
+            @if (!string.IsNullOrWhiteSpace(currentFilter))
             {
-                <a asp-action="Index" class="btn btn-sm btn-link ms-2">Xóa</a>
-            } *@
+                <a asp-action="Index" class="btn btn-sm btn-outline-danger btn-link ms-2">Xóa</a>
+            }
         </form>
     </div>
 </div>
 <div class="row mb-12 g-6">
-    <div class="col-md-6 col-lg-4">
-        <div class="card h-100">
-            <img class="card-img-top" src="" alt="Card image cap" />
-            <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="javascript:void(0)" class="btn btn-outline-primary">Go somewhere</a>
+    @foreach (var item in Model)
+    {
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <img class="card-img-top" src="@Url.Action("GetImage", "Phongs", new { id = item.Maphong })" alt="Ảnh phòng" width="448" height="448" />
+                <div class="card-body">
+                    <h5 class="card-title">@item.MaloaiphongNavigation.Tenloaiphong - @item.Tenphong</h5>
+                    <p class="card-text">@item.Mota</p>
+                    <a asp-controller="Khachhangs" asp-action="Create" asp-route-maphong="@item.Maphong" class="btn btn-outline-primary">
+                        Đặt Phòng
+                    </a>
+                </div>
             </div>
         </div>
-    </div>
+    }
 </div>

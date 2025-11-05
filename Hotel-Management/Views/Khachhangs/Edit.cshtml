@@ -1,0 +1,54 @@
+﻿@model Hotel_Management.Models.Khachhang
+
+@{
+    ViewData["Title"] = "Sửa thông tin";
+}
+
+<h1 class="text-center mb-4">Sửa thông tin khách hàng</h1>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Hoten" class="form-label">Họ và tên</label>
+                <input asp-for="Hoten" class="form-control" placeholder="Nhập họ và tên" />
+                <span asp-validation-for="Hoten" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Quoctich" class="form-label">Quốc tịch</label>
+                <input asp-for="Quoctich" class="form-control" placeholder="Nhập quốc tịch" />
+                <span asp-validation-for="Quoctich" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Cccd" class="form-label">CCCD</label>
+                <input asp-for="Cccd" class="form-control" placeholder="Nhập số CCCD"
+                       maxlength="12" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+                <span asp-validation-for="Cccd" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Sdt" class="form-label">Số điện thoại</label>
+                <input asp-for="Sdt" class="form-control" placeholder="Nhập số điện thoại"
+                       maxlength="15" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+                <span asp-validation-for="Sdt" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Hochieu" class="form-label">Hộ chiếu</label>
+                <input asp-for="Hochieu" class="form-control" placeholder="Nhập số hộ chiếu (nếu có)" />
+                <span asp-validation-for="Hochieu" class="text-danger"></span>
+            </div>
+
+            <div class="form-group text-center mt-4">
+                <button type="submit" class="btn btn-primary px-4">Lưu</button>
+                <a asp-action="Index" class="btn btn-secondary px-4 ms-2">Quay lại</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<partial name="_ValidationScriptsPartial" />

@@ -1,28 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Hotel_Management.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Hotel_Management.Models;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Hotel_Management.Controllers
 {
     public class PhongsController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public PhongsController(AppDbContext context)
+        public PhongsController(AppDbContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         // GET: Phongs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var appDbContext = _context.Phongs.Include(p => p.MaloaiphongNavigation);
-            return View(await appDbContext.ToListAsync());
+            ViewData["CurrentFilter"] = searchString ?? string.Empty;
+            var trimmed = (searchString ?? string.Empty).Trim().ToUpper();
+
+            var query = _context.Phongs
+                .Include(p => p.MaloaiphongNavigation)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(trimmed))
+            {
+                // use SQL LIKE 
+                query = query.Where(p => EF.Functions.Like(p.Tenphong, $"%{trimmed}%"));
+            }
+
+            var list = await query.ToListAsync();
+            if (!list.Any())
+            {
+                ViewData["NoResults"] = true;
+            }
+            return View(list);
         }
 
         // GET: Phongs/Details/5
@@ -56,10 +77,43 @@ namespace Hotel_Management.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Maphong,Tenphong,Tinhtrang,Mota,Maloaiphong,Anhphong")] Phong phong)
+        public async Task<IActionResult> Create([Bind("Maphong,Tenphong,Tinhtrang,Mota,Maloaiphong,Anhphong")] Phong phong, IFormFile? AnhFile)
         {
             if (ModelState.IsValid)
             {
+                if (AnhFile != null && AnhFile.Length > 0)
+                {
+                    // Thư mục lưu ảnh ngoài wwwroot
+                    var folderPath = Path.Combine(_env.ContentRootPath, "App_Data", "Uploads", "Phong");
+                    Directory.CreateDirectory(folderPath);
+
+                    //Validate file type
+                    var allowedExts = new[] { ".jpg", ".jpeg", ".png" };
+                    var ext = Path.GetExtension(AnhFile.FileName).ToLowerInvariant();
+                    if (!allowedExts.Contains(ext))
+                    {
+                        ModelState.AddModelError("AnhFile", "Định dạng ảnh không hợp lệ. Chỉ chấp nhận JPG, PNG.");
+                        return View(phong);
+                    }
+
+                    // Tạo tên file an 
+                    string fileName, filePath;
+                    do
+                    {
+                        fileName = Path.GetRandomFileName() + ext;
+                        filePath = Path.Combine(folderPath, fileName);
+                    }
+                    while (System.IO.File.Exists(filePath));
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await AnhFile.CopyToAsync(stream);
+                    }
+
+                    // Lưu tên file vào DB
+                    phong.Anhphong = fileName;
+                }
+
                 _context.Add(phong);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -151,6 +205,17 @@ namespace Hotel_Management.Controllers
                 _context.Phongs.Remove(phong);
             }
 
+            if (!string.IsNullOrEmpty(phong.Anhphong))
+            {
+                var folderPath = Path.Combine(_env.ContentRootPath, "App_Data", "Uploads", "Phong");
+                var filePath = Path.Combine(folderPath, phong.Anhphong);
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+            }
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -158,6 +223,35 @@ namespace Hotel_Management.Controllers
         private bool PhongExists(string id)
         {
             return _context.Phongs.Any(e => e.Maphong == id);
+        }
+
+        public IActionResult GetImage(string id)
+        {
+            var phong = _context.Phongs
+                .AsNoTracking()
+                .FirstOrDefault(p => p.Maphong == id);
+
+            if (phong == null || string.IsNullOrEmpty(phong.Anhphong))
+                return NotFound();
+
+            // Xác định đường dẫn vật lý tới file
+            var folderPath = Path.Combine(_env.ContentRootPath, "App_Data", "Uploads", "Phong");
+            var filePath = Path.Combine(folderPath, phong.Anhphong);
+
+            if (!System.IO.File.Exists(filePath))
+                return NotFound();
+
+            // Xác định content-type theo đuôi file
+            var ext = Path.GetExtension(filePath).ToLowerInvariant();
+            var contentType = ext switch
+            {
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".png" => "image/png",
+                _ => "image.jpeg"
+            };
+
+            var imageBytes = System.IO.File.ReadAllBytes(filePath);
+            return File(imageBytes, contentType);
         }
     }
 }

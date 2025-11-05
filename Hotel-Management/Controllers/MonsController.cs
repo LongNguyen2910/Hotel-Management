@@ -24,24 +24,6 @@ namespace Hotel_Management.Controllers
             return View(await _context.Mons.ToListAsync());
         }
 
-        // GET: Mons/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var mon = await _context.Mons
-                .FirstOrDefaultAsync(m => m.Mamon == id);
-            if (mon == null)
-            {
-                return NotFound();
-            }
-
-            return View(mon);
-        }
-
         // GET: Mons/Create
         public IActionResult Create()
         {

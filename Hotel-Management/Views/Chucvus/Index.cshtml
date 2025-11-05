@@ -5,36 +5,43 @@
     Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Tenchucvu)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Luongcoban)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Tenchucvu)
-                </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Luongcoban)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Tenchucvu">Edit</a> 
-                <a asp-action="Delete" asp-route-id="@item.Tenchucvu">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<<div class="col-12">
+    <div class="card overflow-hidden">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Danh sách chức vụ</h5>
+            <div class="d-flex align-items-center">
+                <a asp-controller="Chucvus" asp-action="Create" class="btn btn-sm btn-primary">Thêm chức vụ</a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-truncate">Tên chức vụ</th>
+                        <th class="text-truncate">Lương cơ bản</th>
+                        <th class="text-truncate">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <h6 class="mb-0 text-truncate">@item.Tenchucvu</h6>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-truncate">@item.Luongcoban</td>
+                            <td>
+                                <a asp-controller="Chucvus" asp-action="Edit" asp-route-id="@item.Tenchucvu" class="btn btn-sm btn-outline-primary">Sửa</a>
+                                <a asp-controller="Chucvus" asp-action="Delete" asp-route-id="@item.Tenchucvu" class="btn btn-sm btn-outline-danger">Xóa</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

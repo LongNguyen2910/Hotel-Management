@@ -5,25 +5,30 @@
     Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
 }
 
-<h1>Delete</h1>
+<<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Xóa thực đơn @Html.DisplayFor(model => model.Ngayapdung)</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Mã thực đơn</dt>
+                <dd class="col-sm-9">@Model?.Mathucdon</dd>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Thucdon</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ngaytao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ngaytao)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Mathucdon" />
-        <input type="hidden" asp-for="Ngayapdung" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+                <dt class="col-sm-3">Ngày áp dụng</dt>
+                <dd class="col-sm-9">@Model?.Ngayapdung</dd>
+
+                <dt class="col-sm-3">Ngày tạo</dt>
+                <dd class="col-sm-9">@Model?.Ngaytao</dd>
+            </dl>
+
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Mathucdon" name="id"/>
+                <input type="hidden" asp-for="Ngayapdung" name="date"/>
+                <button type="submit" class="btn btn-danger">Xóa</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </form>
+        </div>
+    </div>
 </div>

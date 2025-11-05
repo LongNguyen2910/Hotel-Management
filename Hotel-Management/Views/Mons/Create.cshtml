@@ -5,40 +5,40 @@
     Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
 }
 
-<h1>Create</h1>
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Thêm thông tin món ăn</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
 
-<h4>Mon</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Mamon" class="control-label"></label>
-                <input asp-for="Mamon" class="form-control" />
-                <span asp-validation-for="Mamon" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Tenmon" class="control-label"></label>
-                <input asp-for="Tenmon" class="form-control" />
-                <span asp-validation-for="Tenmon" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Gia" class="control-label"></label>
-                <input asp-for="Gia" class="form-control" />
-                <span asp-validation-for="Gia" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label class="form-label">Mã món</label>
+                    <input asp-for="Mamon" class="form-control" type="number" />
+                    <span asp-validation-for="Mamon" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Tên món</label>
+                    <input asp-for="Tenmon" class="form-control" />
+                    <span asp-validation-for="Tenmon" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="control-label">Giá</label>
+                    <input asp-for="Gia" class="form-control" />
+                    <span asp-validation-for="Gia" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Lưu</button>
+                <a asp-action="Index" class="btn btn-secondary">Huỷ</a>
+            </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+

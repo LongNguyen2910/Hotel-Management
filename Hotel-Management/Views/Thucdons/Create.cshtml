@@ -5,40 +5,59 @@
     Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
 }
 
-<h1>Create</h1>
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Thêm thông tin thực đơn</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
 
-<h4>Thucdon</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Mathucdon" class="control-label"></label>
-                <input asp-for="Mathucdon" class="form-control" />
-                <span asp-validation-for="Mathucdon" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Ngayapdung" class="control-label"></label>
-                <input asp-for="Ngayapdung" class="form-control" />
-                <span asp-validation-for="Ngayapdung" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Ngaytao" class="control-label"></label>
-                <input asp-for="Ngaytao" class="form-control" />
-                <span asp-validation-for="Ngaytao" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label class="form-label">Mã thực đơn</label>
+                    <input asp-for="Mathucdon" class="form-control" type="number" />
+                    <span asp-validation-for="Mathucdon" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ngày áp dụng</label>
+                    <input asp-for="Ngayapdung" class="form-control" />
+                    <span asp-validation-for="Ngayapdung" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="control-label">Ngày tạo</label>
+                    <input asp-for="Ngaytao" class="form-control" />
+                    <span asp-validation-for="Ngaytao" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Chọn các món ăn cho thực đơn</label>
+                    <div style="height: 250px; overflow-y: auto; border: 1px solid #ced4da; padding: 10px; border-radius: 0.25rem;">
+
+                        @foreach (var mon in (ViewBag.AllMons as List<Mon>))
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       name="selectedMon"
+                                       value="@mon.Mamon"
+                                       id="mon_@mon.Mamon" />
+
+                                <label class="form-check-label" for="mon_@mon.Mamon">
+                                    @mon.Tenmon
+                                    <small class="text-muted">(@mon.Gia?.ToString("N0") VNĐ)</small>
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Lưu</button>
+                <a asp-action="Index" class="btn btn-secondary">Huỷ</a>
+            </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+

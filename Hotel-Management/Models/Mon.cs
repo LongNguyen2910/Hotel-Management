@@ -10,6 +10,7 @@ public partial class Mon
     public string? Tenmon { get; set; }
 
     public decimal? Gia { get; set; }
+    public string? Anhmon { get; set; }
 
     public virtual ICollection<Khachhangdatmon> Khachhangdatmons { get; set; } = new List<Khachhangdatmon>();
 

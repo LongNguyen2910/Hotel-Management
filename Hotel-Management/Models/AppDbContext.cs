@@ -382,6 +382,10 @@ public partial class AppDbContext : DbContext
 
             entity.ToTable("MON");
 
+            entity.Property(e => e.Anhmon)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("ANHMON");
             entity.Property(e => e.Mamon)
                 .HasMaxLength(10)
                 .IsUnicode(false)
@@ -615,7 +619,7 @@ public partial class AppDbContext : DbContext
 
             entity.HasOne(d => d.ManvNavigation).WithMany(p => p.Nhanvienlamcas)
                 .HasForeignKey(d => d.Manv)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("FK_NVLC_NHANVIEN");
         });
 

@@ -5,75 +5,58 @@
     Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
 }
 
-<div>
-    <h4>Nhanvien</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Hoten)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Hoten)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Gioitinh)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Gioitinh)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ngaysinh)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ngaysinh)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Sodienthoai)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Sodienthoai)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cccd)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cccd)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ngayvaolam)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ngayvaolam)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Trangthai)
-        </dt>
-        <dd class = "col-sm-10">
-            @(Model.Trangthai == 1 ? "Đang làm" : "Nghỉ làm")
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MabophanNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MabophanNavigation.Tenbophan)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TenchucvuNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TenchucvuNavigation.Tenchucvu)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Nhanvienlamcas)
-        </dt>
-        <dd class="col-sm-10">
-            @(Model.Nhanvienlamcas != null && Model.Nhanvienlamcas.Any()
-                        ? Model.Nhanvienlamcas.First().MacalamviecNavigation
-                        : "Không có ca làm việc")
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Manv">Edit</a> <br />
-    <a asp-action="Index">Back to List</a>
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Thông tin nhân viên @Html.DisplayFor(model => model.Hoten)</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Mã nhân viên</dt>
+                <dd class="col-sm-9">@Model?.Manv</dd>
+
+                <dt class="col-sm-3">Tên nhân viên</dt>
+                <dd class="col-sm-9">@Model?.Hoten</dd>
+
+                <dt class="col-sm-3">Giới tính</dt>
+                <dd class="col-sm-9">@Model?.Gioitinh</dd>
+
+                <dt class="col-sm-3">Ngày sinh</dt>
+                <dd class="col-sm-9">@Model?.Ngaysinh</dd>
+
+                <dt class="col-sm-3">Số điện thoại</dt>
+                <dd class="col-sm-9">@Model?.Sodienthoai</dd>
+
+                <dt class="col-sm-3">CCCD</dt>
+                <dd class="col-sm-9">@Model?.Cccd</dd>
+
+                <dt class="col-sm-3">Ngày vào làm</dt>
+                <dd class="col-sm-9">@Model?.Ngayvaolam</dd>
+
+                <dt class="col-sm-3">Trạng thái</dt>
+                <dd class="col-sm-9">@((Model?.Trangthai == 1) ? "Đang làm" : "Nghỉ làm")</dd>
+
+                <dt class="col-sm-3">Bộ phận</dt>
+                <dd class="col-sm-9">@Model?.MabophanNavigation.Tenbophan</dd>
+
+                <dt class="col-sm-3">Chức vụ</dt>
+                <dd class="col-sm-9">@Model?.TenchucvuNavigation.Tenchucvu</dd>
+
+                <dt class="col-sm-3">Ca làm việc</dt>
+                <dd class="col-sm-9">
+                    @(Model.Nhanvienlamcas != null && Model.Nhanvienlamcas.Any()
+                                        ? Model.Nhanvienlamcas.First().MacalamviecNavigation.Macalamviec
+                                        : "Không có ca làm việc")
+                </dd>
+            </dl>
+            
+            <form asp-action="Delete" asp-route-id="@Model.Manv" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xoá nhân viên @Model.Hoten không?');">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Manv" />
+                <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model?.Manv">Sửa</a>
+                <button type="submit" class="btn btn-danger">Xóa</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </form>
+        </div>
+    </div>
 </div>

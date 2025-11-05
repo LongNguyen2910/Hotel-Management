@@ -5,53 +5,59 @@
     Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
 }
 
-<p>
-    <a asp-action="Create" >Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Hoten)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Gioitinh)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ngaysinh)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Sodienthoai)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Manv })" style="cursor: pointer;">
-                <td>
-                    @Html.DisplayFor(modelItem => item.Hoten)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Gioitinh)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Ngaysinh)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Sodienthoai)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Manv">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.Manv">Delete</a>
-                </td>
-            </tr>
-        }
+<div class="col-12">
+    <div class="card overflow-hidden">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Danh sách nhân viên</h5>
+            <div class="d-flex align-items-center">
+                <form asp-action="Index" method="get" class="d-flex me-3">
+                    @* <input name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm kiếm..." />
+                    <button type="submit" class="btn btn-sm btn-outline-primary">Tìm</button> *@
+                    @* @if (!string.IsNullOrWhiteSpace(currentFilter))
+                    {
+                        <a asp-action="Index" class="btn btn-sm btn-link ms-2">Xóa</a>
+                    } *@
+                </form>
+                <a asp-controller="Nhanviens" asp-action="Create" class="btn btn-sm btn-primary">Thêm nhân viên</a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-truncate">Họ và tên</th>
+                        <th class="text-truncate">Giới tính</th>
+                        <th class="text-truncate">Ngày sinh</th>
+                        <th class="text-truncate">Số điện thoại</th>
+                        <th class="text-truncate">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Manv })" style="cursor: pointer;">
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <h6 class="mb-0 text-truncate">@item.Hoten</h6>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-truncate">@item.Gioitinh</td>
+                            <td class="text-truncate">@item.Ngaysinh</td>
+                            <td class="text-truncate">@item.Sodienthoai</td>
+                            <td>
+                                <a asp-controller="Nhanviens" asp-action="Edit" asp-route-id="@item.Manv" class="btn btn-sm btn-outline-primary">Sửa</a>
+                                <a asp-controller="Nhanviens" asp-action="Delete" asp-route-id="@item.Manv" class="btn btn-sm btn-outline-danger">Xóa</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-
-    </tbody>
-</table>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.clickable-row').forEach(function(row) {

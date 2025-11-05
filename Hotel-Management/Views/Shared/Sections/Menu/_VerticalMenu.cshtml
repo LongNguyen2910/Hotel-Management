@@ -121,12 +121,12 @@
                 <div>Quản lý nhà hàng</div>
             </a>
             <ul class="menu-sub">
-                <li class='menu-item@(currentPage == "/Auth/LoginBasic" ? " active" : "")'>
+                <li class='menu-item@(currentPage.StartsWith("/Thucdons") ? " active" : "")'>
                     <a asp-controller="Thucdons" asp-action="Index" class="menu-link">
                         <div>Thực đơn</div>
                     </a>
                 </li>
-                <li class='menu-item@(currentPage == "/Auth/RegisterBasic" ? " active" : "")'>
+                <li class='menu-item@(currentPage.StartsWith("/Mons") ? " active" : "")'>
                     <a asp-controller="Mons" asp-action="Index" class="menu-link">
                         <div>Món ăn</div>
                     </a>
@@ -138,22 +138,22 @@
                 <div>Quản lý nhân sự</div>
             </a>
             <ul class="menu-sub">
-                <li class='menu-item@(currentPage == "/Auth/LoginBasic" ? " active" : "")'>
+                <li class='menu-item@(currentPage.StartsWith("/Nhanviens") ? " active" : "")'>
                     <a asp-controller="Nhanviens" asp-action="Index" class="menu-link">
                         <div>Nhân viên </div>
                     </a>
                 </li>
-                <li class='menu-item@(currentPage == "/Auth/ForgotPasswordBasic" ? " active" : "")'>
+                <li class='menu-item@(currentPage.StartsWith("/Bophans") ? " active" : "")'>
                     <a asp-controller="Bophans" asp-action="Index" class="menu-link">
                         <div>Bộ phận</div>
                     </a>
                 </li>
-                <li class='menu-item@(currentPage == "/Auth/ForgotPasswordBasic" ? " active" : "")'>
+                <li class='menu-item@(currentPage.StartsWith("/Chucvus") ? " active" : "")'>
                     <a asp-controller="Chucvus" asp-action="Index" class="menu-link">
                         <div>Chức vụ</div>
                     </a>
                 </li>
-                <li class='menu-item@(currentPage == "/Auth/ForgotPasswordBasic" ? " active" : "")'>
+                <li class='menu-item@(currentPage.StartsWith("/Calamviecs") ? " active" : "")'>
                     <a asp-controller="Calamviecs" asp-action="Index" class="menu-link">
                         <div>Ca làm việc</div>
                     </a>

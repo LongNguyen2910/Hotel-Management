@@ -28,6 +28,18 @@
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center">
+                                    @if (!string.IsNullOrEmpty(item.Anhmon))
+                                    {
+                                        <img src="@Url.Action("GetImage", "Mons", new { id = item.Mamon })"
+                                             alt="@item.Tenmon"
+                                             class="rounded"
+                                             style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;" />
+                                    }
+                                    else
+                                    {
+                                        <div class="rounded"
+                                             style="width: 50px; height: 50px; background-color: #eee; margin-right: 10px;"></div>
+                                    }
                                     <div>
                                         <h6 class="mb-0 text-truncate">@item.Tenmon</h6>
                                     </div>

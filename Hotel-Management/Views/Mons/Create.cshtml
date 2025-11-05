@@ -11,7 +11,7 @@
             <h5 class="mb-0">Thêm thông tin món ăn</h5>
         </div>
         <div class="card-body">
-            <form asp-action="Create" method="post">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
 
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
@@ -30,6 +30,10 @@
                     <label class="control-label">Giá</label>
                     <input asp-for="Gia" class="form-control" />
                     <span asp-validation-for="Gia" class="text-danger"></span>
+                </div>
+                <div class="mb-6">
+                    <label for="formFile" class="form-label">Ảnh món</label>
+                    <input class="form-control" type="file" id="formFile" name="AnhFile" />
                 </div>
                 <button type="submit" class="btn btn-primary">Lưu</button>
                 <a asp-action="Index" class="btn btn-secondary">Huỷ</a>

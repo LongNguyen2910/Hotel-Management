@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Hotel_Management.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Hotel_Management.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Hotel_Management.Controllers
 {
@@ -59,7 +60,7 @@ namespace Hotel_Management.Controllers
         // GET: NhanVien/Create
         public IActionResult Create()
         {
-            ViewData["Mabophan"] = new SelectList(_context.Bophans, "Mabophan", "Mabophan");
+            ViewData["Mabophan"] = new SelectList(_context.Bophans, "Mabophan", "Tenbophan");
             ViewData["Tenchucvu"] = new SelectList(_context.Chucvus, "Tenchucvu", "Tenchucvu");
             ViewData["Calamviec"] = new SelectList(_context.Calamviecs,"Macalamviec","Macalamviec");
             ViewData["Trangthai"] = new SelectList(new List<SelectListItem>
@@ -76,20 +77,22 @@ namespace Hotel_Management.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("Manv,Hoten,Gioitinh,Ngaysinh,Sodienthoai,Cccd,Ngayvaolam,Trangthai,Mabophan,Tenchucvu,Nhanvienlamcas")] Nhanvien nhanvien)
+            [Bind("Manv,Hoten,Gioitinh,Ngaysinh,Sodienthoai,Cccd,Ngayvaolam,Trangthai,Mabophan,Tenchucvu,Nhanvienlamcas")] 
+            Nhanvien nhanvien, string SelectedCalamviec)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(nhanvien);
-                //if (SelectedCalamviec > 0)
-                //{
-                //    var nhanvienlamca = new Data.Nhanvienlamca
-                //    {
-                //        Manv = nhanvien.Manv,
-                //        Macalamviec = SelectedCalamviec.ToString()
-                //    };
-                //    _context.Nhanvienlamcas.Add(nhanvienlamca);
-                //}
+                if (!string.IsNullOrEmpty(SelectedCalamviec))
+                {
+                    
+                    var nhanvienlamca = new Nhanvienlamca
+                    {
+                        Manv = nhanvien.Manv, 
+                        Macalamviec = SelectedCalamviec 
+                    };
+                    _context.Nhanvienlamcas.Add(nhanvienlamca); 
+                }
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -116,19 +119,24 @@ namespace Hotel_Management.Controllers
                 return NotFound();
             }
 
-            var nhanvien = await _context.Nhanviens.FindAsync(id);
+            var nhanvien = await _context.Nhanviens
+                .Include(n => n.Nhanvienlamcas) 
+                .FirstOrDefaultAsync(n => n.Manv == id);
             if (nhanvien == null)
             {
                 return NotFound();
             }
             ViewData["Mabophan"] = new SelectList(_context.Bophans, "Mabophan", "Mabophan", nhanvien.Mabophan);
             ViewData["Tenchucvu"] = new SelectList(_context.Chucvus, "Tenchucvu", "Tenchucvu", nhanvien.Tenchucvu);
+
+            string? currentShift = nhanvien.Nhanvienlamcas?.FirstOrDefault()?.Macalamviec;
+
             ViewData["Calamviec"] = new SelectList(_context.Calamviecs, "Macalamviec", "Macalamviec");
             ViewData["Calamviec"] = new SelectList(
                _context.Calamviecs,
                "Macalamviec",
                "Macalamviec",
-               nhanvien.Nhanvienlamcas?.FirstOrDefault());
+               currentShift);
             ViewBag.Trangthai = new List<SelectListItem>()
             {
                 new SelectListItem { Text = "Nghỉ việc", Value = "0" },
@@ -142,7 +150,9 @@ namespace Hotel_Management.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Manv,Hoten,Gioitinh,Ngaysinh,Sodienthoai,Cccd,Ngayvaolam,Trangthai,Mabophan,Tenchucvu,Nhanvienlamcas")] Nhanvien nhanvien)
+        public async Task<IActionResult> Edit(string id, 
+            [Bind("Manv,Hoten,Gioitinh,Ngaysinh,Sodienthoai,Cccd,Ngayvaolam,Trangthai,Mabophan,Tenchucvu,Nhanvienlamcas")] 
+            Nhanvien nhanvien, string SelectedCalamviec)
         {
             if (id != nhanvien.Manv)
             {
@@ -153,6 +163,34 @@ namespace Hotel_Management.Controllers
             {
                 try
                 {
+                    // Tìm ca làm việc hiện tại của nhân viên
+                    var existingAssignment = await _context.Nhanvienlamcas
+                        .FirstOrDefaultAsync(nlc => nlc.Manv == nhanvien.Manv);
+
+                    // Xử lý ca làm việc được chọn
+                    if (!string.IsNullOrEmpty(SelectedCalamviec))
+                    {
+                        if (existingAssignment != null)
+                        {
+                            // Nếu đã có -> Cập nhật
+                            existingAssignment.Macalamviec = SelectedCalamviec;
+                        }
+                        else
+                        {
+                            // Nếu chưa có -> Tạo mới
+                            var newAssignment = new Nhanvienlamca
+                            {
+                                Manv = nhanvien.Manv,
+                                Macalamviec = SelectedCalamviec
+                            };
+                            _context.Nhanvienlamcas.Add(newAssignment);
+                        }
+                    }
+                    else if (existingAssignment != null)
+                    {
+                        // Nếu người dùng bỏ chọn (chọn "Không chọn ca") -> Xóa
+                        _context.Nhanvienlamcas.Remove(existingAssignment);
+                    }
                     _context.Update(nhanvien);
                     await _context.SaveChangesAsync();
                 }
@@ -213,9 +251,11 @@ namespace Hotel_Management.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var nhanvien = await _context.Nhanviens.FindAsync(id);
+            var nhanvienlamcas = _context.Nhanvienlamcas.Where(nlc => nlc.Manv == id); 
             if (nhanvien != null)
             {
                 _context.Nhanviens.Remove(nhanvien);
+                _context.Nhanvienlamcas.RemoveRange(nhanvienlamcas);
             }
 
             await _context.SaveChangesAsync();

@@ -5,43 +5,45 @@
     Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Macalamviec)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Thoigianbatdau)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Thoigianketthuc)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @(item.Macalamviec)
-            </td>
-            <td>
-                @(item.Thoigianbatdau)
-            </td>
-            <td>
-                @(item.Thoigianketthuc)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Macalamviec">Edit</a> 
-                <a asp-action="Delete" asp-route-id="@item.Macalamviec">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="col-12">
+    <div class="card overflow-hidden">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Danh sách ca làm việc</h5>
+            <div class="d-flex align-items-center">
+                <a asp-controller="Calamviecs" asp-action="Create" class="btn btn-sm btn-primary">Thêm ca làm việc</a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-truncate">Tên ca làm việc</th>
+                        <th class="text-truncate">Thời gian bắt đầu</th>
+                        <th class="text-truncate">Thời gian kết thúc</th>
+                        <th class="text-truncate">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div>
+                                        <h6 class="mb-0 text-truncate">@item.Macalamviec</h6>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-truncate">@item.Thoigianbatdau</td>
+                            <td class="text-truncate">@item.Thoigianketthuc</td>
+                            <td>
+                                <a asp-controller="Calamviecs" asp-action="Edit" asp-route-id="@item.Macalamviec" class="btn btn-sm btn-outline-primary">Sửa</a>
+                                <a asp-controller="Calamviecs" asp-action="Delete" asp-route-id="@item.Macalamviec" class="btn btn-sm btn-outline-danger">Xóa</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

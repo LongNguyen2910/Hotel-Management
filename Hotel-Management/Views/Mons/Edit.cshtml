@@ -5,36 +5,55 @@
     Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Sửa thông tin món @(Model.Tenmon)</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
 
-<h4>Mon</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Mamon" />
-            <div class="form-group">
-                <label asp-for="Tenmon" class="control-label"></label>
-                <input asp-for="Tenmon" class="form-control" />
-                <span asp-validation-for="Tenmon" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Gia" class="control-label"></label>
-                <input asp-for="Gia" class="form-control" />
-                <span asp-validation-for="Gia" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="Mamon"/>
+                <div class="mb-3">
+                    <label class="form-label">Tên món</label>
+                    <input asp-for="Tenmon" class="form-control" />
+                    <span asp-validation-for="Tenmon" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="control-label">Giá</label>
+                    <input asp-for="Gia" class="form-control" />
+                    <span asp-validation-for="Gia" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ảnh hiện tại</label>
+                    @if (!string.IsNullOrEmpty(Model.Anhmon))
+                    {
+                        <div>
+                            <img src="@Url.Action("GetImage", "Mons", new { id = Model.Mamon })"
+                                 alt="@Model.Tenmon" class="img-thumbnail" style="max-width: 200px;" />
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Chưa có ảnh</p>
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <label for="formFile" class="form-label">Tải ảnh mới (để trống nếu không muốn thay đổi)</label>
+                    <input class="form-control" type="file" id="formFile" name="AnhFile" />
+                </div>
+                <button type="submit" class="btn btn-primary">Lưu</button>
+                <a asp-action="Index" class="btn btn-secondary">Huỷ</a>
+            </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+
+

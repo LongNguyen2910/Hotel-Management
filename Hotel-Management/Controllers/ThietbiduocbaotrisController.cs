@@ -49,7 +49,18 @@ namespace Hotel_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Ngaybatdau,Ngayketthuc,Mathietbi")] Thietbiduocbaotri entity)
         {
-            // log modelstate errors for debugging
+            ModelState.Remove(nameof(entity.Baotri));
+            ModelState.Remove("Baotri");
+
+            if (entity.Mathietbi == 0)
+            {
+                ModelState.AddModelError(nameof(entity.Mathietbi), "Vui lòng chọn thiết bị.");
+            }
+            if (entity.Ngayketthuc < entity.Ngaybatdau)
+            {
+                ModelState.AddModelError(nameof(entity.Ngayketthuc), "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.");
+            }
+
             if (!ModelState.IsValid)
             {
                 foreach (var kv in ModelState)
@@ -63,15 +74,6 @@ namespace Hotel_Management.Controllers
                 return View(entity);
             }
 
-            // end date must be >= start date
-            if (entity.Ngayketthuc < entity.Ngaybatdau)
-            {
-                ModelState.AddModelError(nameof(entity.Ngayketthuc), "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.");
-                await PopulateThietbiSelectListAsync(entity.Mathietbi);
-                return View(entity);
-            }
-
-          
             var tb = await _context.Thietbis.FindAsync(entity.Mathietbi);
             if (tb == null)
             {
@@ -82,7 +84,6 @@ namespace Hotel_Management.Controllers
 
             try
             {
-                
                 var existingBaotri = await _context.Baotris.FindAsync(entity.Ngaybatdau, entity.Ngayketthuc);
                 if (existingBaotri == null)
                 {
@@ -96,7 +97,7 @@ namespace Hotel_Management.Controllers
                     _context.Baotris.Add(newBaotri);
                 }
 
-                _context.Thietbiduocbaotris.Add(entity);
+                _context.Add(entity);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));

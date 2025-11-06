@@ -12,50 +12,77 @@
         </div>
         <div class="card-body">
             <dl class="row">
-                <dt class="col-sm-3">Mã nhân viên</dt>
-                <dd class="col-sm-9">@Model?.Manv</dd>
+                <div class="col-md-4 text-center">
+                    @if (!string.IsNullOrEmpty(Model.Anhnv))
+                    {
+                        <img src="@Url.Action("GetImage", "Nhanviens", new { id = Model.Manv })"
+                             alt="@Model.Hoten"
+                             class="rounded"
+                             style="width: 250px; height: 250px; object-fit: cover; margin-right: 10px;" />
+                    }
+                    else
+                    {
+                        <div class="rounded"
+                             style="width: 250px; height: 250px; background-color: #eee; margin-right: 10px;"></div>
+                    }
+                </div>
+                    <div class="col-md-8">
+                    <dt class="col-sm-3">Mã nhân viên</dt>
+                    <dd class="col-sm-9">@Model?.Manv</dd>
 
-                <dt class="col-sm-3">Tên nhân viên</dt>
-                <dd class="col-sm-9">@Model?.Hoten</dd>
+                    <dt class="col-sm-3">Tên nhân viên</dt>
+                    <dd class="col-sm-9">@Model?.Hoten</dd>
 
-                <dt class="col-sm-3">Giới tính</dt>
-                <dd class="col-sm-9">@Model?.Gioitinh</dd>
+                    <dt class="col-sm-3">Giới tính</dt>
+                    <dd class="col-sm-9">@Model?.Gioitinh</dd>
 
-                <dt class="col-sm-3">Ngày sinh</dt>
-                <dd class="col-sm-9">@Model?.Ngaysinh</dd>
+                    <dt class="col-sm-3">Ngày sinh</dt>
+                    <dd class="col-sm-9">@Model?.Ngaysinh</dd>
 
-                <dt class="col-sm-3">Số điện thoại</dt>
-                <dd class="col-sm-9">@Model?.Sodienthoai</dd>
+                    <dt class="col-sm-3">Số điện thoại</dt>
+                    <dd class="col-sm-9">@Model?.Sodienthoai</dd>
 
-                <dt class="col-sm-3">CCCD</dt>
-                <dd class="col-sm-9">@Model?.Cccd</dd>
+                    <dt class="col-sm-3">CCCD</dt>
+                    <dd class="col-sm-9">@Model?.Cccd</dd>
 
-                <dt class="col-sm-3">Ngày vào làm</dt>
-                <dd class="col-sm-9">@Model?.Ngayvaolam</dd>
+                    <dt class="col-sm-3">Ngày vào làm</dt>
+                    <dd class="col-sm-9">@Model?.Ngayvaolam</dd>
 
-                <dt class="col-sm-3">Trạng thái</dt>
-                <dd class="col-sm-9">@((Model?.Trangthai == 1) ? "Đang làm" : "Nghỉ làm")</dd>
+                    <dt class="col-sm-3">Trạng thái</dt>
+                    <dd class="col-sm-9">@((Model?.Trangthai == 1) ? "Đang làm" : "Nghỉ làm")</dd>
 
-                <dt class="col-sm-3">Bộ phận</dt>
-                <dd class="col-sm-9">@Model?.MabophanNavigation.Tenbophan</dd>
+                    <dt class="col-sm-3">Bộ phận</dt>
+                    <dd class="col-sm-9">@(Model?.MabophanNavigation?.Tenbophan ?? "Chưa phân công")</dd>
 
-                <dt class="col-sm-3">Chức vụ</dt>
-                <dd class="col-sm-9">@Model?.TenchucvuNavigation.Tenchucvu</dd>
+                    <dt class="col-sm-3">Chức vụ</dt>
+                    <dd class="col-sm-9">@(Model?.TenchucvuNavigation?.Tenchucvu ?? "Chưa có chức vụ")</dd>
 
-                <dt class="col-sm-3">Ca làm việc</dt>
-                <dd class="col-sm-9">
-                    @(Model.Nhanvienlamcas != null && Model.Nhanvienlamcas.Any()
-                                        ? Model.Nhanvienlamcas.First().MacalamviecNavigation.Macalamviec
-                                        : "Không có ca làm việc")
-                </dd>
+                    <dt class="col-sm-3">Ca làm việc</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.Nhanvienlamcas != null && Model.Nhanvienlamcas.Any())
+                        {
+                            <ul class="list-unstyled mb-0">
+                                @foreach (var ca in Model.Nhanvienlamcas)
+                                {
+                                    <li>@ca.MacalamviecNavigation.Macalamviec (@ca.MacalamviecNavigation.Thoigianbatdau - @ca.MacalamviecNavigation.Thoigianketthuc)</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Chưa được phân ca</span>
+                        }
+                    </dd>
+                    <form asp-action="Delete" method="post" class="text-start">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Manv" />
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+                    </form>
+                </div>
             </dl>
 
-            <form asp-action="Delete" method="post">
-                @Html.AntiForgeryToken()
-                <input type="hidden" asp-for="Manv" />
-                <button type="submit" class="btn btn-danger">Xóa</button>
-                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-            </form>
+            
         </div>
     </div>
 </div>

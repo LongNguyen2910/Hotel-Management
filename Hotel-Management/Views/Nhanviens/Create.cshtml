@@ -10,7 +10,7 @@
             <h5 class="mb-0">Thêm thông tin nhân viên</h5>
         </div>
         <div class="card-body">
-            <form asp-action="Create" method="post">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
 
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
@@ -65,9 +65,29 @@
                     <label class="control-label">Tên chức vụ</label>
                     <select asp-for="Tenchucvu" class="form-control" asp-items="ViewBag.Tenchucvu"></select>
                 </div>
-                <div class="mb-3">
-                    <label  class="control-label">Ca làm việc</label>
-                    <select name="SelectedCalamviec" asp-for="Nhanvienlamcas" id="calamviec-select" class="form-control" asp-items="ViewBag.Calamviec"></select>
+                <<div class="mb-3">
+                    <label class="form-label">Chọn ca làm việc</label>
+                    <div>
+                        @if (ViewBag.AllCalamviecs != null)
+                        {
+                            foreach (var ca in (List<Hotel_Management.Models.Calamviec>)ViewBag.AllCalamviecs)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox"
+                                           name="selectedCalamviec"
+                                           value="@ca.Macalamviec"
+                                           id="ca_@ca.Macalamviec">
+                                    <label class="form-check-label" for="ca_@ca.Macalamviec">
+                                        @ca.Macalamviec (@ca.Thoigianbatdau - @ca.Thoigianketthuc)
+                                    </label>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label for="formFile" class="form-label">Ảnh nhân viên</label>
+                    <input class="form-control" type="file" id="formFile" name="AnhFile" />
                 </div>
                 <button type="submit" class="btn btn-primary">Lưu</button>
                 <a asp-action="Index" class="btn btn-secondary">Huỷ</a>
@@ -75,11 +95,6 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.getElementById('calamviec-select').removeAttribute('multiple');
-    document.getElementById('calamviec-select').setAttribute('size', '1');
-</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -5,24 +5,27 @@
     Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
 }
 
-<h1>Delete</h1>
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Xóa chức vụ @Html.DisplayFor(model => model.Tenchucvu)</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Tên chức vụ</dt>
+                <dd class="col-sm-9">@Model?.Tenchucvu</dd>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Chucvu</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Luongcoban)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Luongcoban)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Tenchucvu" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+                <dt class="col-sm-3">Lương cơ bản</dt>
+                <dd class="col-sm-9">@Model?.Luongcoban</dd>
+
+            </dl>
+
+            <form asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Tenchucvu" />
+                <button type="submit" class="btn btn-danger">Xóa</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </form>
+        </div>
+    </div>
 </div>

@@ -7,22 +7,26 @@ namespace Hotel_Management.Models;
 public partial class Nhanvien
 {
     [Display(Name = "Mã nhân viên")]
-    public string Manv { get; set; } = null!;
+    [Required(ErrorMessage = "Mã nhân viên không được để trống")]
+    public string? Manv { get; set; }
     [Display(Name = "Họ và tên")]
     public string? Hoten { get; set; }
     [Display(Name = "Giới tính")]
     public string? Gioitinh { get; set; }
     [Display(Name = "Ngày sinh")]
+
     public DateTime? Ngaysinh { get; set; }
     [Display(Name = "Số điện thoại")]
+
     public string? Sodienthoai { get; set; }
-    
+
     public string? Cccd { get; set; }
     [Display(Name = "Ngày vào làm")]
+
     public DateTime? Ngayvaolam { get; set; }
     [Display(Name = "Trạng thái")]
     public byte? Trangthai { get; set; }
-    
+    public string? Anhnv { get; set; }
     public string? Mabophan { get; set; }
     
     public string? Tenchucvu { get; set; }

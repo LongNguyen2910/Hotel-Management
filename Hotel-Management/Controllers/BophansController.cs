@@ -24,24 +24,6 @@ namespace Hotel_Management.Controllers
             return View(await _context.Bophans.ToListAsync());
         }
 
-        // GET: Bophans/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var bophan = await _context.Bophans
-                .FirstOrDefaultAsync(m => m.Mabophan == id);
-            if (bophan == null)
-            {
-                return NotFound();
-            }
-
-            return View(bophan);
-        }
-
         // GET: Bophans/Create
         public IActionResult Create()
         {
@@ -55,6 +37,11 @@ namespace Hotel_Management.Controllers
         [ValidateAntiForgeryToken] 
         public async Task<IActionResult> Create([Bind("Mabophan,Tenbophan,Ngaythanhlap")] Bophan bophan)
         {
+            if (BophanExists(bophan.Mabophan))
+            {
+                ModelState.AddModelError("Mabophan", "Tên bộ phận đã tồn tại.");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(bophan);
@@ -138,9 +125,12 @@ namespace Hotel_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var bophan = await _context.Bophans.FindAsync(id);
+            var bophan = await _context.Bophans
+                .Include(bp => bp.Nhanviens)
+                .FirstOrDefaultAsync(m => m.Mabophan == id);
             if (bophan != null)
             {
+                bophan.Nhanviens.Clear();
                 _context.Bophans.Remove(bophan);
             }
 
@@ -150,7 +140,7 @@ namespace Hotel_Management.Controllers
 
         private bool BophanExists(string id)
         {
-            return _context.Bophans.Any(e => e.Mabophan == id);
+            return _context.Bophans.Where(e => e.Mabophan == id).Count() > 0;
         }
     }
 }

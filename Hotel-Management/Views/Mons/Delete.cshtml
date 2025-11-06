@@ -12,22 +12,39 @@
         </div>
         <div class="card-body">
             <dl class="row">
-                <dt class="col-sm-3">Mã món</dt>
-                <dd class="col-sm-9">@Model?.Mamon</dd>
+                <div class="col-md-4 text-center">
+                    @if (!string.IsNullOrEmpty(Model.Anhmon))
+                    {
+                        <img src="@Url.Action("GetImage", "Mons", new { id = Model.Mamon })"
+                             alt="@Model.Tenmon"
+                             class="rounded"
+                             style="width: 250px; height: 250px; object-fit: cover; margin-right: 10px;" />
+                    }
+                    else
+                    {
+                        <div class="rounded"
+                             style="width: 250px; height: 250px; background-color: #eee; margin-right: 10px;"></div>
+                    }
+                </div>
+                <div class="col-md-8">
+                    <dt class="col-sm-3">Mã món</dt>
+                    <dd class="col-sm-9">@Model?.Mamon</dd>
 
-                <dt class="col-sm-3">Tên món</dt>
-                <dd class="col-sm-9">@Model?.Tenmon</dd>
+                    <dt class="col-sm-3">Tên món</dt>
+                    <dd class="col-sm-9">@Model?.Tenmon</dd>
 
-                <dt class="col-sm-3">Giá</dt>
-                <dd class="col-sm-9">@Model?.Gia</dd>
+                    <dt class="col-sm-3">Giá</dt>
+                    <dd class="col-sm-9">@Model?.Gia</dd>
+                    <form asp-action="Delete" method="post" class="text-start">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Mamon" />
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                        <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+                    </form>
+                </div>
             </dl>
 
-            <form asp-action="Delete" method="post">
-                @Html.AntiForgeryToken()
-                <input type="hidden" asp-for="Mamon" />
-                <button type="submit" class="btn btn-danger">Xóa</button>
-                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
-            </form>
+            
         </div>
     </div>
 </div>

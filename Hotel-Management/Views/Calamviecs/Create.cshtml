@@ -8,7 +8,7 @@
 <<div class="col-12">
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">Thêm thông tin nhân viên</h5>
+            <h5 class="mb-0">Thêm thông tin ca làm việc</h5>
         </div>
         <div class="card-body">
             <form asp-action="Create" method="post">
@@ -18,7 +18,7 @@
 
                 <div class="mb-3">
                     <label class="form-label">Tên ca làm việc</label>
-                    <input asp-for="Macalamviec" class="form-control" type="number" />
+                    <input asp-for="Macalamviec" class="form-control" />
                     <span asp-validation-for="Macalamviec" class="text-danger"></span>
                 </div>
                 <div class="mb-3">

@@ -13,7 +13,7 @@
         <div class="card-body">
             <form asp-action="Edit" 
                 asp-route-id="@Model.Mathucdon"
-                  asp-route-date="@Model.Ngayapdung.ToString("o")"
+                  asp-route-date="@Model.Ngayapdung?.ToString("o")"
                   method="post">
                 @Html.AntiForgeryToken()
 
@@ -27,7 +27,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Chọn các món ăn cho thực đơn</label>
-                    <div style="height: 250px; overflow-y: auto; border: 1px solid #ced4da; padding: 10px; border-radius: 0.25rem;">
+                    <div>
                         @{
                             // Lấy Set các ID đã chọn từ ViewBag
                             var selectedIds = ViewBag.SelectedMonIds as HashSet<string>;

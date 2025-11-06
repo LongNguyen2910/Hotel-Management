@@ -24,23 +24,6 @@ namespace Hotel_Management.Controllers
             return View(await _context.Chucvus.ToListAsync());
         }
 
-        // GET: Chucvus/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var chucvu = await _context.Chucvus
-                .FirstOrDefaultAsync(m => m.Tenchucvu == id);
-            if (chucvu == null)
-            {
-                return NotFound();
-            }
-
-            return View(chucvu);
-        }
 
         // GET: Chucvus/Create
         public IActionResult Create()
@@ -55,6 +38,10 @@ namespace Hotel_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Tenchucvu,Luongcoban")] Chucvu chucvu)
         {
+            if (ChucvuExists(chucvu.Tenchucvu) )
+            {
+                ModelState.AddModelError("Tenchucvu", "Chức vụ đã tồn tại.");
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(chucvu);
@@ -138,9 +125,12 @@ namespace Hotel_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var chucvu = await _context.Chucvus.FindAsync(id);
+            var chucvu = await _context.Chucvus
+                .Include(cv => cv.Nhanviens)
+                .FirstOrDefaultAsync(nv => nv.Tenchucvu == id);
             if (chucvu != null)
             {
+                chucvu.Nhanviens.Clear(); 
                 _context.Chucvus.Remove(chucvu);
             }
 
@@ -150,7 +140,7 @@ namespace Hotel_Management.Controllers
 
         private bool ChucvuExists(string id)
         {
-            return _context.Chucvus.Any(e => e.Tenchucvu == id);
+            return _context.Chucvus.Where(e => e.Tenchucvu == id).Count() > 0;
         }
     }
 }

@@ -61,6 +61,7 @@ namespace Hotel_Management.Controllers
                 .Include(p => p.MaloaiphongNavigation)
                 .FirstOrDefault(p => p.Maphong == maphong);
             ViewBag.Phong = phong;
+            ViewBag.Maphong = maphong;
             return View();
         }
 
@@ -72,12 +73,24 @@ namespace Hotel_Management.Controllers
         public async Task<IActionResult> Create([Bind("Hoten,Quoctich,Cccd,Sdt,Hochieu")] Khachhang khachhang, string? maphong)
         {
             if (!ModelState.IsValid)
+            {
+                // nạp lại để view hiển thị khi lỗi
+                ViewBag.Phong = _context.Phongs
+                    .AsNoTracking()
+                    .Include(p => p.MaloaiphongNavigation)
+                    .FirstOrDefault(p => p.Maphong == maphong);
+                ViewBag.Maphong = maphong;
                 return View(khachhang);
-
+            }
             // Check CCCD trùng
             if (_context.Khachhangs.Count(k => k.Cccd == khachhang.Cccd) > 0)
             {
                 ModelState.AddModelError("Cccd", "CCCD này đã tồn tại.");
+                ViewBag.Phong = _context.Phongs
+                    .AsNoTracking()
+                    .Include(p => p.MaloaiphongNavigation)
+                    .FirstOrDefault(p => p.Maphong == maphong);
+                ViewBag.Maphong = maphong;
                 return View(khachhang);
             }
 

@@ -24,11 +24,7 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Chucvu> Chucvus { get; set; }
 
-    public virtual DbSet<Dichvu> Dichvus { get; set; }
-
     public virtual DbSet<Hoadon> Hoadons { get; set; }
-
-    public virtual DbSet<Hoadondichvu> Hoadondichvus { get; set; }
 
     public virtual DbSet<Khachhang> Khachhangs { get; set; }
 
@@ -144,28 +140,6 @@ public partial class AppDbContext : DbContext
                 .HasColumnName("LUONGCOBAN");
         });
 
-        modelBuilder.Entity<Dichvu>(entity =>
-        {
-            entity.HasKey(e => e.Madichvu).HasName("SYS_C007709");
-
-            entity.ToTable("DICHVU");
-
-            entity.Property(e => e.Madichvu)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("MADICHVU");
-            entity.Property(e => e.Gia)
-                .HasColumnType("NUMBER(12,3)")
-                .HasColumnName("GIA");
-            entity.Property(e => e.Tendichvu)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("TENDICHVU");
-            entity.Property(e => e.Trangthai)
-                .HasColumnType("NUMBER(1)")
-                .HasColumnName("TRANGTHAI");
-        });
-
         modelBuilder.Entity<Hoadon>(entity =>
         {
             entity.HasKey(e => e.Mahoadon).HasName("SYS_C007715");
@@ -176,9 +150,6 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("MAHOADON");
-            entity.Property(e => e.Giadichvu)
-                .HasColumnType("NUMBER(12,3)")
-                .HasColumnName("GIADICHVU");
             entity.Property(e => e.Giamon)
                 .HasColumnType("NUMBER(12,3)")
                 .HasColumnName("GIAMON");
@@ -207,39 +178,6 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.Manv)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_HOADON_NHANVIEN");
-        });
-
-        modelBuilder.Entity<Hoadondichvu>(entity =>
-        {
-            entity.HasKey(e => new { e.Mahoadon, e.Madichvu }).HasName("SYS_C007719");
-
-            entity.ToTable("HOADONDICHVU");
-
-            entity.Property(e => e.Mahoadon)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("MAHOADON");
-            entity.Property(e => e.Madichvu)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("MADICHVU");
-            entity.Property(e => e.Ngaydat)
-                .HasColumnType("DATE")
-                .HasColumnName("NGAYDAT");
-            entity.Property(e => e.Soluong)
-                .HasPrecision(3)
-                .HasDefaultValueSql("1")
-                .HasColumnName("SOLUONG");
-
-            entity.HasOne(d => d.MadichvuNavigation).WithMany(p => p.Hoadondichvus)
-                .HasForeignKey(d => d.Madichvu)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_HDDV_DICHVU");
-
-            entity.HasOne(d => d.MahoadonNavigation).WithMany(p => p.Hoadondichvus)
-                .HasForeignKey(d => d.Mahoadon)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_HDDV_HOADON");
         });
 
         modelBuilder.Entity<Khachhang>(entity =>

@@ -15,7 +15,7 @@
             {
                 <div class="alert alert-info">
                     Đang thêm khách hàng cho phòng: <strong>@ViewBag.Phong.MaloaiphongNavigation.Tenloaiphong - @ViewBag.Phong.Tenphong</strong> (Mã phòng: @ViewBag.Phong.Maphong)
-                    <input type="hidden" name="maphong" value="@ViewBag.Phong.Maphong" />
+                    <input type="hidden" name="maphong" value="@ViewBag.Maphong" />
                 </div>
             }
 
@@ -53,7 +53,13 @@
 
             <div class="form-group text-center mt-4">
                 <button type="submit" class="btn btn-primary px-4">Lưu</button>
-                <a asp-action="Index" class="btn btn-secondary px-4 ms-2">Quay lại</a>
+                @if (@ViewBag.Phong != null)
+                {
+                    <a asp-controller="Datphongs" asp-action="Index" class="btn btn-secondary px-4 ms-2">Quay lại</a>
+                } else
+                {
+                    <a asp-action="Index" class="btn btn-secondary px-4 ms-2">Quay lại</a>
+                }
             </div>
         </form>
     </div>

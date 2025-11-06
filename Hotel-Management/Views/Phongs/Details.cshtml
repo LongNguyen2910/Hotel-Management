@@ -1,49 +1,56 @@
 ﻿@model Hotel_Management.Models.Phong
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Thông tin phòng";
 }
 
-<h1>Details</h1>
+<div class="row justify-content-center">
+    <div class="col-xl-8 col-lg-9">
+        <div class="card">
+            <!-- Ảnh phía trên -->
+            <img class="card-img-top"
+                 src="@Url.Action("GetImage", "Phongs", new { id = Model.Maphong })"
+                 alt="Ảnh phòng @Model.Maphong" />
 
-<div>
-    <h4>Phong</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Tenphong)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Tenphong)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Tinhtrang)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Tinhtrang)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Mota)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Mota)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Anhphong)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Anhphong)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MaloaiphongNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MaloaiphongNavigation.Maloaiphong)
-        </dd>
-        <img src="@Url.Action("GetImage", "Phongs", new { id = Model.Maphong })" width="200" height="200" alt="Ảnh phòng" />
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Maphong">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+            <!-- Thông tin phía dưới -->
+            <div class="card-body">
+                <div class="d-flex align-items-start justify-content-between mb-3">
+                    <div>
+                        <h4 class="mb-1">@Model.Tenphong</h4>
+                        <div class="text-muted">Mã phòng: <strong>@Model.Maphong</strong></div>
+                    </div>
+                    <div>
+                        @if (Model.Tinhtrang)
+                        {
+                            <div class="text-truncate">
+                                <span class="badge bg-label-success rounded-pill">Sẵn sàng</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-truncate">
+                                <span class="badge bg-label-secondary rounded-pill">Không sẵn sàng</span>
+                            </div>  
+                        }
+                    </div>
+                </div>
+
+                <hr />
+
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Loại phòng</dt>
+                    <dd class="col-sm-8">@Model.MaloaiphongNavigation?.Tenloaiphong (@Model.Maloaiphong)</dd>
+
+                    <dt class="col-sm-4">Mô tả</dt>
+                    <dd class="col-sm-8">@Model.Mota</dd>
+
+                </dl>
+
+                <div class="mt-4">
+                    <a asp-action="Edit" asp-route-id="@Model.Maphong" class="btn btn-primary me-2">Sửa</a>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Quay lại</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

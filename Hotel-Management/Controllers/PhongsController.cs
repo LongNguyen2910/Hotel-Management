@@ -83,7 +83,7 @@ namespace Hotel_Management.Controllers
             {
                 if (AnhFile != null && AnhFile.Length > 0)
                 {
-                    // Thư mục lưu ảnh ngoài wwwroot
+                    
                     var folderPath = Path.Combine(_env.ContentRootPath, "App_Data", "Uploads", "Phong");
                     Directory.CreateDirectory(folderPath);
 
@@ -135,7 +135,7 @@ namespace Hotel_Management.Controllers
             {
                 return NotFound();
             }
-            ViewData["Maloaiphong"] = new SelectList(_context.Loaiphongs, "Maloaiphong", "Maloaiphong", phong.Maloaiphong);
+            ViewData["Maloaiphong"] = new SelectList(_context.Loaiphongs, "Maloaiphong", "Tenloaiphong", phong.Maloaiphong);
             return View(phong);
         }
 
@@ -144,35 +144,79 @@ namespace Hotel_Management.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Maphong,Tenphong,Tinhtrang,Mota,Maloaiphong,Anhphong")] Phong phong)
+        public async Task<IActionResult> Edit(string id, [Bind("Maphong,Tenphong,Tinhtrang,Mota,Maloaiphong,Anhphong")] Phong phong, IFormFile? AnhFile)
         {
             if (id != phong.Maphong)
-            {
                 return NotFound();
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["Maloaiphong"] = new SelectList(_context.Loaiphongs, "Maloaiphong", "Tenloaiphong", phong.Maloaiphong);
+                return View(phong);
             }
 
-            if (ModelState.IsValid)
+            // Load current record (to keep or remove the old file)
+            var existing = await _context.Phongs.AsNoTracking().FirstOrDefaultAsync(p => p.Maphong == id);
+            if (existing == null) return NotFound();
+
+            // If a new image is uploaded, validate and save it
+            if (AnhFile != null && AnhFile.Length > 0)
             {
-                try
+                var allowedExts = new[] { ".jpg", ".jpeg", ".png" };
+                var ext = Path.GetExtension(AnhFile.FileName).ToLowerInvariant();
+                if (!allowedExts.Contains(ext))
                 {
-                    _context.Update(phong);
-                    await _context.SaveChangesAsync();
+                    ModelState.AddModelError("AnhFile", "Invalid image format. Only JPG/PNG are allowed.");
+                    ViewData["Maloaiphong"] = new SelectList(_context.Loaiphongs, "Maloaiphong", "Maloaiphong", phong.Maloaiphong);
+                    return View(phong);
                 }
-                catch (DbUpdateConcurrencyException)
+
+                var folderPath = Path.Combine(_env.ContentRootPath, "App_Data", "Uploads", "Phong");
+                if (System.IO.File.Exists(Path.Combine(folderPath, existing.Anhphong)))
                 {
-                    if (!PhongExists(phong.Maphong))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    System.IO.File.Delete(Path.Combine(folderPath, existing.Anhphong));
                 }
+                Directory.CreateDirectory(folderPath);
+                string fileName, filePath;
+                do
+                {
+                    fileName = Path.GetRandomFileName() + ext;
+                    filePath = Path.Combine(folderPath, fileName);
+                }
+                while (System.IO.File.Exists(filePath));
+                await using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await AnhFile.CopyToAsync(stream);
+                }
+
+                // Optionally delete old file
+                if (!string.IsNullOrEmpty(existing.Anhphong))
+                {
+                    var oldPath = Path.Combine(folderPath, existing.Anhphong);
+                    if (System.IO.File.Exists(oldPath))
+                        System.IO.File.Delete(oldPath);
+                }
+
+                phong.Anhphong = fileName; // store the new file name in DB
+            }
+            else
+            {
+                // No new image selected: keep the current file name
+                phong.Anhphong = existing.Anhphong;
+            }
+
+            try
+            {
+                _context.Update(phong);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Maloaiphong"] = new SelectList(_context.Loaiphongs, "Maloaiphong", "Maloaiphong", phong.Maloaiphong);
-            return View(phong);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Phongs.Any(e => e.Maphong == phong.Maphong))
+                    return NotFound();
+                throw;
+            }
         }
 
         // GET: Phongs/Delete/5
@@ -204,25 +248,27 @@ namespace Hotel_Management.Controllers
             {
                 _context.Phongs.Remove(phong);
             }
-
-            if (!string.IsNullOrEmpty(phong.Anhphong))
+            try
             {
-                var folderPath = Path.Combine(_env.ContentRootPath, "App_Data", "Uploads", "Phong");
-                var filePath = Path.Combine(folderPath, phong.Anhphong);
-
-                if (System.IO.File.Exists(filePath))
+                if (!string.IsNullOrEmpty(phong.Anhphong))
                 {
-                    System.IO.File.Delete(filePath);
+                    var folderPath = Path.Combine(_env.ContentRootPath, "App_Data", "Uploads", "Phong");
+                    var filePath = Path.Combine(folderPath, phong.Anhphong);
+
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        System.IO.File.Delete(filePath);
+                    }
                 }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            } catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Phongs.Any(e => e.Maphong == phong.Maphong))
+                    return NotFound();
+                throw;
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool PhongExists(string id)
-        {
-            return _context.Phongs.Any(e => e.Maphong == id);
         }
 
         public IActionResult GetImage(string id)

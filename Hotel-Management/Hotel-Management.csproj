@@ -17,4 +17,8 @@
     <PackageReference Include="Oracle.EntityFrameworkCore" Version="8.23.90" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="App_Data\Uploads\Phong\" />
+  </ItemGroup>
+
 </Project>

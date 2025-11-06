@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Hotel_Management.Models;
 
 public partial class Thietbi
 {
+    [Required(ErrorMessage = "Mã thiết bị không được để trống")]
     public int Mathietbi { get; set; }
 
     public string? Tenthietbi { get; set; }

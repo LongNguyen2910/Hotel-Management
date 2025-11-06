@@ -89,21 +89,20 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Khachhangdatphongs/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id1, string? id2)
         {
-            if (id == null)
+            if (id1 == null)
             {
                 return NotFound();
             }
 
-            var khachhangdatphong = await _context.Khachhangdatphongs.FindAsync(id);
-            if (khachhangdatphong == null)
+            var booking = await _context.Khachhangdatphongs
+                .FirstOrDefaultAsync(x => x.Makhachhang == id1 && x.Maphong == id2);
+            if (booking == null)
             {
                 return NotFound();
             }
-            ViewData["Makhachhang"] = new SelectList(_context.Khachhangs, "Makhachhang", "Makhachhang", khachhangdatphong.Makhachhang);
-            ViewData["Maphong"] = new SelectList(_context.Phongs, "Maphong", "Maphong", khachhangdatphong.Maphong);
-            return View(khachhangdatphong);
+            return View(booking);
         }
 
         // POST: Khachhangdatphongs/Edit/5

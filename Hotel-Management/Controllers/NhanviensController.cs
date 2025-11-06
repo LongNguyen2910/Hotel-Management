@@ -1,4 +1,5 @@
-﻿using Hotel_Management.Models;
+﻿using Hotel_Management.Helpers;
+using Hotel_Management.Models;
 using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -24,9 +25,9 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: NhanVien
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
-            var modelContext = _context.Nhanviens.AsQueryable();
+            var modelContext = _context.Nhanviens.OrderBy(n => n.Hoten).AsQueryable();
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -34,14 +35,14 @@ namespace Hotel_Management.Controllers
             }
 
             ViewData["CurrentFilter"] = searchString;
+            int pageSize = 10;
 
             ViewBag.Trangthai = new List<SelectListItem>()
             {
                 new SelectListItem { Text = "Nghỉ việc", Value = "0" },
                 new SelectListItem { Text = "Đang làm", Value = "1" }
             };
-            //var modelContext = _context.Nhanviens.Select(n => new Nhanvien { Hoten = n.Hoten });
-            return View(await modelContext.ToListAsync());
+            return View(await PaginatedList<Nhanvien>.CreateAsync(modelContext.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: NhanVien/Details/5

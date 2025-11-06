@@ -10,19 +10,21 @@ public partial class Nhanvien
     [Required(ErrorMessage = "Mã nhân viên không được để trống")]
     public string? Manv { get; set; }
     [Display(Name = "Họ và tên")]
+    [Required(ErrorMessage = "Tên nhân viên không được để trống")]
     public string? Hoten { get; set; }
     [Display(Name = "Giới tính")]
+    
     public string? Gioitinh { get; set; }
     [Display(Name = "Ngày sinh")]
-
+    [Required(ErrorMessage = "Ngày sinh không được để trống")]
     public DateTime? Ngaysinh { get; set; }
     [Display(Name = "Số điện thoại")]
-
+    [Required(ErrorMessage = "Số điện thoại không được để trống")]
     public string? Sodienthoai { get; set; }
-
+    [Required(ErrorMessage = "CCCD không được để trống")]
     public string? Cccd { get; set; }
     [Display(Name = "Ngày vào làm")]
-
+    [Required(ErrorMessage = "Ngày vào làm không được để trống")]
     public DateTime? Ngayvaolam { get; set; }
     [Display(Name = "Trạng thái")]
     public byte? Trangthai { get; set; }

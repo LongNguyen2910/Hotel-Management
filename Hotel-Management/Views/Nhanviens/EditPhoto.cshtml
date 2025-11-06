@@ -1,0 +1,47 @@
+﻿@model Hotel_Management.Models.Nhanvien
+
+@{
+    ViewData["Title"] = "Sửa ảnh đại diện";
+    Layout = "~/Views/Shared/_ContentNavbarLayout.cshtml";
+}
+
+<div class="col-md-6 offset-md-3">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Thay đổi ảnh cho: @Model.Hoten</h5>
+        </div>
+        <div class="card-body text-center">
+            <form asp-action="EditPhoto" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Manv" />
+
+                <div class="mb-4">
+                    @if (!string.IsNullOrEmpty(Model.Anhnv))
+                    {
+                        <img src="@Url.Action("GetImage", "Nhanviens", new { id = Model.Manv })"
+                             alt="@Model.Hoten"
+                             class="rounded"
+                             style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;" />
+                    }
+                    else
+                    {
+                        <div class="rounded"
+                             style="width: 50px; height: 50px; background-color: #eee; margin-right: 10px;"></div>
+                    }
+                </div>
+
+                <div class="mb-3 text-start">
+                    <<div class="mb-6">
+                        <label for="formFile" class="form-label">Chọn Ảnh mới</label>
+                        <input class="form-control" type="file" id="formFile" name="AnhdaidienFile" />
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    <a asp-action="Details" asp-route-id="@Model.Manv" class="btn btn-outline-secondary">Quay lại</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

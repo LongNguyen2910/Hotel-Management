@@ -24,24 +24,6 @@ namespace Hotel_Management.Controllers
             return View(await _context.Calamviecs.ToListAsync());
         }
 
-        // GET: Calamviecs/Details/5
-        public async Task<IActionResult> Details(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var calamviec = await _context.Calamviecs
-                .FirstOrDefaultAsync(m => m.Macalamviec == id);
-            if (calamviec == null)
-            {
-                return NotFound();
-            }
-
-            return View(calamviec);
-        }
-
         // GET: Calamviecs/Create
         public IActionResult Create()
         {
@@ -55,6 +37,11 @@ namespace Hotel_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Macalamviec,Thoigianbatdau,Thoigianketthuc")] Calamviec calamviec)
         {
+            if (CalamviecExists(calamviec.Macalamviec))
+            {
+                ModelState.AddModelError("Macalamviec", "Mã ca làm việc đã tồn tại.");
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(calamviec);
@@ -138,9 +125,12 @@ namespace Hotel_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var calamviec = await _context.Calamviecs.FindAsync(id);
+            var calamviec = await _context.Calamviecs
+                .Include(c => c.Nhanvienlamcas)
+                .FirstOrDefaultAsync(m => m.Macalamviec == id);
             if (calamviec != null)
             {
+                calamviec.Nhanvienlamcas.Clear();
                 _context.Calamviecs.Remove(calamviec);
             }
 
@@ -150,7 +140,7 @@ namespace Hotel_Management.Controllers
 
         private bool CalamviecExists(string id)
         {
-            return _context.Calamviecs.Any(e => e.Macalamviec == id);
+            return _context.Calamviecs.Where(e => e.Macalamviec == id).Count() > 0;
         }
     }
 }

@@ -26,9 +26,9 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Thucdons/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.AllMons =  _context.Mons.ToList();
+            ViewBag.AllMons = await _context.Mons.ToListAsync();
             return View();
         }
 
@@ -40,6 +40,11 @@ namespace Hotel_Management.Controllers
         public async Task<IActionResult> Create([Bind("Mathucdon,Ngayapdung,Ngaytao")] 
             Thucdon thucdon, string[] selectedMon)
         {
+            if (_context.Thucdons.Where(t => t.Mathucdon == thucdon.Mathucdon).Count() > 0)
+            {
+                ModelState.AddModelError("Mathucdon", "Mã thực đơn này đã tồn tại. Vui lòng chọn mã khác.");
+            }
+
             if (ModelState.IsValid)
             {
                 if (selectedMon != null)
@@ -59,7 +64,7 @@ namespace Hotel_Management.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Dsmon"] = new MultiSelectList(_context.Mons, "Mamon", "Tenmon", selectedMon);
+            ViewBag.AllMons = await _context.Mons.ToListAsync();
             return View(thucdon);
         }
 
@@ -162,6 +167,7 @@ namespace Hotel_Management.Controllers
             }
 
             var thucdon = await _context.Thucdons
+                .Include(t => t.Mamons)
                 .FirstOrDefaultAsync(m => m.Mathucdon == id && m.Ngayapdung == date);
             if (thucdon == null)
             {
@@ -176,9 +182,12 @@ namespace Hotel_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id, DateTime date)
         {
-            var thucdon = await _context.Thucdons.FindAsync(id,date);
+            var thucdon = await _context.Thucdons
+                .Include(td => td.Mamons)
+                .FirstOrDefaultAsync(td => td.Mathucdon == id && td.Ngayapdung == date);
             if (thucdon != null)
             {
+                thucdon.Mamons.Clear();
                 _context.Thucdons.Remove(thucdon);
             }
 
@@ -186,9 +195,11 @@ namespace Hotel_Management.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ThucdonExists(int id, DateTime date)
+        private bool ThucdonExists(int? id, DateTime? date)
         {
-            return _context.Thucdons.Any(e => e.Mathucdon == id && e.Ngayapdung == date);
+            return _context.Thucdons.Where(e => e.Mathucdon == id && e.Ngayapdung == date).Count() > 0;
         }
+
+
     }
 }

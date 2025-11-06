@@ -36,8 +36,14 @@ namespace Hotel_Management.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Mamon,Tenmon,Gia")] Mon mon, IFormFile? AnhFile)
+        public async Task<IActionResult> Create([Bind("Mamon,Tenmon,Gia,Anhmon")] Mon mon, IFormFile? AnhFile)
         {
+            if (MonExists(mon.Mamon))
+            {
+                ModelState.AddModelError("Mamon", "Mã món đã tồn tại. Vui lòng sử dụng mã khác.");
+            }
+
+
             if (ModelState.IsValid)
             {
                 if (AnhFile != null && AnhFile.Length > 0)
@@ -100,7 +106,7 @@ namespace Hotel_Management.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Mamon,Tenmon,Gia")] Mon mon, IFormFile? AnhFile)
+        public async Task<IActionResult> Edit(string id, [Bind("Mamon,Tenmon,Gia,Anhmon")] Mon mon, IFormFile? AnhFile)
         {
             if (id != mon.Mamon)
             {
@@ -237,7 +243,7 @@ namespace Hotel_Management.Controllers
 
         private bool MonExists(string id)
         {
-            return _context.Mons.Any(e => e.Mamon == id);
+            return _context.Mons.Where(e => e.Mamon == id).Count() > 0;
         }
 
         public IActionResult GetImage(string id)

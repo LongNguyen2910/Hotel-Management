@@ -20,6 +20,23 @@
 
                 <dt class="col-sm-3">Ngày tạo</dt>
                 <dd class="col-sm-9">@Model?.Ngaytao</dd>
+
+                <dt class="col-sm-3">Món ăn</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Mamons != null && Model.Mamons.Any())
+                    {
+                        <ul class="list-unstyled mb-0">
+                            @foreach (var mon in Model.Mamons)
+                            {
+                                <li>@mon.Tenmon (@mon.Gia?.ToString("N0") VNĐ)</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span class="text-muted">(Chưa có món ăn nào)</span>
+                    }
+                </dd>
             </dl>
 
             <form asp-action="Delete" method="post">

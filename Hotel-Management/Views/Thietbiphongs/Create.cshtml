@@ -30,10 +30,15 @@
                     <label class="form-label">Tình trạng</label>
                     <select asp-for="Tinhtrang" class="form-select">
                         <option value="">-- Chọn tình trạng --</option>
-                        <option value="true">Active</option>
-                        <option value="false">Inactive</option>
+                        <option value="true">Sẵn sàng</option>
+                        <option value="false">Không sẵn sàng</option>
                     </select>
                     <span asp-validation-for="Tinhtrang" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Loại thiết bị</label>
+                    <select asp-for="Maphongs" class="form-select" asp-items="ViewBag.Maphong"></select>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Lưu</button>

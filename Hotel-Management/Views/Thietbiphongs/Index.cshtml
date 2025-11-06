@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<Hotel_Management.Models.Thietbi>
 
 @{
+    ViewData["Title"] = "Thiết bị trong phòng";
     var currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
 }
 
@@ -51,11 +52,11 @@
                         <td class="text-truncate">
                             @if (item.Tinhtrang == true)
                             {
-                                <span class="badge bg-label-success rounded-pill">Active</span>
+                                <span class="badge bg-label-success rounded-pill">Sẵn sàng</span>
                             }
                             else
                             {
-                                <span class="badge bg-label-secondary rounded-pill">Inactive</span>
+                                <span class="badge bg-label-secondary rounded-pill">Không sẵn sàng</span>
                             }
                         </td>
                         <td>

@@ -1,9 +1,10 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using Hotel_Management.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Hotel_Management.Models;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Hotel_Management.Controllers
 {
@@ -26,7 +27,7 @@ namespace Hotel_Management.Controllers
             var trimmed = (searchString ?? string.Empty).Trim();
 
             var query = _context.Thietbis
-                                .Include(t => t.Maphongs) // ensure related Phong rows are loaded
+                                .Include(t => t.Maphongs)
                                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(trimmed))
@@ -48,6 +49,7 @@ namespace Hotel_Management.Controllers
         // GET: Thietbiphongs/Create
         public IActionResult Create()
         {
+            ViewData["Maphong"] = new SelectList(_context.Loaiphongs, "Maphong", "Tenphong");
             return View();
         }
 
@@ -56,6 +58,7 @@ namespace Hotel_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Mathietbi,Tenthietbi,Tinhtrang")] Thietbi thietbi)
         {
+            ViewData["Maphong"] = new SelectList(_context.Loaiphongs, "Maphong", "Tenphong", thietbi.Maphongs);
             if (!ModelState.IsValid)
             {
                 foreach (var kv in ModelState)

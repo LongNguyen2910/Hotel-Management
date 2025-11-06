@@ -18,12 +18,23 @@ namespace Hotel_Management.Controllers
             _context = context;
         }
 
-        // GET: Loaithietbis
-        public async Task<IActionResult> Index()
+        // GET: Thietbis
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Loaithietbis.ToListAsync());
-        }
+            ViewData["CurrentFilter"] = searchString ?? string.Empty;
 
+            var query = _context.Loaithietbis.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                var trimmed = searchString.Trim();
+                // use EF.Functions.Like for SQL LIKE; case-sensitivity depends on DB collation
+                query = query.Where(t => EF.Functions.Like(t.Maloaithietbi, $"%{trimmed}%"));
+            }
+
+            var list = await query.ToListAsync();
+            return View(list);
+        }
         // GET: Loaithietbis/Details/5
         public async Task<IActionResult> Details(string id)
         {

@@ -2,34 +2,111 @@
 
 @{
     ViewData["Title"] = "Index";
+    var currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
 }
 
-<h1>Index</h1>
+<div class="col-12">
+    <div class="card overflow-hidden">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Danh sách phòng</h5>
+            <div class="d-flex align-items-center">
+                <form asp-action="Index" method="get" class="d-flex me-3">
+                    <input name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm theo mã loại thiết bị..." />
+                    <button type="submit" class="btn btn-sm btn-outline-primary">Tìm</button>
+                    @if (!string.IsNullOrWhiteSpace(currentFilter))
+                    {
+                        <a asp-action="Index" class="btn btn-sm btn-outline-danger btn-link ms-2">Xóa</a>
+                    }
+                </form>
+                <a asp-controller="Loaithietbis" asp-action="Create" class="btn btn-sm btn-primary">Thêm loại thiết bị</a>
+            </div>
+        </div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Tenloaithietbi)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tenloaithietbi)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Maloaithietbi">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Maloaithietbi">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Maloaithietbi">Delete</a>
-            </td>
-        </tr>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-truncate">Mã loại thiết bị</th>
+                        <th class="text-truncate">Tên loại thiết bị</th>
+                        <th class="text-truncate">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewData["NoResults"] != null)
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                <i class="bi bi-exclamation-circle">Không tìm thấy phòng phù hợp</i>
+                            </td>
+                        </tr>
+                    }
+                    else
+     @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><h6 class="mb-0 text-truncate">@item.Maloaithietbi</h6></td>
+                                <td><h6 class="mb-0 text-truncate">@item.Tenloaithietbi</h6></td>
+                                <td>
+                                    <!-- Trigger modal instead of navigating -->
+                                    <a asp-action="Edit" asp-route-id="@item.Maloaithietbi" class="btn btn-sm btn-primary me-2">Sửa</a>
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#confirmDeleteModal"
+                                            data-id="@item.Maloaithietbi"
+                                            data-name="@item.Tenloaithietbi">
+                                        Xóa
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Delete confirm card (Bootstrap modal) -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning mb-0">
+                    Bạn có chắc chắn muốn xóa phòng <strong id="delete-item-name"></strong>
+                    (<code id="delete-item-id"></code>) không?
+                </div>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteForm" method="post" asp-controller="Loaithietbis" asp-action="Delete" class="m-0">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="delete-id" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Populate modal with item info, wire id into the POST form
+        const confirmModal = document.getElementById('confirmDeleteModal');
+        if (confirmModal) {
+            confirmModal.addEventListener('show.bs.modal', (event) => {
+                const button = event.relatedTarget;
+                if (!button) return;
+
+                const id = button.getAttribute('data-id');
+                const name = button.getAttribute('data-name') || id;
+
+                document.getElementById('delete-id').value = id;
+                document.getElementById('delete-item-id').textContent = id;
+                document.getElementById('delete-item-name').textContent = name;
+            });
+        }
+    </script>
 }
-    </tbody>
-</table>

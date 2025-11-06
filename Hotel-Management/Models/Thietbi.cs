@@ -1,12 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Hotel_Management.Models;
 
 public partial class Thietbi
 {
-    [Required(ErrorMessage = "Mã thiết bị không được để trống")]
     public int Mathietbi { get; set; }
 
     public string? Tenthietbi { get; set; }
@@ -15,6 +14,7 @@ public partial class Thietbi
 
     public string Maloaithietbi { get; set; } = null!;
 
+    [ValidateNever]
     public virtual Loaithietbi MaloaithietbiNavigation { get; set; } = null!;
 
     public virtual ICollection<Ncccungcapthietbi> Ncccungcapthietbis { get; set; } = new List<Ncccungcapthietbi>();

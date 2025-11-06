@@ -520,7 +520,6 @@ public partial class AppDbContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("TENCHUCVU");
             entity.Property(e => e.Trangthai)
-                .HasColumnType("NUMBER(1)")
                 .HasColumnName("TRANGTHAI");
             entity.Property(e => e.Anhnv)
                 .HasMaxLength(100)

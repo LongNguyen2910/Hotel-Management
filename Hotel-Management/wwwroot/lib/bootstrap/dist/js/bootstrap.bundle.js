@@ -138,7 +138,7 @@
       const value = config[property];
       const valueType = value && isElement$1(value) ? 'element' : toType(value);
 
-      if (!new RegExp(expectedTypes).test(valueType)) {
+      if (!new RegExp(expectedTypes).Hotel_Management(valueType)) {
         throw new TypeError(`${componentName.toUpperCase()}: Option "${property}" provided type "${valueType}" but expected type "${expectedTypes}".`);
       }
     });
@@ -438,7 +438,7 @@
     // this prevents the handler from being dispatched the same way as mouseover or mouseout does
 
 
-    if (customEventsRegex.test(originalTypeEvent)) {
+    if (customEventsRegex.Hotel_Management(originalTypeEvent)) {
       const wrapFn = fn => {
         return function (event) {
           if (!event.relatedTarget || event.relatedTarget !== event.delegateTarget && !event.delegateTarget.contains(event.relatedTarget)) {
@@ -1341,7 +1341,7 @@
     }
 
     _keydown(event) {
-      if (/input|textarea/i.test(event.target.tagName)) {
+      if (/input|textarea/i.Hotel_Management(event.target.tagName)) {
         return;
       }
 
@@ -1875,7 +1875,7 @@
       return this.each(function () {
         const _config = {};
 
-        if (typeof config === 'string' && /show|hide/.test(config)) {
+        if (typeof config === 'string' && /show|hide/.Hotel_Management(config)) {
           _config.toggle = false;
         }
 
@@ -2071,7 +2071,7 @@
     phase: 'write',
     fn: applyStyles,
     effect: effect$2,
-    requires: ['computeStyles']
+    requires: ['compuHotel_Managementyles']
   };
 
   function getBasePlacement(placement) {
@@ -2446,7 +2446,7 @@
     return Object.assign({}, commonStyles, (_Object$assign2 = {}, _Object$assign2[sideY] = hasY ? y + "px" : '', _Object$assign2[sideX] = hasX ? x + "px" : '', _Object$assign2.transform = '', _Object$assign2));
   }
 
-  function computeStyles(_ref4) {
+  function compuHotel_Managementyles(_ref4) {
     var state = _ref4.state,
         options = _ref4.options;
     var _options$gpuAccelerat = options.gpuAcceleration,
@@ -2487,11 +2487,11 @@
   } // eslint-disable-next-line import/no-unused-modules
 
 
-  var computeStyles$1 = {
-    name: 'computeStyles',
+  var compuHotel_Managementyles$1 = {
+    name: 'compuHotel_Managementyles',
     enabled: true,
     phase: 'beforeWrite',
-    fn: computeStyles,
+    fn: compuHotel_Managementyles,
     data: {}
   };
 
@@ -2610,7 +2610,7 @@
       // 0.001
       // Fallback here: "Not Safari" userAgent
 
-      if (!/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+      if (!/^((?!chrome|android).)*safari/i.Hotel_Management(navigator.userAgent)) {
         x = visualViewport.offsetLeft;
         y = visualViewport.offsetTop;
       }
@@ -2656,7 +2656,7 @@
         overflowX = _getComputedStyle.overflowX,
         overflowY = _getComputedStyle.overflowY;
 
-    return /auto|scroll|overlay|hidden/.test(overflow + overflowY + overflowX);
+    return /auto|scroll|overlay|hidden/.Hotel_Management(overflow + overflowY + overflowX);
   }
 
   function getScrollParent(node) {
@@ -3646,12 +3646,12 @@
   }
   var createPopper$2 = /*#__PURE__*/popperGenerator(); // eslint-disable-next-line import/no-unused-modules
 
-  var defaultModifiers$1 = [eventListeners, popperOffsets$1, computeStyles$1, applyStyles$1];
+  var defaultModifiers$1 = [eventListeners, popperOffsets$1, compuHotel_Managementyles$1, applyStyles$1];
   var createPopper$1 = /*#__PURE__*/popperGenerator({
     defaultModifiers: defaultModifiers$1
   }); // eslint-disable-next-line import/no-unused-modules
 
-  var defaultModifiers = [eventListeners, popperOffsets$1, computeStyles$1, applyStyles$1, offset$1, flip$1, preventOverflow$1, arrow$1, hide$1];
+  var defaultModifiers = [eventListeners, popperOffsets$1, compuHotel_Managementyles$1, applyStyles$1, offset$1, flip$1, preventOverflow$1, arrow$1, hide$1];
   var createPopper = /*#__PURE__*/popperGenerator({
     defaultModifiers: defaultModifiers
   }); // eslint-disable-next-line import/no-unused-modules
@@ -3689,7 +3689,7 @@
     modifierPhases: modifierPhases,
     applyStyles: applyStyles$1,
     arrow: arrow$1,
-    computeStyles: computeStyles$1,
+    compuHotel_Managementyles: compuHotel_Managementyles$1,
     eventListeners: eventListeners,
     flip: flip$1,
     hide: hide$1,
@@ -4070,7 +4070,7 @@
           } // Tab navigation through the dropdown menu or events from contained inputs shouldn't close the menu
 
 
-          if (context._menu.contains(event.target) && (event.type === 'keyup' && event.key === TAB_KEY$1 || /input|select|option|textarea|form/i.test(event.target.tagName))) {
+          if (context._menu.contains(event.target) && (event.type === 'keyup' && event.key === TAB_KEY$1 || /input|select|option|textarea|form/i.Hotel_Management(event.target.tagName))) {
             continue;
           }
 
@@ -4095,7 +4095,7 @@
       //  - If key is other than escape
       //    - If key is not up or down => not a dropdown command
       //    - If trigger inside the menu => not a dropdown command
-      if (/input|textarea/i.test(event.target.tagName) ? event.key === SPACE_KEY || event.key !== ESCAPE_KEY$2 && (event.key !== ARROW_DOWN_KEY && event.key !== ARROW_UP_KEY || event.target.closest(SELECTOR_MENU)) : !REGEXP_KEYDOWN.test(event.key)) {
+      if (/input|textarea/i.Hotel_Management(event.target.tagName) ? event.key === SPACE_KEY || event.key !== ESCAPE_KEY$2 && (event.key !== ARROW_DOWN_KEY && event.key !== ARROW_UP_KEY || event.target.closest(SELECTOR_MENU)) : !REGEXP_KEYDOWN.Hotel_Management(event.key)) {
         return;
       }
 
@@ -5196,7 +5196,7 @@
 
     if (allowedAttributeList.includes(attrName)) {
       if (uriAttrs.has(attrName)) {
-        return Boolean(SAFE_URL_PATTERN.test(attr.nodeValue) || DATA_URL_PATTERN.test(attr.nodeValue));
+        return Boolean(SAFE_URL_PATTERN.Hotel_Management(attr.nodeValue) || DATA_URL_PATTERN.Hotel_Management(attr.nodeValue));
       }
 
       return true;
@@ -5205,7 +5205,7 @@
     const regExp = allowedAttributeList.filter(attrRegex => attrRegex instanceof RegExp); // Check if a regular expression validates the attribute.
 
     for (let i = 0, len = regExp.length; i < len; i++) {
-      if (regExp[i].test(attrName)) {
+      if (regExp[i].Hotel_Management(attrName)) {
         return true;
       }
     }

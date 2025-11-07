@@ -95,7 +95,7 @@ namespace Hotel_Management.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, DateTime? date,[Bind("Mathucdon,Ngayapdung,Ngaytao")] 
-            Thucdon thucdon, string[] selectedMons)
+            Thucdon thucdon, string[] selectedMon)
         {
             if (date == null)
             {
@@ -127,9 +127,9 @@ namespace Hotel_Management.Controllers
                     thucdonToUpdate.Mamons.Clear();
 
                     // 2. Thêm lại các món mới được chọn
-                    if (selectedMons != null)
+                    if (selectedMon != null)
                     {
-                        foreach (var monId in selectedMons)
+                        foreach (var monId in selectedMon)
                         {
                             var monToAdd = await _context.Mons.FindAsync(monId);
                             if (monToAdd != null)

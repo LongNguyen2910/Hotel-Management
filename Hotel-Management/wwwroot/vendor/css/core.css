@@ -7746,7 +7746,7 @@ textarea.form-control-lg {
   color: var(--bs-body-color) !important;
 }
 
-.text-lightest[href]:hover, .text-lightest[href]:focus {
+.text-lighHotel_Management[href]:hover, .text-lighHotel_Management[href]:focus {
   color: var(--bs-body-color) !important;
 }
 
@@ -15858,7 +15858,7 @@ button:focus-visible {
   color: color-mix(in sRGB, var(--bs-base-color) 30%, var(--bs-paper-bg)) !important;
 }
 
-.text-lightest {
+.text-lighHotel_Management {
   --bs-text-opacity: 1;
   color: color-mix(in sRGB, var(--bs-base-color) 20%, var(--bs-paper-bg)) !important;
 }
@@ -16163,7 +16163,7 @@ button:focus-visible {
   background-color: color-mix(in sRGB, var(--bs-base-color) 10%, var(--bs-paper-bg)) !important;
 }
 
-.bg-lightest {
+.bg-lighHotel_Management {
   --bs-bg-opacity: 1;
   background-color: color-mix(in sRGB, var(--bs-base-color) 6%, var(--bs-paper-bg)) !important;
 }

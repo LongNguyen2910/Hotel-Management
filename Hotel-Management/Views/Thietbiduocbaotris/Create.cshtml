@@ -17,7 +17,9 @@
 
                 <div class="mb-3">
                     <label class="form-label">Mã thiết bị</label>
-                    <input asp-for="Mathietbi" class="form-control" type="number" />
+                    <select asp-for="Mathietbi" asp-items="ViewBag.ThietbiList" class="form-select">
+                        <option value="">-- Chọn thiết bị --</option>
+                    </select>
                     <span asp-validation-for="Mathietbi" class="text-danger"></span>
                 </div>
 

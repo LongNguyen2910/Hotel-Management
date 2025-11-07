@@ -118,7 +118,7 @@ $.validator.addMethod( "accept", function( value, element, param ) {
 }, $.validator.format( "Please enter a value with a valid mimetype." ) );
 
 $.validator.addMethod( "alphanumeric", function( value, element ) {
-	return this.optional( element ) || /^\w+$/i.test( value );
+	return this.optional( element ) || /^\w+$/i.Hotel_Management( value );
 }, "Letters, numbers, and underscores only please." );
 
 /*
@@ -131,7 +131,7 @@ $.validator.addMethod( "bankaccountNL", function( value, element ) {
 	if ( this.optional( element ) ) {
 		return true;
 	}
-	if ( !( /^[0-9]{9}|([0-9]{2} ){3}[0-9]{3}$/.test( value ) ) ) {
+	if ( !( /^[0-9]{9}|([0-9]{2} ){3}[0-9]{3}$/.Hotel_Management( value ) ) ) {
 		return false;
 	}
 
@@ -166,11 +166,11 @@ $.validator.addMethod( "bankorgiroaccountNL", function( value, element ) {
  * - Next 2 characters - ISO 3166-1 alpha-2 country code (only letters)
  * - Next 2 characters - location code (letters and digits)
  *   a. shall not start with '0' or '1'
- *   b. second character must be a letter ('O' is not allowed) or digit ('0' for test (therefore not allowed), '1' denoting passive participant, '2' typically reverse-billing)
+ *   b. second character must be a letter ('O' is not allowed) or digit ('0' for Hotel_Management (therefore not allowed), '1' denoting passive participant, '2' typically reverse-billing)
  * - Last 3 characters - branch code, optional (shall not start with 'X' except in case of 'XXX' for primary office) (letters and digits)
  */
 $.validator.addMethod( "bic", function( value, element ) {
-    return this.optional( element ) || /^([A-Z]{6}[A-Z2-9][A-NP-Z1-9])(X{3}|[A-WY-Z0-9][A-Z0-9]{2})?$/.test( value.toUpperCase() );
+    return this.optional( element ) || /^([A-Z]{6}[A-Z2-9][A-NP-Z1-9])(X{3}|[A-WY-Z0-9][A-Z0-9]{2})?$/.Hotel_Management( value.toUpperCase() );
 }, "Please specify a valid BIC code." );
 
 /*
@@ -245,8 +245,8 @@ $.validator.addMethod( "cifES", function( value, element ) {
 		return n % 2 === 0;
 	}
 
-	// Quick format test
-	if ( value.length !== 9 || !cifRegEx.test( value ) ) {
+	// Quick format Hotel_Management
+	if ( value.length !== 9 || !cifRegEx.Hotel_Management( value ) ) {
 		return false;
 	}
 
@@ -487,7 +487,7 @@ $.validator.addMethod( "creditcard", function( value, element ) {
 	}
 
 	// Accept only spaces, digits and dashes
-	if ( /[^0-9 \-]+/.test( value ) ) {
+	if ( /[^0-9 \-]+/.Hotel_Management( value ) ) {
 		return false;
 	}
 
@@ -525,7 +525,7 @@ $.validator.addMethod( "creditcard", function( value, element ) {
  * Valid Types: mastercard, visa, amex, dinersclub, enroute, discover, jcb, unknown, all (overrides all other settings)
  */
 $.validator.addMethod( "creditcardtypes", function( value, element, param ) {
-	if ( /[^0-9\-]+/.test( value ) ) {
+	if ( /[^0-9\-]+/.Hotel_Management( value ) ) {
 		return false;
 	}
 
@@ -560,28 +560,28 @@ $.validator.addMethod( "creditcardtypes", function( value, element, param ) {
 	if ( param.all ) {
 		validTypes = 0x0001 | 0x0002 | 0x0004 | 0x0008 | 0x0010 | 0x0020 | 0x0040 | 0x0080;
 	}
-	if ( validTypes & 0x0001 && ( /^(5[12345])/.test( value ) || /^(2[234567])/.test( value ) ) ) { // Mastercard
+	if ( validTypes & 0x0001 && ( /^(5[12345])/.Hotel_Management( value ) || /^(2[234567])/.Hotel_Management( value ) ) ) { // Mastercard
 		return value.length === 16;
 	}
-	if ( validTypes & 0x0002 && /^(4)/.test( value ) ) { // Visa
+	if ( validTypes & 0x0002 && /^(4)/.Hotel_Management( value ) ) { // Visa
 		return value.length === 16;
 	}
-	if ( validTypes & 0x0004 && /^(3[47])/.test( value ) ) { // Amex
+	if ( validTypes & 0x0004 && /^(3[47])/.Hotel_Management( value ) ) { // Amex
 		return value.length === 15;
 	}
-	if ( validTypes & 0x0008 && /^(3(0[012345]|[68]))/.test( value ) ) { // Dinersclub
+	if ( validTypes & 0x0008 && /^(3(0[012345]|[68]))/.Hotel_Management( value ) ) { // Dinersclub
 		return value.length === 14;
 	}
-	if ( validTypes & 0x0010 && /^(2(014|149))/.test( value ) ) { // Enroute
+	if ( validTypes & 0x0010 && /^(2(014|149))/.Hotel_Management( value ) ) { // Enroute
 		return value.length === 15;
 	}
-	if ( validTypes & 0x0020 && /^(6011)/.test( value ) ) { // Discover
+	if ( validTypes & 0x0020 && /^(6011)/.Hotel_Management( value ) ) { // Discover
 		return value.length === 16;
 	}
-	if ( validTypes & 0x0040 && /^(3)/.test( value ) ) { // Jcb
+	if ( validTypes & 0x0040 && /^(3)/.Hotel_Management( value ) ) { // Jcb
 		return value.length === 16;
 	}
-	if ( validTypes & 0x0040 && /^(2131|1800)/.test( value ) ) { // Jcb
+	if ( validTypes & 0x0040 && /^(2131|1800)/.Hotel_Management( value ) ) { // Jcb
 		return value.length === 15;
 	}
 	if ( validTypes & 0x0080 ) { // Unknown
@@ -628,12 +628,12 @@ $.validator.addMethod( "currency", function( value, element, param ) {
     symbol = soft ? symbol + "]" : symbol + "]?";
     regex = "^[" + symbol + "([1-9]{1}[0-9]{0,2}(\\,[0-9]{3})*(\\.[0-9]{0,2})?|[1-9]{1}[0-9]{0,}(\\.[0-9]{0,2})?|0(\\.[0-9]{0,2})?|(\\.[0-9]{1,2})?)$";
     regex = new RegExp( regex );
-    return this.optional( element ) || regex.test( value );
+    return this.optional( element ) || regex.Hotel_Management( value );
 
 }, "Please specify a valid currency." );
 
 $.validator.addMethod( "dateFA", function( value, element ) {
-	return this.optional( element ) || /^[1-4]\d{3}\/((0?[1-6]\/((3[0-1])|([1-2][0-9])|(0?[1-9])))|((1[0-2]|(0?[7-9]))\/(30|([1-2][0-9])|(0?[1-9]))))$/.test( value );
+	return this.optional( element ) || /^[1-4]\d{3}\/((0?[1-6]\/((3[0-1])|([1-2][0-9])|(0?[1-9])))|((1[0-2]|(0?[7-9]))\/(30|([1-2][0-9])|(0?[1-9]))))$/.Hotel_Management( value );
 }, $.validator.messages.date );
 
 /**
@@ -659,7 +659,7 @@ $.validator.addMethod( "dateITA", function( value, element ) {
 	var check = false,
 		re = /^\d{1,2}\/\d{1,2}\/\d{4}$/,
 		adata, gg, mm, aaaa, xdata;
-	if ( re.test( value ) ) {
+	if ( re.Hotel_Management( value ) ) {
 		adata = value.split( "/" );
 		gg = parseInt( adata[ 0 ], 10 );
 		mm = parseInt( adata[ 1 ], 10 );
@@ -677,7 +677,7 @@ $.validator.addMethod( "dateITA", function( value, element ) {
 }, $.validator.messages.date );
 
 $.validator.addMethod( "dateNL", function( value, element ) {
-	return this.optional( element ) || /^(0?[1-9]|[12]\d|3[01])[\.\/\-](0?[1-9]|1[012])[\.\/\-]([12]\d)?(\d\d)$/.test( value );
+	return this.optional( element ) || /^(0?[1-9]|[12]\d|3[01])[\.\/\-](0?[1-9]|1[012])[\.\/\-]([12]\d)?(\d\d)$/.Hotel_Management( value );
 }, $.validator.messages.date );
 
 // Older "accept" file extension method. Old docs: http://docs.jquery.com/Plugins/Validation/Methods/accept
@@ -690,7 +690,7 @@ $.validator.addMethod( "extension", function( value, element, param ) {
  * Dutch giro account numbers (not bank numbers) have max 7 digits
  */
 $.validator.addMethod( "giroaccountNL", function( value, element ) {
-	return this.optional( element ) || /^[0-9]{1,7}$/.test( value );
+	return this.optional( element ) || /^[0-9]{1,7}$/.Hotel_Management( value );
 }, "Please specify a valid giro account number." );
 
 $.validator.addMethod( "greaterThan", function( value, element, param ) {
@@ -725,7 +725,7 @@ $.validator.addMethod( "greaterThanEqual", function( value, element, param ) {
  */
 $.validator.addMethod( "iban", function( value, element ) {
 
-	// Some quick simple tests to prevent needless work
+	// Some quick simple Hotel_Managements to prevent needless work
 	if ( this.optional( element ) ) {
 		return true;
 	}
@@ -828,7 +828,7 @@ $.validator.addMethod( "iban", function( value, element ) {
 	// countries.
 	if ( typeof bbanpattern !== "undefined" ) {
 		ibanregexp = new RegExp( "^[A-Z]{2}\\d{2}" + bbanpattern + "$", "" );
-		if ( !( ibanregexp.test( iban ) ) ) {
+		if ( !( ibanregexp.Hotel_Management( iban ) ) ) {
 			return false; // Invalid country specific format
 		}
 	}
@@ -855,15 +855,15 @@ $.validator.addMethod( "iban", function( value, element ) {
 }, "Please specify a valid IBAN." );
 
 $.validator.addMethod( "integer", function( value, element ) {
-	return this.optional( element ) || /^-?\d+$/.test( value );
+	return this.optional( element ) || /^-?\d+$/.Hotel_Management( value );
 }, "A positive or negative non-decimal number please." );
 
 $.validator.addMethod( "ipv4", function( value, element ) {
-	return this.optional( element ) || /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)$/i.test( value );
+	return this.optional( element ) || /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)\.(25[0-5]|2[0-4]\d|[01]?\d\d?)$/i.Hotel_Management( value );
 }, "Please enter a valid IP v4 address." );
 
 $.validator.addMethod( "ipv6", function( value, element ) {
-	return this.optional( element ) || /^((([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}:[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){5}:([0-9A-Fa-f]{1,4}:)?[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){4}:([0-9A-Fa-f]{1,4}:){0,2}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){3}:([0-9A-Fa-f]{1,4}:){0,3}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){2}:([0-9A-Fa-f]{1,4}:){0,4}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}((\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b)\.){3}(\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b))|(([0-9A-Fa-f]{1,4}:){0,5}:((\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b)\.){3}(\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b))|(::([0-9A-Fa-f]{1,4}:){0,5}((\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b)\.){3}(\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b))|([0-9A-Fa-f]{1,4}::([0-9A-Fa-f]{1,4}:){0,5}[0-9A-Fa-f]{1,4})|(::([0-9A-Fa-f]{1,4}:){0,6}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){1,7}:))$/i.test( value );
+	return this.optional( element ) || /^((([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}:[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){5}:([0-9A-Fa-f]{1,4}:)?[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){4}:([0-9A-Fa-f]{1,4}:){0,2}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){3}:([0-9A-Fa-f]{1,4}:){0,3}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){2}:([0-9A-Fa-f]{1,4}:){0,4}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){6}((\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b)\.){3}(\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b))|(([0-9A-Fa-f]{1,4}:){0,5}:((\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b)\.){3}(\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b))|(::([0-9A-Fa-f]{1,4}:){0,5}((\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b)\.){3}(\b((25[0-5])|(1\d{2})|(2[0-4]\d)|(\d{1,2}))\b))|([0-9A-Fa-f]{1,4}::([0-9A-Fa-f]{1,4}:){0,5}[0-9A-Fa-f]{1,4})|(::([0-9A-Fa-f]{1,4}:){0,6}[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){1,7}:))$/i.Hotel_Management( value );
 }, "Please enter a valid IP v6 address." );
 
 $.validator.addMethod( "lessThan", function( value, element, param ) {
@@ -891,11 +891,11 @@ $.validator.addMethod( "lessThanEqual", function( value, element, param ) {
 }, "Please enter a lesser value." );
 
 $.validator.addMethod( "lettersonly", function( value, element ) {
-	return this.optional( element ) || /^[a-z]+$/i.test( value );
+	return this.optional( element ) || /^[a-z]+$/i.Hotel_Management( value );
 }, "Letters only please." );
 
 $.validator.addMethod( "letterswithbasicpunc", function( value, element ) {
-	return this.optional( element ) || /^[a-z\-.,()'"\s]+$/i.test( value );
+	return this.optional( element ) || /^[a-z\-.,()'"\s]+$/i.Hotel_Management( value );
 }, "Letters or punctuation only please." );
 
 // Limit the number of files in a FileList.
@@ -956,12 +956,12 @@ $.validator.addMethod( "maxsizetotal", function( value, element, param ) {
 
 
 $.validator.addMethod( "mobileNL", function( value, element ) {
-	return this.optional( element ) || /^((\+|00(\s|\s?\-\s?)?)31(\s|\s?\-\s?)?(\(0\)[\-\s]?)?|0)6((\s|\s?\-\s?)?[0-9]){8}$/.test( value );
+	return this.optional( element ) || /^((\+|00(\s|\s?\-\s?)?)31(\s|\s?\-\s?)?(\(0\)[\-\s]?)?|0)6((\s|\s?\-\s?)?[0-9]){8}$/.Hotel_Management( value );
 }, "Please specify a valid mobile number." );
 
 $.validator.addMethod( "mobileRU", function( phone_number, element ) {
 	var ruPhone_number = phone_number.replace( /\(|\)|\s+|-/g, "" );
-	return this.optional( element ) || ruPhone_number.length > 9 && /^((\+7|7|8)+([0-9]){10})$/.test( ruPhone_number );
+	return this.optional( element ) || ruPhone_number.length > 9 && /^((\+7|7|8)+([0-9]){10})$/.Hotel_Management( ruPhone_number );
 }, "Please specify a valid mobile number." );
 
 /* For UK phone functions, do the following server side processing:
@@ -979,7 +979,7 @@ $.validator.addMethod( "mobileUK", function( phone_number, element ) {
 }, "Please specify a valid mobile number." );
 
 $.validator.addMethod( "netmask", function( value, element ) {
-    return this.optional( element ) || /^(254|252|248|240|224|192|128)\.0\.0\.0|255\.(254|252|248|240|224|192|128|0)\.0\.0|255\.255\.(254|252|248|240|224|192|128|0)\.0|255\.255\.255\.(254|252|248|240|224|192|128|0)/i.test( value );
+    return this.optional( element ) || /^(254|252|248|240|224|192|128)\.0\.0\.0|255\.(254|252|248|240|224|192|128|0)\.0\.0|255\.255\.(254|252|248|240|224|192|128|0)\.0|255\.255\.255\.(254|252|248|240|224|192|128|0)/i.Hotel_Management( value );
 }, "Please enter a valid netmask." );
 
 /*
@@ -1004,8 +1004,8 @@ $.validator.addMethod( "nieES", function( value, element ) {
 
 	value = value.toString().toUpperCase();
 
-	// Quick format test
-	if ( value.length > 10 || value.length < 9 || !nieRegEx.test( value ) ) {
+	// Quick format Hotel_Management
+	if ( value.length > 10 || value.length < 9 || !nieRegEx.Hotel_Management( value ) ) {
 		return false;
 	}
 
@@ -1034,18 +1034,18 @@ $.validator.addMethod( "nifES", function( value, element ) {
 
 	value = value.toUpperCase();
 
-	// Basic format test
+	// Basic format Hotel_Management
 	if ( !value.match( "((^[A-Z]{1}[0-9]{7}[A-Z0-9]{1}$|^[T]{1}[A-Z0-9]{8}$)|^[0-9]{8}[A-Z]{1}$)" ) ) {
 		return false;
 	}
 
-	// Test NIF
-	if ( /^[0-9]{8}[A-Z]{1}$/.test( value ) ) {
+	// Hotel_Management NIF
+	if ( /^[0-9]{8}[A-Z]{1}$/.Hotel_Management( value ) ) {
 		return ( "TRWAGMYFPDXBNJZSQVHLCKE".charAt( value.substring( 8, 0 ) % 23 ) === value.charAt( 8 ) );
 	}
 
-	// Test specials NIF (starts with K, L or M)
-	if ( /^[KLM]{1}/.test( value ) ) {
+	// Hotel_Management specials NIF (starts with K, L or M)
+	if ( /^[KLM]{1}/.Hotel_Management( value ) ) {
 		return ( value[ 8 ] === "TRWAGMYFPDXBNJZSQVHLCKE".charAt( value.substring( 8, 1 ) % 23 ) );
 	}
 
@@ -1139,7 +1139,7 @@ $.validator.addMethod( "notEqualTo", function( value, element, param ) {
 }, "Please enter a different value, values must not be the same." );
 
 $.validator.addMethod( "nowhitespace", function( value, element ) {
-	return this.optional( element ) || /^\S+$/i.test( value );
+	return this.optional( element ) || /^\S+$/i.Hotel_Management( value );
 }, "No white space please." );
 
 /**
@@ -1162,14 +1162,14 @@ $.validator.addMethod( "pattern", function( value, element, param ) {
 	if ( typeof param === "string" ) {
 		param = new RegExp( "^(?:" + param + ")$" );
 	}
-	return param.test( value );
+	return param.Hotel_Management( value );
 }, "Invalid format." );
 
 /**
  * Dutch phone numbers have 10 digits (or 11 and start with +31).
  */
 $.validator.addMethod( "phoneNL", function( value, element ) {
-	return this.optional( element ) || /^((\+|00(\s|\s?\-\s?)?)31(\s|\s?\-\s?)?(\(0\)[\-\s]?)?|0)[1-9]((\s|\s?\-\s?)?[0-9]){8}$/.test( value );
+	return this.optional( element ) || /^((\+|00(\s|\s?\-\s?)?)31(\s|\s?\-\s?)?(\(0\)[\-\s]?)?|0)[1-9]((\s|\s?\-\s?)?[0-9]){8}$/.Hotel_Management( value );
 }, "Please specify a valid phone number." );
 
 /**
@@ -1193,7 +1193,7 @@ $.validator.addMethod( "phoneNL", function( value, element ) {
 $.validator.addMethod( "phonePL", function( phone_number, element ) {
 	phone_number = phone_number.replace( /\s+/g, "" );
 	var regexp = /^(?:(?:(?:\+|00)?48)|(?:\(\+?48\)))?(?:1[2-8]|2[2-69]|3[2-49]|4[1-68]|5[0-9]|6[0-35-9]|[7-8][1-9]|9[145])\d{7}$/;
-	return this.optional( element ) || regexp.test( phone_number );
+	return this.optional( element ) || regexp.Hotel_Management( phone_number );
 }, "Please specify a valid phone number." );
 
 /* For UK phone functions, do the following server side processing:
@@ -1257,7 +1257,7 @@ $.validator.addMethod( "phoneUS", function( phone_number, element ) {
 * 99999999
 */
 $.validator.addMethod( "postalcodeBR", function( cep_value, element ) {
-	return this.optional( element ) || /^\d{2}.\d{3}-\d{3}?$|^\d{5}-?\d{3}?$/.test( cep_value );
+	return this.optional( element ) || /^\d{2}.\d{3}-\d{3}?$|^\d{5}-?\d{3}?$/.Hotel_Management( cep_value );
 }, "Informe um CEP válido." );
 
 /**
@@ -1274,21 +1274,21 @@ $.validator.addMethod( "postalcodeBR", function( cep_value, element ) {
  * @cat Plugins/Validate/Methods
  */
 $.validator.addMethod( "postalCodeCA", function( value, element ) {
-	return this.optional( element ) || /^[ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVWXYZ] *\d[ABCEGHJKLMNPRSTVWXYZ]\d$/i.test( value );
+	return this.optional( element ) || /^[ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVWXYZ] *\d[ABCEGHJKLMNPRSTVWXYZ]\d$/i.Hotel_Management( value );
 }, "Please specify a valid postal code." );
 
 /* Matches Italian postcode (CAP) */
 $.validator.addMethod( "postalcodeIT", function( value, element ) {
-	return this.optional( element ) || /^\d{5}$/.test( value );
+	return this.optional( element ) || /^\d{5}$/.Hotel_Management( value );
 }, "Please specify a valid postal code." );
 
 $.validator.addMethod( "postalcodeNL", function( value, element ) {
-	return this.optional( element ) || /^[1-9][0-9]{3}\s?[a-zA-Z]{2}$/.test( value );
+	return this.optional( element ) || /^[1-9][0-9]{3}\s?[a-zA-Z]{2}$/.Hotel_Management( value );
 }, "Please specify a valid postal code." );
 
 // Matches UK postcode. Does not match to UK Channel Islands that have their own postcodes (non standard UK)
 $.validator.addMethod( "postcodeUK", function( value, element ) {
-	return this.optional( element ) || /^((([A-PR-UWYZ][0-9])|([A-PR-UWYZ][0-9][0-9])|([A-PR-UWYZ][A-HK-Y][0-9])|([A-PR-UWYZ][A-HK-Y][0-9][0-9])|([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))\s?([0-9][ABD-HJLNP-UW-Z]{2})|(GIR)\s?(0AA))$/i.test( value );
+	return this.optional( element ) || /^((([A-PR-UWYZ][0-9])|([A-PR-UWYZ][0-9][0-9])|([A-PR-UWYZ][A-HK-Y][0-9])|([A-PR-UWYZ][A-HK-Y][0-9][0-9])|([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))\s?([0-9][ABD-HJLNP-UW-Z]{2})|(GIR)\s?(0AA))$/i.Hotel_Management( value );
 }, "Please specify a valid UK postcode." );
 
 /*
@@ -1425,7 +1425,7 @@ $.validator.addMethod( "stateUS", function( value, element, options ) {
 	}
 
 	regex = caseSensitive ? new RegExp( regex ) : new RegExp( regex, "i" );
-	return this.optional( element ) || regex.test( value );
+	return this.optional( element ) || regex.Hotel_Management( value );
 }, "Please specify a valid state." );
 
 // TODO check if value starts with <, otherwise don't try stripping anything
@@ -1434,16 +1434,16 @@ $.validator.addMethod( "strippedminlength", function( value, element, param ) {
 }, $.validator.format( "Please enter at least {0} characters." ) );
 
 $.validator.addMethod( "time", function( value, element ) {
-	return this.optional( element ) || /^([01]\d|2[0-3]|[0-9])(:[0-5]\d){1,2}$/.test( value );
+	return this.optional( element ) || /^([01]\d|2[0-3]|[0-9])(:[0-5]\d){1,2}$/.Hotel_Management( value );
 }, "Please enter a valid time, between 00:00 and 23:59." );
 
 $.validator.addMethod( "time12h", function( value, element ) {
-	return this.optional( element ) || /^((0?[1-9]|1[012])(:[0-5]\d){1,2}(\ ?[AP]M))$/i.test( value );
+	return this.optional( element ) || /^((0?[1-9]|1[012])(:[0-5]\d){1,2}(\ ?[AP]M))$/i.Hotel_Management( value );
 }, "Please enter a valid time in 12-hour am/pm format." );
 
 // Same as url, but TLD is optional
 $.validator.addMethod( "url2", function( value, element ) {
-	return this.optional( element ) || /^(?:(?:(?:https?|ftp):)?\/\/)(?:(?:[^\]\[?\/<~#`!@$^&*()+=}|:";',>{ ]|%[0-9A-Fa-f]{2})+(?::(?:[^\]\[?\/<~#`!@$^&*()+=}|:";',>{ ]|%[0-9A-Fa-f]{2})*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62})?[a-z0-9\u00a1-\uffff]\.)+(?:[a-z\u00a1-\uffff]{2,}\.?)|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62})?[a-z0-9\u00a1-\uffff])|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62}\.)))(?::\d{2,5})?(?:[/?#]\S*)?$/i.test( value );
+	return this.optional( element ) || /^(?:(?:(?:https?|ftp):)?\/\/)(?:(?:[^\]\[?\/<~#`!@$^&*()+=}|:";',>{ ]|%[0-9A-Fa-f]{2})+(?::(?:[^\]\[?\/<~#`!@$^&*()+=}|:";',>{ ]|%[0-9A-Fa-f]{2})*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62})?[a-z0-9\u00a1-\uffff]\.)+(?:[a-z\u00a1-\uffff]{2,}\.?)|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62})?[a-z0-9\u00a1-\uffff])|(?:(?:[a-z0-9\u00a1-\uffff][a-z0-9\u00a1-\uffff_-]{0,62}\.)))(?::\d{2,5})?(?:[/?#]\S*)?$/i.Hotel_Management( value );
 }, $.validator.messages.url );
 
 /**
@@ -1502,11 +1502,11 @@ $.validator.addMethod( "vinUS", function( v ) {
 }, "The specified vehicle identification number (VIN) is invalid." );
 
 $.validator.addMethod( "zipcodeUS", function( value, element ) {
-	return this.optional( element ) || /^\d{5}(-\d{4})?$/.test( value );
+	return this.optional( element ) || /^\d{5}(-\d{4})?$/.Hotel_Management( value );
 }, "The specified US ZIP Code is invalid." );
 
 $.validator.addMethod( "ziprange", function( value, element ) {
-	return this.optional( element ) || /^90[2-5]\d\{2\}-\d{4}$/.test( value );
+	return this.optional( element ) || /^90[2-5]\d\{2\}-\d{4}$/.Hotel_Management( value );
 }, "Your ZIP-code must be in the range 902xx-xxxx to 905xx-xxxx." );
 return $;
 }));

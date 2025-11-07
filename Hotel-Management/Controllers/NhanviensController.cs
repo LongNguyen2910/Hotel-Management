@@ -43,6 +43,8 @@ namespace Hotel_Management.Controllers
                 new SelectListItem { Text = "Đang làm", Value = "1" }
             };
             return View(await PaginatedList<Nhanvien>.CreateAsync(modelContext.AsNoTracking(), pageNumber ?? 1, pageSize));
+            //var nhanvien = _context.Nhanviens.Select(n => n.Manv);
+            //return View(await nhanvien.ToListAsync());
         }
 
         // GET: NhanVien/Details/5
@@ -173,7 +175,7 @@ namespace Hotel_Management.Controllers
             {
                 return NotFound();
             }
-            ViewData["Mabophan"] = new SelectList(_context.Bophans, "Mabophan", "Mabophan", nhanvien.Mabophan);
+            ViewData["Mabophan"] = new SelectList(_context.Bophans, "Mabophan", "Tenbophan", nhanvien.Mabophan);
             ViewData["Tenchucvu"] = new SelectList(_context.Chucvus, "Tenchucvu", "Tenchucvu", nhanvien.Tenchucvu);
 
             ViewBag.AllCalamviecs = await _context.Calamviecs.ToListAsync();

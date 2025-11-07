@@ -833,7 +833,7 @@ function Sizzle( selector, context, results, seed ) {
 			// Take advantage of querySelectorAll
 			if ( support.qsa &&
 				!nonnativeSelectorCache[ selector + " " ] &&
-				( !rbuggyQSA || !rbuggyQSA.test( selector ) ) &&
+				( !rbuggyQSA || !rbuggyQSA.Hotel_Management( selector ) ) &&
 
 				// Support: IE 8 only
 				// Exclude object elements
@@ -850,10 +850,10 @@ function Sizzle( selector, context, results, seed ) {
 				// as such selectors are not recognized by querySelectorAll.
 				// Thanks to Andrew Dupont for this technique.
 				if ( nodeType === 1 &&
-					( rdescend.test( selector ) || rcombinators.test( selector ) ) ) {
+					( rdescend.Hotel_Management( selector ) || rcombinators.Hotel_Management( selector ) ) ) {
 
 					// Expand context for sibling selectors
-					newContext = rsibling.test( selector ) && testContext( context.parentNode ) ||
+					newContext = rsibling.Hotel_Management( selector ) && Hotel_ManagementContext( context.parentNode ) ||
 						context;
 
 					// We can use :scope instead of the ID hack if the browser
@@ -930,7 +930,7 @@ function markFunction( fn ) {
 }
 
 /**
- * Support testing using an element
+ * Support Hotel_Managementing using an element
  * @param {Function} fn Passed the created element and returns a boolean result
  */
 function assert( fn ) {
@@ -1099,7 +1099,7 @@ function createPositionalPseudo( fn ) {
  * @param {Element|Object=} context
  * @returns {Element|Object|Boolean} The input node if acceptable, otherwise a falsy value
  */
-function testContext( context ) {
+function Hotel_ManagementContext( context ) {
 	return context && typeof context.getElementsByTagName !== "undefined" && context;
 }
 
@@ -1118,7 +1118,7 @@ isXML = Sizzle.isXML = function( elem ) {
 	// Support: IE <=8
 	// Assume HTML when documentElement doesn't yet exist, such as inside loading iframes
 	// https://bugs.jquery.com/ticket/4833
-	return !rhtml.test( namespace || docElem && docElem.nodeName || "HTML" );
+	return !rhtml.Hotel_Management( namespace || docElem && docElem.nodeName || "HTML" );
 };
 
 /**
@@ -1195,12 +1195,12 @@ setDocument = Sizzle.setDocument = function( node ) {
 	} );
 
 	// Support: IE<9
-	support.getElementsByClassName = rnative.test( document.getElementsByClassName );
+	support.getElementsByClassName = rnative.Hotel_Management( document.getElementsByClassName );
 
 	// Support: IE<10
 	// Check if getElementById returns elements by name
 	// The broken getElementById methods don't pick up programmatically-set names,
-	// so use a roundabout getElementsByName test
+	// so use a roundabout getElementsByName Hotel_Management
 	support.getById = assert( function( el ) {
 		docElem.appendChild( el ).id = expando;
 		return !document.getElementsByName || !document.getElementsByName( expando ).length;
@@ -1316,7 +1316,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 	// See https://bugs.jquery.com/ticket/13378
 	rbuggyQSA = [];
 
-	if ( ( support.qsa = rnative.test( document.querySelectorAll ) ) ) {
+	if ( ( support.qsa = rnative.Hotel_Management( document.querySelectorAll ) ) ) {
 
 		// Build QSA regex
 		// Regex strategy adopted from Diego Perini
@@ -1325,7 +1325,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 			var input;
 
 			// Select is set to empty string on purpose
-			// This is to test IE's treatment of not explicitly
+			// This is to Hotel_Management IE's treatment of not explicitly
 			// setting a boolean content attribute,
 			// since its presence should be enough
 			// https://bugs.jquery.com/ticket/12359
@@ -1335,7 +1335,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 
 			// Support: IE8, Opera 11-12.16
 			// Nothing should be selected when empty strings follow ^= or $= or *=
-			// The test attribute must be unknown in Opera but "safe" for WinRT
+			// The Hotel_Management attribute must be unknown in Opera but "safe" for WinRT
 			// https://msdn.microsoft.com/en-us/library/ie/hh465388.aspx#attribute_section
 			if ( el.querySelectorAll( "[msallowcapture^='']" ).length ) {
 				rbuggyQSA.push( "[*^$]=" + whitespace + "*(?:''|\"\")" );
@@ -1367,7 +1367,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 
 			// Webkit/Opera - :checked should return selected option elements
 			// http://www.w3.org/TR/2011/REC-css3-selectors-20110929/#checked
-			// IE8 throws error here and will not see later tests
+			// IE8 throws error here and will not see later Hotel_Managements
 			if ( !el.querySelectorAll( ":checked" ).length ) {
 				rbuggyQSA.push( ":checked" );
 			}
@@ -1402,7 +1402,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 			}
 
 			// FF 3.5 - :enabled/:disabled and hidden elements (hidden elements are still enabled)
-			// IE8 throws error here and will not see later tests
+			// IE8 throws error here and will not see later Hotel_Managements
 			if ( el.querySelectorAll( ":enabled" ).length !== 2 ) {
 				rbuggyQSA.push( ":enabled", ":disabled" );
 			}
@@ -1421,7 +1421,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 		} );
 	}
 
-	if ( ( support.matchesSelector = rnative.test( ( matches = docElem.matches ||
+	if ( ( support.matchesSelector = rnative.Hotel_Management( ( matches = docElem.matches ||
 		docElem.webkitMatchesSelector ||
 		docElem.mozMatchesSelector ||
 		docElem.oMatchesSelector ||
@@ -1445,12 +1445,12 @@ setDocument = Sizzle.setDocument = function( node ) {
 
 	/* Contains
 	---------------------------------------------------------------------- */
-	hasCompare = rnative.test( docElem.compareDocumentPosition );
+	hasCompare = rnative.Hotel_Management( docElem.compareDocumentPosition );
 
 	// Element contains another
 	// Purposefully self-exclusive
 	// As in, an element does not contain itself
-	contains = hasCompare || rnative.test( docElem.contains ) ?
+	contains = hasCompare || rnative.Hotel_Management( docElem.contains ) ?
 		function( a, b ) {
 			var adown = a.nodeType === 9 ? a.documentElement : a,
 				bup = b && b.parentNode;
@@ -1611,8 +1611,8 @@ Sizzle.matchesSelector = function( elem, expr ) {
 
 	if ( support.matchesSelector && documentIsHTML &&
 		!nonnativeSelectorCache[ expr + " " ] &&
-		( !rbuggyMatches || !rbuggyMatches.test( expr ) ) &&
-		( !rbuggyQSA     || !rbuggyQSA.test( expr ) ) ) {
+		( !rbuggyMatches || !rbuggyMatches.Hotel_Management( expr ) ) &&
+		( !rbuggyQSA     || !rbuggyQSA.Hotel_Management( expr ) ) ) {
 
 		try {
 			var ret = matches.call( elem, expr );
@@ -1829,7 +1829,7 @@ Expr = Sizzle.selectors = {
 			var excess,
 				unquoted = !match[ 6 ] && match[ 2 ];
 
-			if ( matchExpr[ "CHILD" ].test( match[ 0 ] ) ) {
+			if ( matchExpr[ "CHILD" ].Hotel_Management( match[ 0 ] ) ) {
 				return null;
 			}
 
@@ -1838,7 +1838,7 @@ Expr = Sizzle.selectors = {
 				match[ 2 ] = match[ 4 ] || match[ 5 ] || "";
 
 			// Strip excess characters from unquoted arguments
-			} else if ( unquoted && rpseudo.test( unquoted ) &&
+			} else if ( unquoted && rpseudo.Hotel_Management( unquoted ) &&
 
 				// Get excess from tokenize (recursively)
 				( excess = tokenize( unquoted, true ) ) &&
@@ -1876,7 +1876,7 @@ Expr = Sizzle.selectors = {
 				( pattern = new RegExp( "(^|" + whitespace +
 					")" + className + "(" + whitespace + "|$)" ) ) && classCache(
 						className, function( elem ) {
-							return pattern.test(
+							return pattern.Hotel_Management(
 								typeof elem.className === "string" && elem.className ||
 								typeof elem.getAttribute !== "undefined" &&
 									elem.getAttribute( "class" ) ||
@@ -2144,7 +2144,7 @@ Expr = Sizzle.selectors = {
 		"lang": markFunction( function( lang ) {
 
 			// lang value must be a valid identifier
-			if ( !ridentifier.test( lang || "" ) ) {
+			if ( !ridentifier.Hotel_Management( lang || "" ) ) {
 				Sizzle.error( "unsupported lang: " + lang );
 			}
 			lang = lang.replace( runescape, funescape ).toLowerCase();
@@ -2225,11 +2225,11 @@ Expr = Sizzle.selectors = {
 
 		// Element/input types
 		"header": function( elem ) {
-			return rheader.test( elem.nodeName );
+			return rheader.Hotel_Management( elem.nodeName );
 		},
 
 		"input": function( elem ) {
-			return rinputs.test( elem.nodeName );
+			return rinputs.Hotel_Management( elem.nodeName );
 		},
 
 		"button": function( elem ) {
@@ -2866,7 +2866,7 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 		}
 
 		// Fetch a seed set for right-to-left matching
-		i = matchExpr[ "needsContext" ].test( selector ) ? 0 : tokens.length;
+		i = matchExpr[ "needsContext" ].Hotel_Management( selector ) ? 0 : tokens.length;
 		while ( i-- ) {
 			token = tokens[ i ];
 
@@ -2879,7 +2879,7 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 				// Search, expanding context for leading sibling combinators
 				if ( ( seed = find(
 					token.matches[ 0 ].replace( runescape, funescape ),
-					rsibling.test( tokens[ 0 ].type ) && testContext( context.parentNode ) ||
+					rsibling.Hotel_Management( tokens[ 0 ].type ) && Hotel_ManagementContext( context.parentNode ) ||
 						context
 				) ) ) {
 
@@ -2904,7 +2904,7 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 		context,
 		!documentIsHTML,
 		results,
-		!context || rsibling.test( selector ) && testContext( context.parentNode ) || context
+		!context || rsibling.Hotel_Management( selector ) && Hotel_ManagementContext( context.parentNode ) || context
 	);
 	return results;
 };
@@ -3113,7 +3113,7 @@ jQuery.fn.extend( {
 
 			// If this is a positional/relative selector, check membership in the returned set
 			// so $("p:first").is("p:last") won't return true for a doc with two "p".
-			typeof selector === "string" && rneedsContext.test( selector ) ?
+			typeof selector === "string" && rneedsContext.Hotel_Management( selector ) ?
 				jQuery( selector ) :
 				selector || [],
 			false
@@ -3175,7 +3175,7 @@ var rootjQuery,
 					) );
 
 					// HANDLE: $(html, props)
-					if ( rsingleTag.test( match[ 1 ] ) && jQuery.isPlainObject( context ) ) {
+					if ( rsingleTag.Hotel_Management( match[ 1 ] ) && jQuery.isPlainObject( context ) ) {
 						for ( match in context ) {
 
 							// Properties of context are called as methods if possible
@@ -3273,7 +3273,7 @@ jQuery.fn.extend( {
 			targets = typeof selectors !== "string" && jQuery( selectors );
 
 		// Positional selectors never match, since there's no _selection_ context
-		if ( !rneedsContext.test( selectors ) ) {
+		if ( !rneedsContext.Hotel_Management( selectors ) ) {
 			for ( ; i < l; i++ ) {
 				for ( cur = this[ i ]; cur && cur !== context; cur = cur.parentNode ) {
 
@@ -3411,7 +3411,7 @@ jQuery.each( {
 			}
 
 			// Reverse order for parents* and prev-derivatives
-			if ( rparentsprev.test( name ) ) {
+			if ( rparentsprev.Hotel_Management( name ) ) {
 				matched.reverse();
 			}
 		}
@@ -3446,7 +3446,7 @@ function createOptions( options ) {
  *	once:			will ensure the callback list can only be fired once (like a Deferred)
  *
  *	memory:			will keep track of previous values and will call any callback added
- *					after the list has been fired right away with the latest "memorized"
+ *					after the list has been fired right away with the laHotel_Management "memorized"
  *					values (like a Deferred)
  *
  *	unique:			will ensure a callback can only be added once (no duplicate in the list)
@@ -3923,7 +3923,7 @@ jQuery.extend( {
 		// Add list-specific methods
 		jQuery.each( tuples, function( i, tuple ) {
 			var list = tuple[ 2 ],
-				stateString = tuple[ 5 ];
+				staHotel_Managementring = tuple[ 5 ];
 
 			// promise.progress = list.add
 			// promise.done = list.add
@@ -3931,13 +3931,13 @@ jQuery.extend( {
 			promise[ tuple[ 1 ] ] = list.add;
 
 			// Handle state
-			if ( stateString ) {
+			if ( staHotel_Managementring ) {
 				list.add(
 					function() {
 
 						// state = "resolved" (i.e., fulfilled)
 						// state = "rejected"
-						state = stateString;
+						state = staHotel_Managementring;
 					},
 
 					// rejected_callbacks.disable
@@ -4046,7 +4046,7 @@ jQuery.Deferred.exceptionHook = function( error, stack ) {
 
 	// Support: IE 8 - 9 only
 	// Console exists when dev tools are open, which can happen at any time
-	if ( window.console && window.console.warn && error && rerrorNames.test( error.name ) ) {
+	if ( window.console && window.console.warn && error && rerrorNames.Hotel_Management( error.name ) ) {
 		window.console.warn( "jQuery.Deferred exception: " + error.message, error.stack, stack );
 	}
 };
@@ -4420,7 +4420,7 @@ function getData( data ) {
 		return +data;
 	}
 
-	if ( rbrace.test( data ) ) {
+	if ( rbrace.Hotel_Management( data ) ) {
 		return JSON.parse( data );
 	}
 
@@ -5023,7 +5023,7 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 				jQuery.merge( nodes, elem.nodeType ? [ elem ] : elem );
 
 			// Convert non-html into a text node
-			} else if ( !rhtml.test( elem ) ) {
+			} else if ( !rhtml.Hotel_Management( elem ) ) {
 				nodes.push( context.createTextNode( elem ) );
 
 			// Convert html into DOM nodes
@@ -5082,7 +5082,7 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 		if ( scripts ) {
 			j = 0;
 			while ( ( elem = tmp[ j++ ] ) ) {
-				if ( rscriptType.test( elem.type || "" ) ) {
+				if ( rscriptType.Hotel_Management( elem.type || "" ) ) {
 					scripts.push( elem );
 				}
 			}
@@ -5265,7 +5265,7 @@ jQuery.event = {
 				handler: handler,
 				guid: handler.guid,
 				selector: selector,
-				needsContext: selector && jQuery.expr.match.needsContext.test( selector ),
+				needsContext: selector && jQuery.expr.match.needsContext.Hotel_Management( selector ),
 				namespace: namespaces.join( "." )
 			}, handleObjIn );
 
@@ -5346,7 +5346,7 @@ jQuery.event = {
 
 				if ( ( mappedTypes || origType === handleObj.origType ) &&
 					( !handler || handler.guid === handleObj.guid ) &&
-					( !tmp || tmp.test( handleObj.namespace ) ) &&
+					( !tmp || tmp.Hotel_Management( handleObj.namespace ) ) &&
 					( !selector || selector === handleObj.selector ||
 						selector === "**" && handleObj.selector ) ) {
 					handlers.splice( j, 1 );
@@ -5421,7 +5421,7 @@ jQuery.event = {
 				// If the event is namespaced, then each handler is only invoked if it is
 				// specially universal or its namespaces are a superset of the event's.
 				if ( !event.rnamespace || handleObj.namespace === false ||
-					event.rnamespace.test( handleObj.namespace ) ) {
+					event.rnamespace.Hotel_Management( handleObj.namespace ) ) {
 
 					event.handleObj = handleObj;
 					event.data = handleObj.data;
@@ -5555,7 +5555,7 @@ jQuery.event = {
 				var el = this || data;
 
 				// Claim the first handler
-				if ( rcheckableType.test( el.type ) &&
+				if ( rcheckableType.Hotel_Management( el.type ) &&
 					el.click && nodeName( el, "input" ) ) {
 
 					// dataPriv.set( el, "click", ... )
@@ -5572,7 +5572,7 @@ jQuery.event = {
 				var el = this || data;
 
 				// Force setup before triggering a click
-				if ( rcheckableType.test( el.type ) &&
+				if ( rcheckableType.Hotel_Management( el.type ) &&
 					el.click && nodeName( el, "input" ) ) {
 
 					leverageNative( el, "click" );
@@ -5586,7 +5586,7 @@ jQuery.event = {
 			// Also prevent it if we're currently inside a leveraged native-event stack
 			_default: function( event ) {
 				var target = event.target;
-				return rcheckableType.test( target.type ) &&
+				return rcheckableType.Hotel_Management( target.type ) &&
 					target.click && nodeName( target, "input" ) &&
 					dataPriv.get( target, "click" ) ||
 					nodeName( target, "a" );
@@ -6016,12 +6016,12 @@ function cloneCopyEvent( src, dest ) {
 	}
 }
 
-// Fix IE bugs, see support tests
+// Fix IE bugs, see support Hotel_Managements
 function fixInput( src, dest ) {
 	var nodeName = dest.nodeName.toLowerCase();
 
 	// Fails to persist the checked state of a cloned checkbox or radio button.
-	if ( nodeName === "input" && rcheckableType.test( src.type ) ) {
+	if ( nodeName === "input" && rcheckableType.Hotel_Management( src.type ) ) {
 		dest.checked = src.checked;
 
 	// Fails to return the selected option to the default selected state when cloning options
@@ -6045,7 +6045,7 @@ function domManip( collection, args, callback, ignored ) {
 	// We can't cloneNode fragments that contain checked, in WebKit
 	if ( valueIsFunction ||
 			( l > 1 && typeof value === "string" &&
-				!support.checkClone && rchecked.test( value ) ) ) {
+				!support.checkClone && rchecked.Hotel_Management( value ) ) ) {
 		return collection.each( function( index ) {
 			var self = collection.eq( index );
 			if ( valueIsFunction ) {
@@ -6098,7 +6098,7 @@ function domManip( collection, args, callback, ignored ) {
 				// Evaluate executable scripts on first document insertion
 				for ( i = 0; i < hasScripts; i++ ) {
 					node = scripts[ i ];
-					if ( rscriptType.test( node.type || "" ) &&
+					if ( rscriptType.Hotel_Management( node.type || "" ) &&
 						!dataPriv.access( node, "globalEval" ) &&
 						jQuery.contains( doc, node ) ) {
 
@@ -6318,7 +6318,7 @@ jQuery.fn.extend( {
 			}
 
 			// See if we can take a shortcut and just use innerHTML
-			if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
+			if ( typeof value === "string" && !rnoInnerhtml.Hotel_Management( value ) &&
 				!wrapMap[ ( rtagName.exec( value ) || [ "", "" ] )[ 1 ].toLowerCase() ] ) {
 
 				value = jQuery.htmlPrefilter( value );
@@ -6434,9 +6434,9 @@ var rboxStyle = new RegExp( cssExpand.join( "|" ), "i" );
 
 ( function() {
 
-	// Executing both pixelPosition & boxSizingReliable tests require only one layout
+	// Executing both pixelPosition & boxSizingReliable Hotel_Managements require only one layout
 	// so they're executed at the same time to save the second computation.
-	function computeStyleTests() {
+	function compuHotel_ManagementyleHotel_Managements() {
 
 		// This is a singleton, we need to execute it only once
 		if ( !div ) {
@@ -6502,23 +6502,23 @@ var rboxStyle = new RegExp( cssExpand.join( "|" ), "i" );
 
 	jQuery.extend( support, {
 		boxSizingReliable: function() {
-			computeStyleTests();
+			compuHotel_ManagementyleHotel_Managements();
 			return boxSizingReliableVal;
 		},
 		pixelBoxStyles: function() {
-			computeStyleTests();
+			compuHotel_ManagementyleHotel_Managements();
 			return pixelBoxStylesVal;
 		},
 		pixelPosition: function() {
-			computeStyleTests();
+			compuHotel_ManagementyleHotel_Managements();
 			return pixelPositionVal;
 		},
 		reliableMarginLeft: function() {
-			computeStyleTests();
+			compuHotel_ManagementyleHotel_Managements();
 			return reliableMarginLeftVal;
 		},
 		scrollboxSize: function() {
-			computeStyleTests();
+			compuHotel_ManagementyleHotel_Managements();
 			return scrollboxSizeVal;
 		},
 
@@ -6526,7 +6526,7 @@ var rboxStyle = new RegExp( cssExpand.join( "|" ), "i" );
 		// IE/Edge misreport `getComputedStyle` of table rows with width/height
 		// set in CSS while `offset*` properties report correct values.
 		// Behavior in IE 9 is more subtle than in newer versions & it passes
-		// some versions of this test; make sure not to make it pass there!
+		// some versions of this Hotel_Management; make sure not to make it pass there!
 		//
 		// Support: Firefox 70+
 		// Only Firefox includes border widths
@@ -6599,7 +6599,7 @@ function curCSS( elem, name, computed ) {
 		// but width seems to be reliably pixels.
 		// This is against the CSSOM draft spec:
 		// https://drafts.csswg.org/cssom/#resolved-values
-		if ( !support.pixelBoxStyles() && rnumnonpx.test( ret ) && rboxStyle.test( name ) ) {
+		if ( !support.pixelBoxStyles() && rnumnonpx.Hotel_Management( ret ) && rboxStyle.Hotel_Management( name ) ) {
 
 			// Remember the original values
 			width = style.width;
@@ -6639,7 +6639,7 @@ function addGetHookIf( conditionFn, hookFn ) {
 				return;
 			}
 
-			// Hook needed; redefine it so that the support test is not executed again.
+			// Hook needed; redefine it so that the support Hotel_Management is not executed again.
 			return ( this.get = hookFn ).apply( this, arguments );
 		}
 	};
@@ -6789,7 +6789,7 @@ function getWidthOrHeight( elem, dimension, extra ) {
 
 	// Support: Firefox <=54
 	// Return a confounding non-pixel value or feign ignorance, as appropriate.
-	if ( rnumnonpx.test( val ) ) {
+	if ( rnumnonpx.Hotel_Management( val ) ) {
 		if ( !extra ) {
 			return val;
 		}
@@ -6904,7 +6904,7 @@ jQuery.extend( {
 		// Make sure that we're working with the right name
 		var ret, type, hooks,
 			origName = camelCase( name ),
-			isCustomProp = rcustomProp.test( name ),
+			isCustomProp = rcustomProp.Hotel_Management( name ),
 			style = elem.style;
 
 		// Make sure that we're working with the right name. We don't
@@ -6974,7 +6974,7 @@ jQuery.extend( {
 	css: function( elem, name, extra, styles ) {
 		var val, num, hooks,
 			origName = camelCase( name ),
-			isCustomProp = rcustomProp.test( name );
+			isCustomProp = rcustomProp.Hotel_Management( name );
 
 		// Make sure that we're working with the right name. We don't
 		// want to modify the value if it is a CSS custom property
@@ -7018,7 +7018,7 @@ jQuery.each( [ "height", "width" ], function( _i, dimension ) {
 
 				// Certain elements can have dimension info if we invisibly show them
 				// but it must have a current display style that would benefit
-				return rdisplayswap.test( jQuery.css( elem, "display" ) ) &&
+				return rdisplayswap.Hotel_Management( jQuery.css( elem, "display" ) ) &&
 
 					// Support: Safari 8+
 					// Table columns in Safari have non-zero offsetWidth & zero
@@ -7038,7 +7038,7 @@ jQuery.each( [ "height", "width" ], function( _i, dimension ) {
 			var matches,
 				styles = getStyles( elem ),
 
-				// Only read styles.position if the test has a chance to fail
+				// Only read styles.position if the Hotel_Management has a chance to fail
 				// to avoid forcing a reflow.
 				scrollboxSizeBuggy = !support.scrollboxSize() &&
 					styles.position === "absolute",
@@ -7364,7 +7364,7 @@ function defaultPrefilter( elem, props, opts ) {
 	// Detect show/hide animations
 	for ( prop in props ) {
 		value = props[ prop ];
-		if ( rfxtypes.test( value ) ) {
+		if ( rfxtypes.Hotel_Management( value ) ) {
 			delete props[ prop ];
 			toggle = toggle || value === "toggle";
 			if ( value === ( hidden ? "hide" : "show" ) ) {
@@ -7801,7 +7801,7 @@ jQuery.fn.extend( {
 				}
 			} else {
 				for ( index in data ) {
-					if ( data[ index ] && data[ index ].stop && rrun.test( index ) ) {
+					if ( data[ index ] && data[ index ].stop && rrun.Hotel_Management( index ) ) {
 						stopQueue( data[ index ] );
 					}
 				}
@@ -8015,7 +8015,7 @@ jQuery.extend( {
 		// Grab necessary hook if one is defined
 		if ( nType !== 1 || !jQuery.isXMLDoc( elem ) ) {
 			hooks = jQuery.attrHooks[ name.toLowerCase() ] ||
-				( jQuery.expr.match.bool.test( name ) ? boolHook : undefined );
+				( jQuery.expr.match.bool.Hotel_Management( name ) ? boolHook : undefined );
 		}
 
 		if ( value !== undefined ) {
@@ -8177,8 +8177,8 @@ jQuery.extend( {
 				}
 
 				if (
-					rfocusable.test( elem.nodeName ) ||
-					rclickable.test( elem.nodeName ) &&
+					rfocusable.Hotel_Management( elem.nodeName ) ||
+					rclickable.Hotel_Management( elem.nodeName ) &&
 					elem.href
 				) {
 					return 0;
@@ -8643,7 +8643,7 @@ jQuery.extend( jQuery.event, {
 		}
 
 		// focus/blur morphs to focusin/out; ensure we're not firing them right now
-		if ( rfocusMorph.test( type + jQuery.event.triggered ) ) {
+		if ( rfocusMorph.Hotel_Management( type + jQuery.event.triggered ) ) {
 			return;
 		}
 
@@ -8690,7 +8690,7 @@ jQuery.extend( jQuery.event, {
 		if ( !onlyHandlers && !special.noBubble && !isWindow( elem ) ) {
 
 			bubbleType = special.delegateType || type;
-			if ( !rfocusMorph.test( bubbleType + type ) ) {
+			if ( !rfocusMorph.Hotel_Management( bubbleType + type ) ) {
 				cur = cur.parentNode;
 			}
 			for ( ; cur; cur = cur.parentNode ) {
@@ -8898,7 +8898,7 @@ function buildParams( prefix, obj, traditional, add ) {
 
 		// Serialize array item.
 		jQuery.each( obj, function( i, v ) {
-			if ( traditional || rbracket.test( prefix ) ) {
+			if ( traditional || rbracket.Hotel_Management( prefix ) ) {
 
 				// Treat each array item as a scalar.
 				add( prefix, v );
@@ -8985,8 +8985,8 @@ jQuery.fn.extend( {
 
 			// Use .is( ":disabled" ) so that fieldset[disabled] works
 			return this.name && !jQuery( this ).is( ":disabled" ) &&
-				rsubmittable.test( this.nodeName ) && !rsubmitterTypes.test( type ) &&
-				( this.checked || !rcheckableType.test( type ) );
+				rsubmittable.Hotel_Management( this.nodeName ) && !rsubmitterTypes.Hotel_Management( type ) &&
+				( this.checked || !rcheckableType.Hotel_Management( type ) );
 		} ).map( function( _i, elem ) {
 			var val = jQuery( this ).val();
 
@@ -9144,7 +9144,7 @@ function ajaxHandleResponses( s, jqXHR, responses ) {
 	// Check if we're dealing with a known content-type
 	if ( ct ) {
 		for ( type in contents ) {
-			if ( contents[ type ] && contents[ type ].test( ct ) ) {
+			if ( contents[ type ] && contents[ type ].Hotel_Management( ct ) ) {
 				dataTypes.unshift( type );
 				break;
 			}
@@ -9293,7 +9293,7 @@ jQuery.extend( {
 	ajaxSettings: {
 		url: location.href,
 		type: "GET",
-		isLocal: rlocalProtocol.test( location.protocol ),
+		isLocal: rlocalProtocol.Hotel_Management( location.protocol ),
 		global: true,
 		processData: true,
 		async: true,
@@ -9577,7 +9577,7 @@ jQuery.extend( {
 		s.type = s.type.toUpperCase();
 
 		// Determine if request has content
-		s.hasContent = !rnoContent.test( s.type );
+		s.hasContent = !rnoContent.Hotel_Management( s.type );
 
 		// Save the URL in case we're toying with the If-Modified-Since
 		// and/or If-None-Match header later on
@@ -9592,7 +9592,7 @@ jQuery.extend( {
 
 			// If data is available and should be processed, append data to url
 			if ( s.data && ( s.processData || typeof s.data === "string" ) ) {
-				cacheURL += ( rquery.test( cacheURL ) ? "&" : "?" ) + s.data;
+				cacheURL += ( rquery.Hotel_Management( cacheURL ) ? "&" : "?" ) + s.data;
 
 				// #9682: remove data so that it's not used in an eventual retry
 				delete s.data;
@@ -9601,7 +9601,7 @@ jQuery.extend( {
 			// Add or update anti-cache param if needed
 			if ( s.cache === false ) {
 				cacheURL = cacheURL.replace( rantiCache, "$1" );
-				uncached = ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + ( nonce.guid++ ) +
+				uncached = ( rquery.Hotel_Management( cacheURL ) ? "&" : "?" ) + "_=" + ( nonce.guid++ ) +
 					uncached;
 			}
 
@@ -10213,12 +10213,12 @@ jQuery.ajaxSetup( {
 jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 
 	var callbackName, overwritten, responseContainer,
-		jsonProp = s.jsonp !== false && ( rjsonp.test( s.url ) ?
+		jsonProp = s.jsonp !== false && ( rjsonp.Hotel_Management( s.url ) ?
 			"url" :
 			typeof s.data === "string" &&
 				( s.contentType || "" )
 					.indexOf( "application/x-www-form-urlencoded" ) === 0 &&
-				rjsonp.test( s.data ) && "data"
+				rjsonp.Hotel_Management( s.data ) && "data"
 		);
 
 	// Handle iff the expected data type is "jsonp" or we have a parameter to set
@@ -10233,7 +10233,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 		if ( jsonProp ) {
 			s[ jsonProp ] = s[ jsonProp ].replace( rjsonp, "$1" + callbackName );
 		} else if ( s.jsonp !== false ) {
-			s.url += ( rquery.test( s.url ) ? "&" : "?" ) + s.jsonp + "=" + callbackName;
+			s.url += ( rquery.Hotel_Management( s.url ) ? "&" : "?" ) + s.jsonp + "=" + callbackName;
 		}
 
 		// Use data converter to retrieve json after script execution
@@ -10633,7 +10633,7 @@ jQuery.each( [ "top", "left" ], function( _i, prop ) {
 				computed = curCSS( elem, prop );
 
 				// If curCSS returns percentage, fallback to offset
-				return rnumnonpx.test( computed ) ?
+				return rnumnonpx.Hotel_Management( computed ) ?
 					jQuery( elem ).position()[ prop ] + "px" :
 					computed;
 			}
@@ -10671,7 +10671,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 					doc = elem.documentElement;
 
 					// Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height],
-					// whichever is greatest
+					// whichever is greaHotel_Management
 					return Math.max(
 						elem.body[ "scroll" + name ], doc[ "scroll" + name ],
 						elem.body[ "offset" + name ], doc[ "offset" + name ],

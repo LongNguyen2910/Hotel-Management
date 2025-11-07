@@ -81,6 +81,13 @@ namespace Hotel_Management.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                if (_context.Phongs.Count(k => k.Maphong == phong.Maphong) > 0)
+                {
+                    ModelState.AddModelError("Maphong", "Mã phòng đã tồn tại");
+                    return View(phong);
+                }
+
                 if (AnhFile != null && AnhFile.Length > 0)
                 {
                     

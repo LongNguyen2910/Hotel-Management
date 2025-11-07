@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
+using Hotel_Management.Helpers;
 
 namespace Hotel_Management.Controllers
 {
@@ -21,12 +22,13 @@ namespace Hotel_Management.Controllers
 
         // GET: Thietbiphongs
         // Search by mã thiết bị (Mathietbi) and return view models so the view's model type matches
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             ViewData["CurrentFilter"] = searchString ?? string.Empty;
             var trimmed = (searchString ?? string.Empty).Trim();
 
             var query = _context.Thietbis
+                                .AsNoTracking()
                                 .Include(t => t.Maphongs)
                                 .AsQueryable();
 
@@ -42,8 +44,12 @@ namespace Hotel_Management.Controllers
                 }
             }
 
-            var list = await query.ToListAsync();
-            return View(list);
+            query = query.OrderBy(t => t.Mathietbi);
+
+            int pageSize = 10;
+            var model = await PaginatedList<Thietbi>.CreateAsync(query, pageNumber ?? 1, pageSize);
+
+            return View(model);
         }
 
         // GET: Thietbiphongs/Create

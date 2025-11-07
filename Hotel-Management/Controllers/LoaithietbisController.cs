@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Hotel_Management.Models;
+using Hotel_Management.Helpers;
 
 namespace Hotel_Management.Controllers
 {
@@ -18,22 +19,26 @@ namespace Hotel_Management.Controllers
             _context = context;
         }
 
-        // GET: Thietbis
-        public async Task<IActionResult> Index(string searchString)
+        // GET: Loaithietbis
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             ViewData["CurrentFilter"] = searchString ?? string.Empty;
 
-            var query = _context.Loaithietbis.AsQueryable();
+            var query = _context.Loaithietbis
+                .AsNoTracking()
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 var trimmed = searchString.Trim();
-                // use EF.Functions.Like for SQL LIKE; case-sensitivity depends on DB collation
-                query = query.Where(t => EF.Functions.Like(t.Maloaithietbi, $"%{trimmed}%"));
+                query = query.Where(t => EF.Functions.Like(t.Maloaithietbi, $"%{trimmed}%")
+                                         || EF.Functions.Like(t.Tenloaithietbi, $"%{trimmed}%"));
             }
 
-            var list = await query.ToListAsync();
-            return View(list);
+            query = query.OrderBy(t => t.Maloaithietbi);
+
+            int pageSize = 10;
+            return View(await PaginatedList<Loaithietbi>.CreateAsync(query, pageNumber ?? 1, pageSize));
         }
         // GET: Loaithietbis/Details/5
         public async Task<IActionResult> Details(string id)
@@ -60,8 +65,6 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Loaithietbis/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Maloaithietbi,Tenloaithietbi")] Loaithietbi loaithietbi)
@@ -92,8 +95,6 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Loaithietbis/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Maloaithietbi,Tenloaithietbi")] Loaithietbi loaithietbi)

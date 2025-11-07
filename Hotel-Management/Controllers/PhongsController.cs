@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
+using Hotel_Management.Helpers;
 
 namespace Hotel_Management.Controllers
 {
@@ -23,27 +24,38 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Phongs
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             ViewData["CurrentFilter"] = searchString ?? string.Empty;
             var trimmed = (searchString ?? string.Empty).Trim().ToUpper();
 
             var query = _context.Phongs
+                .AsNoTracking()
                 .Include(p => p.MaloaiphongNavigation)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(trimmed))
             {
-                // use SQL LIKE 
+                // preserve existing behavior — search text was uppercased before
                 query = query.Where(p => EF.Functions.Like(p.Tenphong, $"%{trimmed}%"));
             }
 
-            var list = await query.ToListAsync();
-            if (!list.Any())
+            query = query.OrderBy(p => p.Maphong);
+
+            int pageSize = 10;
+            var model = await PaginatedList<Phong>.CreateAsync(query, pageNumber ?? 1, pageSize);
+
+            // preserve NoResults indicator used by the view
+            if (!model.Any())
             {
                 ViewData["NoResults"] = true;
             }
-            return View(list);
+            else
+            {
+                ViewData["NoResults"] = null;
+            }
+
+            return View(model);
         }
 
         // GET: Phongs/Details/5
@@ -73,8 +85,6 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Phongs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Maphong,Tenphong,Tinhtrang,Mota,Maloaiphong,Anhphong")] Phong phong, IFormFile? AnhFile)
@@ -140,8 +150,6 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Phongs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Maphong,Tenphong,Tinhtrang,Mota,Maloaiphong,Anhphong")] Phong phong, IFormFile? AnhFile)

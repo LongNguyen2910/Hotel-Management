@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Hotel_Management.Helpers;
+
 
 namespace Hotel_Management.Controllers
 {
@@ -22,23 +22,19 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Thietbiduocbaotris
-        public async Task<IActionResult> Index(int? searchMathietbi, int? pageNumber)
+        public async Task<IActionResult> Index(int? searchMathietbi)
         {
             ViewData["CurrentFilter"] = searchMathietbi?.ToString() ?? string.Empty;
 
-            var query = _context.Thietbiduocbaotris
-                .AsNoTracking()
-                .AsQueryable();
+            var query = _context.Thietbiduocbaotris.AsQueryable();
 
             if (searchMathietbi.HasValue)
             {
                 query = query.Where(t => t.Mathietbi == searchMathietbi.Value);
             }
 
-            query = query.OrderByDescending(t => t.Ngaybatdau);
-
-            int pageSize = 10;
-            return View(await PaginatedList<Thietbiduocbaotri>.CreateAsync(query, pageNumber ?? 1, pageSize));
+            var list = await query.OrderByDescending(t => t.Ngaybatdau).ToListAsync();
+            return View(list);
         }
 
         // GET: Thietbiduocbaotris/Create

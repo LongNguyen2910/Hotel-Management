@@ -1,4 +1,4 @@
-﻿@model Hotel_Management.Helpers.PaginatedList<Hotel_Management.Models.Thietbiduocbaotri>
+﻿@model IEnumerable<Hotel_Management.Models.Thietbiduocbaotri>
 
 @{
     var currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
@@ -50,27 +50,4 @@
             </table>
         </div>
     </div>
-</div>
-
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
-
-<div class="mt-3">
-    <a asp-action="Index"
-       asp-route-pageNumber="@(Model.PageIndex - 1)"
-       asp-route-searchMathietbi="@ViewData["CurrentFilter"]"
-       class="btn btn-outline-primary @prevDisabled">
-        <i class="bx bx-chevron-left"></i> Trước
-    </a>
-    <a asp-action="Index"
-       asp-route-pageNumber="@(Model.PageIndex + 1)"
-       asp-route-searchMathietbi="@ViewData["CurrentFilter"]"
-       class="btn btn-outline-primary @nextDisabled">
-        Sau <i class="bx bx-chevron-right"></i>
-    </a>
-    <span class="ms-2 text-muted">
-        Trang @Model.PageIndex / @Model.TotalPages
-    </span>
 </div>

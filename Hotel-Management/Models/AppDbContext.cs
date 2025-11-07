@@ -453,11 +453,11 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Nhacungcap>(entity =>
         {
-            entity.HasKey(e => e.Mancc).HasName("SYS_C007672");
+            entity.HasKey(e => e.Manhacungcap).HasName("SYS_C007672");
 
             entity.ToTable("NHACUNGCAP");
 
-            entity.Property(e => e.Mancc)
+            entity.Property(e => e.Manhacungcap)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("MANCC");
@@ -469,11 +469,11 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("EMAIL");
-            entity.Property(e => e.Sdt)
+            entity.Property(e => e.Sodienthoai)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("SDT");
-            entity.Property(e => e.Tenncc)
+            entity.Property(e => e.Tennhacungcap)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("TENNCC");

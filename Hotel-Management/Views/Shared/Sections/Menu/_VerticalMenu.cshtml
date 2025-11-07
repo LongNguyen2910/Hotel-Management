@@ -170,8 +170,8 @@
                 <div>Quản lý kho</div>
             </a>
             <ul class="menu-sub">
-                <li class='menu-item@(currentPage == "/Auth/LoginBasic" ? " active" : "")'>
-                    <a asp-controller="Auth" asp-action="LoginBasic" class="menu-link">
+                <li class='menu-item@(currentPage.StartsWith("/Nhacungcaps") ? " active" : "")'>
+                    <a asp-controller="Nhacungcaps" asp-action="Index" class="menu-link">
                         <div>Nhà cung cấp</div>
                     </a>
                 </li>

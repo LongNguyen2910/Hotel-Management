@@ -1,0 +1,54 @@
+﻿@model Hotel_Management.Models.Nhacungcap
+
+@{
+    ViewData["Title"] = "Sửa nhà cung cấp";
+}
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Sửa nhà cung cấp</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="Manhacungcap" />
+
+                <div class="mb-3">
+                    <label class="form-label">Mã nhà cung cấp</label>
+                    <input asp-for="Manhacungcap" class="form-control" readonly />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Tên nhà cung cấp</label>
+                    <input asp-for="Tennhacungcap" class="form-control" />
+                    <span asp-validation-for="Tennhacungcap" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Địa chỉ</label>
+                    <input asp-for="Diachi" class="form-control" />
+                    <span asp-validation-for="Diachi" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Số điện thoại</label>
+                    <input asp-for="Sodienthoai" class="form-control" />
+                    <span asp-validation-for="Sodienthoai" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Lưu</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<partial name="_ValidationScriptsPartial" />

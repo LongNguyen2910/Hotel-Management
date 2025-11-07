@@ -1,0 +1,79 @@
+﻿@model Hotel_Management.Helpers.PaginatedList<Hotel_Management.Models.Nhacungcap>
+
+@{
+    ViewData["Title"] = "Danh sách nhà cung cấp";
+    var currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
+}
+
+<div class="col-12">
+    <div class="card overflow-hidden">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Nhà cung cấp</h5>
+            <div class="d-flex align-items-center">
+                <form asp-action="Index" method="get" class="d-flex me-3">
+                    <input name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm kiếm..." />
+                    <button type="submit" class="btn btn-sm btn-outline-primary">Tìm</button>
+                    @if (!string.IsNullOrWhiteSpace(currentFilter))
+                    {
+                        <a asp-action="Index" class="btn btn-sm btn-link ms-2">Xóa</a>
+                    }
+                </form>
+                <a asp-controller="Nhacungcaps" asp-action="Create" class="btn btn-sm btn-primary">Thêm nhà cung cấp</a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-truncate">Mã nhà cung cấp</th>
+                        <th class="text-truncate">Tên nhà cung cấp</th>
+                        <th class="text-truncate">Địa chỉ</th>
+                        <th class="text-truncate">SĐT</th>
+                        <th class="text-truncate">Email</th>
+                        <th class="text-truncate">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+@foreach (var item in Model)
+{
+                    <tr>
+                        <td class="text-truncate">@item.Manhacungcap</td>
+                        <td class="text-truncate">@item.Tennhacungcap</td>
+                        <td class="text-truncate">@item.Diachi</td>
+                        <td class="text-truncate">@item.Sodienthoai</td>
+                        <td class="text-truncate">@item.Email</td>
+                        <td>
+                            <a asp-controller="Nhacungcaps" asp-action="Edit" asp-route-id="@item.Manhacungcap" class="btn btn-sm btn-outline-primary me-2">Sửa</a>
+                            <a asp-controller="Nhacungcaps" asp-action="Delete" asp-route-id="@item.Manhacungcap" class="btn btn-sm btn-outline-danger">Xóa</a>
+                        </td>
+                    </tr>
+}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<div class="mt-3">
+    <a asp-action="Index"
+       asp-route-pageNumber="@(Model.PageIndex - 1)"
+       asp-route-searchString="@ViewData["CurrentFilter"]"
+       class="btn btn-outline-primary @prevDisabled">
+        <i class="bx bx-chevron-left"></i> Trước
+    </a>
+    <a asp-action="Index"
+       asp-route-pageNumber="@(Model.PageIndex + 1)"
+       asp-route-searchString="@ViewData["CurrentFilter"]"
+       class="btn btn-outline-primary @nextDisabled">
+        Sau <i class="bx bx-chevron-right"></i>
+    </a>
+    <span class="ms-2 text-muted">
+        Trang @Model.PageIndex / @Model.TotalPages
+    </span>
+</div>

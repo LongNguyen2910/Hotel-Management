@@ -250,6 +250,11 @@ namespace Hotel_Management.Controllers
                 return NotFound();
             }
 
+            if (await CheckPhong(id))
+            {
+                TempData["DeletePhongError"] = $"Không thể xóa phòng {id} vì đang được tham chiếu ở bảng khác (đặt phòng hoặc thiết bị).";
+            }
+
             return View(phong);
         }
 
@@ -258,6 +263,12 @@ namespace Hotel_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
+
+            if (await CheckPhong(id))
+            {
+                TempData["DeletePhongError"] = $"Không thể xóa phòng {id} vì đang được tham chiếu ở bảng khác (đặt phòng hoặc thiết bị).";
+            }
+
             var phong = await _context.Phongs.FindAsync(id);
             if (phong != null)
             {
@@ -278,12 +289,13 @@ namespace Hotel_Management.Controllers
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            } catch (DbUpdateConcurrencyException)
+            } catch (DbUpdateException ex)
             {
-                if (!_context.Phongs.Any(e => e.Maphong == phong.Maphong))
-                    return NotFound();
-                throw;
+                string innerMessage = ex.InnerException?.Message ?? ex.Message;
+                ModelState.AddModelError("", $"Có lỗi xảy ra khi lưu dữ liệu: {innerMessage}");
+                return View(phong);
             }
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult GetImage(string id)
@@ -313,6 +325,26 @@ namespace Hotel_Management.Controllers
 
             var imageBytes = System.IO.File.ReadAllBytes(filePath);
             return File(imageBytes, contentType);
+        }
+
+        private async Task<bool> CheckPhong(string maphong)
+        {
+            if (string.IsNullOrWhiteSpace(maphong)) return false;
+
+            // Đặt phòng
+            var usedInBookings = await _context.Khachhangdatphongs
+                .Where(x => x.Maphong == maphong)
+                .Select(_ => 1)
+                .CountAsync() > 0;
+
+            // Thiết bị kết nối phòng (many-to-many)
+            var usedInDevices = await _context.Phongs
+                .Where(p => p.Maphong == maphong)
+                .SelectMany(p => p.Mathietbis)
+                .Select(_ => 1)
+                .CountAsync() > 0;
+
+            return usedInBookings || usedInDevices;
         }
     }
 }

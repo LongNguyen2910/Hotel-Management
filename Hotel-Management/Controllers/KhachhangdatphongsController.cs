@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Hotel_Management.Models;
+using System.Globalization;
 
 namespace Hotel_Management.Controllers
 {
@@ -89,57 +90,81 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Khachhangdatphongs/Edit/5
-        public async Task<IActionResult> Edit(int? id1, string? id2)
+        public async Task<IActionResult> Edit(int? makhachhang, string? maphong)
         {
-            if (id1 == null)
-            {
+            if (makhachhang == null || string.IsNullOrWhiteSpace(maphong))
                 return NotFound();
-            }
 
             var booking = await _context.Khachhangdatphongs
-                .FirstOrDefaultAsync(x => x.Makhachhang == id1 && x.Maphong == id2);
+                .FirstOrDefaultAsync(x => x.Makhachhang == makhachhang && x.Maphong == maphong);
+
             if (booking == null)
-            {
                 return NotFound();
-            }
+
             return View(booking);
         }
 
-        // POST: Khachhangdatphongs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Makhachhang,Maphong,Ngaydat,Ngaycheckin,Ngaycheckout")] Khachhangdatphong khachhangdatphong)
+        public async Task<IActionResult> Edit(int makhachhang, string maphong, [Bind("Makhachhang,Maphong,Ngaydat,Ngaycheckin,Ngaycheckout")] Khachhangdatphong model)
         {
-            if (id != khachhangdatphong.Makhachhang)
-            {
+            // Tìm bản ghi theo khóa kép
+            var existing = await _context.Khachhangdatphongs
+                .FirstOrDefaultAsync(x => x.Makhachhang == makhachhang && x.Maphong == maphong);
+            if (existing == null)
                 return NotFound();
-            }
 
+            // Nếu binder lỗi ngày giờ (ModelState invalid) thì tự parse thủ công các field
+            existing.Ngaydat = ParseFlexible(Request.Form["Ngaydat"]);
+            existing.Ngaycheckin = ParseFlexible(Request.Form["Ngaycheckin"]);
+            existing.Ngaycheckout = ParseFlexible(Request.Form["Ngaycheckout"]);
+
+            // Nếu binder thành công thì model đã có giá trị => ưu tiên giá trị model
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(khachhangdatphong);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!KhachhangdatphongExists(khachhangdatphong.Maphong))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                existing.Ngaydat = model.Ngaydat;
+                existing.Ngaycheckin = model.Ngaycheckin;
+                existing.Ngaycheckout = model.Ngaycheckout;
             }
-            ViewData["Makhachhang"] = new SelectList(_context.Khachhangs, "Makhachhang", "Makhachhang", khachhangdatphong.Makhachhang);
-            ViewData["Maphong"] = new SelectList(_context.Phongs, "Maphong", "Maphong", khachhangdatphong.Maphong);
-            return View(khachhangdatphong);
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private DateTime? ParseFlexible(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input)) return null;
+
+            // Loại bỏ khoảng trắng dư
+            input = input.Trim();
+
+            // Danh sách pattern chấp nhận
+            string[] patterns =
+            {
+                "yyyy-MM-ddTHH:mm",          // datetime-local chuẩn
+                "yyyy-MM-dd HH:mm",          // ISO gần chuẩn
+                "dd/MM/yyyy HH:mm",          // VN 24h
+                "dd/MM/yyyy hh:mm tt",       // VN 12h AM/PM
+                "MM/dd/yyyy HH:mm",          // US 24h
+                "MM/dd/yyyy hh:mm tt"        // US 12h AM/PM
+            };
+
+            // Thử parse qua nhiều culture
+            var cultures = new[] { CultureInfo.InvariantCulture, new CultureInfo("vi-VN"), new CultureInfo("en-US") };
+
+            foreach (var culture in cultures)
+            {
+                // Thử exact trước
+                foreach (var p in patterns)
+                {
+                    if (DateTime.TryParseExact(input, p, culture, DateTimeStyles.None, out var dt))
+                        return dt;
+                }
+                // Sau đó thử parse chung
+                if (DateTime.TryParse(input, culture, DateTimeStyles.None, out var general))
+                    return general;
+            }
+            return null; // Không parse được => null
         }
 
         // GET: Khachhangdatphongs/Delete/5
@@ -181,10 +206,6 @@ namespace Hotel_Management.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool KhachhangdatphongExists(string id)
-        {
-            return _context.Khachhangdatphongs.Any(e => e.Maphong == id);
-        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

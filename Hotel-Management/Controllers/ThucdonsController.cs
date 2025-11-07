@@ -42,7 +42,7 @@ namespace Hotel_Management.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Mathucdon,Ngayapdung,Ngaytao")] 
-            Thucdon thucdon, string[] selectedMon)
+            Thucdon thucdon, string[] selectedMons)
         {
             if (_context.Thucdons.Where(t => t.Mathucdon == thucdon.Mathucdon).Count() > 0)
             {
@@ -51,9 +51,9 @@ namespace Hotel_Management.Controllers
 
             if (ModelState.IsValid)
             {
-                if (selectedMon != null)
+                if (selectedMons != null)
                 {
-                    foreach (var monId in selectedMon)
+                    foreach (var monId in selectedMons)
                     {
                         // Tìm món ăn trong DB
                         var monToAdd = await _context.Mons.FindAsync(monId);
@@ -88,7 +88,7 @@ namespace Hotel_Management.Controllers
                 return NotFound();
             }
           
-            ViewBag.AllMons = _context.Mons.ToList();
+            ViewBag.AllMons = await _context.Mons.ToListAsync();
             ViewBag.SelectedMonIds = thucdon.Mamons.Select(m => m.Mamon).ToHashSet();
             return View(thucdon);
         }
@@ -99,7 +99,7 @@ namespace Hotel_Management.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, DateTime? date,[Bind("Mathucdon,Ngayapdung,Ngaytao")] 
-            Thucdon thucdon, string[] selectedMon)
+            Thucdon thucdon, string[] selectedMons)
         {
             if (date == null)
             {
@@ -131,9 +131,9 @@ namespace Hotel_Management.Controllers
                     thucdonToUpdate.Mamons.Clear();
 
                     // 2. Thêm lại các món mới được chọn
-                    if (selectedMon != null)
+                    if (selectedMons != null)
                     {
-                        foreach (var monId in selectedMon)
+                        foreach (var monId in selectedMons)
                         {
                             var monToAdd = await _context.Mons.FindAsync(monId);
                             if (monToAdd != null)
@@ -158,7 +158,7 @@ namespace Hotel_Management.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewBag.AllMons = _context.Mons.ToList();
+            ViewBag.AllMons = await _context.Mons.ToListAsync();
             return View(thucdon);
         }
 

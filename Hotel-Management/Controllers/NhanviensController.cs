@@ -43,8 +43,6 @@ namespace Hotel_Management.Controllers
                 new SelectListItem { Text = "Đang làm", Value = "1" }
             };
             return View(await PaginatedList<Nhanvien>.CreateAsync(modelContext.AsNoTracking(), pageNumber ?? 1, pageSize));
-            //var nhanvien = _context.Nhanviens.Select(n => n.Manv);
-            //return View(await nhanvien.ToListAsync());
         }
 
         // GET: NhanVien/Details/5

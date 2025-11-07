@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Hotel_Management.Models;
+using Hotel_Management.Helpers;
 
 namespace Hotel_Management.Controllers
 {
@@ -19,10 +20,13 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Thucdons
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
             var thucdons = _context.Thucdons.Include(t => t.Mamons);
-            return View(await thucdons.ToListAsync());
+
+            int pageSize = 10;
+
+            return View(await PaginatedList<Thucdon>.CreateAsync(thucdons.AsNoTracking(),pageNumber ?? 1,pageSize));
         }
 
         // GET: Thucdons/Create

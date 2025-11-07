@@ -20,8 +20,10 @@ public partial class Nhanvien
     public DateTime? Ngaysinh { get; set; }
     [Display(Name = "Số điện thoại")]
     [Required(ErrorMessage = "Số điện thoại không được để trống")]
+    [StringLength(10, ErrorMessage = "Số điện thoại phải đúng 10 chữ số",MinimumLength = 10)]
     public string? Sodienthoai { get; set; }
     [Required(ErrorMessage = "CCCD không được để trống")]
+    [StringLength(12, ErrorMessage = "Số CCCD phải đúng 12 chữ số", MinimumLength = 12)]
     public string? Cccd { get; set; }
     [Display(Name = "Ngày vào làm")]
     [Required(ErrorMessage = "Ngày vào làm không được để trống")]

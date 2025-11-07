@@ -26,9 +26,10 @@
                 <div class="card-body">
                     <h5 class="card-title">@item.MaloaiphongNavigation.Tenloaiphong - @item.Tenphong</h5>
                     <p class="card-text">@item.Mota</p>
-                    <a asp-controller="Khachhangs" asp-action="Create" asp-route-maphong="@item.Maphong" class="btn btn-outline-primary">
-                        Đặt Phòng
-                    </a>
+                    <form asp-action="Create" method="get">
+                        <input type="hidden" name="maphong" value="@item.Maphong" />
+                        <button type="submit" class="btn btn-outline-primary px-3">Đặt phòng</button>
+                    </form>
                 </div>
             </div>
         </div>

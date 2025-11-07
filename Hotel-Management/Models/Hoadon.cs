@@ -17,7 +17,7 @@ public partial class Hoadon
 
     public int? Makhachhang { get; set; }
 
-    public string Manv { get; set; } = null!;
+    public string? Manv { get; set; } = null!;
 
     public virtual Khachhang? MakhachhangNavigation { get; set; }
 

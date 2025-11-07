@@ -11,7 +11,7 @@ public partial class Khachhangdatmon
 
     public DateTime Ngaydat { get; set; }
 
-    public byte? Soluong { get; set; }
+    public int? Soluong { get; set; }
 
     public virtual Khachhang MakhachhangNavigation { get; set; } = null!;
 

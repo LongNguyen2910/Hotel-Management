@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Hotel_Management.Models.Mon>
+
+@{
+    ViewData["Title"] = "Xác nhận đặt món";
+}
+
+<h2 class="text-center mb-3">Xác nhận đặt món</h2>
+
+<form asp-action="SaveOrder" method="post">
+    <div class="mb-3">
+        <label for="makhachhang" class="form-label">Mã khách hàng</label>
+        <input type="number" name="makhachhang" class="form-control" placeholder="Nhập mã khách hàng" required />
+    </div>
+
+    <table class="table table-bordered text-center align-middle">
+        <thead>
+            <tr>
+                <th>Ảnh</th>
+                <th>Tên món</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <img src="@Url.Action("GetImage", "Mons", new { id = item.Mamon })"
+                             class="img-thumbnail"
+                             style="width:100px; height:100px; object-fit:cover;" />
+                    </td>
+                    <td>
+                        @item.Tenmon
+                        <input type="hidden" name="mamon" value="@item.Mamon" />
+                    </td>
+                    <td>@item.Gia</td>
+                    <td><input type="number" name="soluong" class="form-control" value="1" min="1" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="text-center mt-3">
+        <button type="submit" class="btn btn-success px-4">Xác nhận đặt món</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2 px-4">Quay lại</a>
+    </div>
+</form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Hotel_Management.Models.Khachhangdatmon>
+
+@{
+    ViewData["Title"] = "Danh sách đặt món";
+    var currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
+}
+
+<div class="col-12">
+    <div class="card overflow-hidden">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Danh sách khách hàng đặt món</h5>
+            <div class="d-flex align-items-center">
+                <form asp-action="Index" method="get" class="d-flex me-3">
+                    <input name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm kiếm theo mã khách hàng..." />
+                    <button type="submit" class="btn btn-sm btn-outline-primary">Tìm</button>
+                </form>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-truncate">Mã khách hàng</th>
+                        <th class="text-truncate">Số lượng</th>
+                        <th class="text-truncate">Mã món</th>
+                        <th class="text-truncate">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewData["NoResults"] != null)
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                <i class="bi bi-exclamation-circle"></i> Không tìm thấy khách hàng phù hợp
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Makhachhang</td>
+                                <td>@item.Soluong</td>
+                                <td>@item.Mamon</td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Makhachhang" class="btn btn-sm btn-primary me-2">Sửa</a>
+                                    <a asp-action="Delete" asp-route-makhachhang="@item.Makhachhang" asp-route-mamon="@item.Mamon" asp-route-ngaydat="@item.Ngaydat.ToString("o")"  class="btn btn-sm btn-outline-danger">Xóa</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+
+
+            </table>
+        </div>
+    </div>
+</div>

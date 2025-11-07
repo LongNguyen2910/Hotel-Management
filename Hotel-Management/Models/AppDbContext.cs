@@ -243,6 +243,7 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_KHDM_MON");
         });
 
+
         modelBuilder.Entity<Khachhangdatphong>(entity =>
         {
             entity.HasKey(e => new { e.Makhachhang, e.Maphong }).HasName("SYS_C007637");

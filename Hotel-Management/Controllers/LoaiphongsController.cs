@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Hotel_Management.Models;
+using Hotel_Management.Helpers;
 
 namespace Hotel_Management.Controllers
 {
@@ -19,20 +20,26 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Loaiphongs
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             ViewData["CurrentFilter"] = searchString ?? string.Empty;
-            var query = _context.Loaiphongs.AsQueryable();
+            var query = _context.Loaiphongs
+                .AsNoTracking()
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 var trimmed = searchString.Trim();
-                // search by Tenloaiphong 
+                // search by Tenloaiphong
                 query = query.Where(l => EF.Functions.Like(l.Tenloaiphong, $"%{trimmed}%"));
             }
 
-            var list = await query.ToListAsync();
-            return View(list);
+            query = query.OrderBy(l => l.Maloaiphong);
+
+            int pageSize = 10;
+            var model = await PaginatedList<Loaiphong>.CreateAsync(query, pageNumber ?? 1, pageSize);
+
+            return View(model);
         }
 
         // GET: Loaiphongs/Create

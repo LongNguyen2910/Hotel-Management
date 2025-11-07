@@ -95,6 +95,14 @@
                                             <button type="submit" class="btn btn-sm btn-primary">Check-out</button>
                                         </form>
                                     }
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#confirmDeleteModal"
+                                            data-id="@item.Maphong"
+                                            data-name="@item.Makhachhang">
+                                        Xóa
+                                    </button>
                                     <a asp-action="Edit" asp-route-id1="@item.Makhachhang" asp-route-id2 = "@item.Maphong" class="btn btn-sm btn-primary me-2">Sửa</a>
                                 </td>
                             </tr>

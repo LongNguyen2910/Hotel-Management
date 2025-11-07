@@ -57,3 +57,6 @@ nunit-*.xml
 #connection strings
 appsettings.json
 appsettings.*.json
+
+#images
+App_Data/

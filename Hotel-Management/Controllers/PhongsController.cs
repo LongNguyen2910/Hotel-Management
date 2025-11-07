@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
+using Hotel_Management.Helpers;
 
 namespace Hotel_Management.Controllers
 {
@@ -23,27 +24,38 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Phongs
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             ViewData["CurrentFilter"] = searchString ?? string.Empty;
             var trimmed = (searchString ?? string.Empty).Trim().ToUpper();
 
             var query = _context.Phongs
+                .AsNoTracking()
                 .Include(p => p.MaloaiphongNavigation)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(trimmed))
             {
-                // use SQL LIKE 
+                // preserve existing behavior — search text was uppercased before
                 query = query.Where(p => EF.Functions.Like(p.Tenphong, $"%{trimmed}%"));
             }
 
-            var list = await query.ToListAsync();
-            if (!list.Any())
+            query = query.OrderBy(p => p.Maphong);
+
+            int pageSize = 10;
+            var model = await PaginatedList<Phong>.CreateAsync(query, pageNumber ?? 1, pageSize);
+
+            // preserve NoResults indicator used by the view
+            if (!model.Any())
             {
                 ViewData["NoResults"] = true;
             }
-            return View(list);
+            else
+            {
+                ViewData["NoResults"] = null;
+            }
+
+            return View(model);
         }
 
         // GET: Phongs/Details/5
@@ -73,14 +85,19 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Phongs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Maphong,Tenphong,Tinhtrang,Mota,Maloaiphong,Anhphong")] Phong phong, IFormFile? AnhFile)
         {
             if (ModelState.IsValid)
             {
+
+                if (_context.Phongs.Count(k => k.Maphong == phong.Maphong) > 0)
+                {
+                    ModelState.AddModelError("Maphong", "Mã phòng đã tồn tại");
+                    return View(phong);
+                }
+
                 if (AnhFile != null && AnhFile.Length > 0)
                 {
                     
@@ -140,8 +157,6 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Phongs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Maphong,Tenphong,Tinhtrang,Mota,Maloaiphong,Anhphong")] Phong phong, IFormFile? AnhFile)
@@ -235,6 +250,11 @@ namespace Hotel_Management.Controllers
                 return NotFound();
             }
 
+            if (await CheckPhong(id))
+            {
+                TempData["DeletePhongError"] = $"Không thể xóa phòng {id} vì đang được tham chiếu ở bảng khác (đặt phòng hoặc thiết bị).";
+            }
+
             return View(phong);
         }
 
@@ -243,6 +263,12 @@ namespace Hotel_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
+
+            if (await CheckPhong(id))
+            {
+                TempData["DeletePhongError"] = $"Không thể xóa phòng {id} vì đang được tham chiếu ở bảng khác (đặt phòng hoặc thiết bị).";
+            }
+
             var phong = await _context.Phongs.FindAsync(id);
             if (phong != null)
             {
@@ -263,12 +289,13 @@ namespace Hotel_Management.Controllers
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            } catch (DbUpdateConcurrencyException)
+            } catch (DbUpdateException ex)
             {
-                if (!_context.Phongs.Any(e => e.Maphong == phong.Maphong))
-                    return NotFound();
-                throw;
+                string innerMessage = ex.InnerException?.Message ?? ex.Message;
+                ModelState.AddModelError("", $"Có lỗi xảy ra khi lưu dữ liệu: {innerMessage}");
+                return View(phong);
             }
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult GetImage(string id)
@@ -298,6 +325,26 @@ namespace Hotel_Management.Controllers
 
             var imageBytes = System.IO.File.ReadAllBytes(filePath);
             return File(imageBytes, contentType);
+        }
+
+        private async Task<bool> CheckPhong(string maphong)
+        {
+            if (string.IsNullOrWhiteSpace(maphong)) return false;
+
+            // Đặt phòng
+            var usedInBookings = await _context.Khachhangdatphongs
+                .Where(x => x.Maphong == maphong)
+                .Select(_ => 1)
+                .CountAsync() > 0;
+
+            // Thiết bị kết nối phòng (many-to-many)
+            var usedInDevices = await _context.Phongs
+                .Where(p => p.Maphong == maphong)
+                .SelectMany(p => p.Mathietbis)
+                .Select(_ => 1)
+                .CountAsync() > 0;
+
+            return usedInBookings || usedInDevices;
         }
     }
 }

@@ -11,7 +11,7 @@ public partial class Mon
     [Required(ErrorMessage = "Tên không được để trống")]
     public string? Tenmon { get; set; }
     [Required(ErrorMessage = "Giá không được để trống")]
-    public decimal? Gia { get; set; }   
+    public decimal? Gia { get; set; }
     public string? Anhmon { get; set; }
 
     public virtual ICollection<Khachhangdatmon> Khachhangdatmons { get; set; } = new List<Khachhangdatmon>();

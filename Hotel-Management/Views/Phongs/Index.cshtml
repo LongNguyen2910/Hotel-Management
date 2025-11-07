@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Hotel_Management.Models.Phong>
+﻿@model Hotel_Management.Helpers.PaginatedList<Hotel_Management.Models.Phong>
 
 @{
     ViewData["Title"] = "Index";
@@ -60,7 +60,6 @@
                             </td>
                             <td><h6 class="mb-0 text-truncate">@item.Mota</h6></td>
                             <td>
-                                <!-- Trigger modal instead of navigating -->
                                 <button type="button"
                                         class="btn btn-sm btn-outline-danger"
                                         data-bs-toggle="modal"
@@ -78,6 +77,30 @@
         </div>
     </div>
 </div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<div class="mt-3">
+    <a asp-action="Index"
+       asp-route-pageNumber="@(Model.PageIndex - 1)"
+       asp-route-searchString="@ViewData["CurrentFilter"]"
+       class="btn btn-outline-primary @prevDisabled">
+        <i class="bx bx-chevron-left"></i> Trước
+    </a>
+    <a asp-action="Index"
+       asp-route-pageNumber="@(Model.PageIndex + 1)"
+       asp-route-searchString="@ViewData["CurrentFilter"]"
+       class="btn btn-outline-primary @nextDisabled">
+        Sau <i class="bx bx-chevron-right"></i>
+    </a>
+    <span class="ms-2 text-muted">
+        Trang @Model.PageIndex / @Model.TotalPages
+    </span>
+</div>
+
 <!-- Delete confirm card (Bootstrap modal) -->
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -86,18 +109,33 @@
                 <h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
             </div>
-            <div class="modal-body">
-                <div class="alert alert-warning mb-0">
-                    Bạn có chắc chắn muốn xóa phòng <strong id="delete-item-name"></strong>
-                    (<code id="delete-item-id"></code>) không?
+            @if (TempData["DeletePhongError"] != null)
+            {
+                <div class="modal-body">
+                    <div class="alert alert-warning mb-0">
+                        @TempData["DeletePhongError"]
+                    </div>
                 </div>
-            </div>
+            } else
+            {
+                <div class="modal-body">
+                    <div class="alert alert-warning mb-0">
+                        Bạn có chắc chắn muốn xóa phòng <strong id="delete-item-name"></strong>
+                        (<code id="delete-item-id"></code>) không?
+                    </div>
+                </div>
+            }
+            
             <div class="modal-footer">
                 <form id="deleteForm" method="post" asp-controller="Phongs" asp-action="Delete" class="m-0">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" id="delete-id" />
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    @if (TempData["DeletePhongError"] == null)
+                    {
                     <button type="submit" class="btn btn-danger">Xóa</button>
+                    }
+                    
                 </form>
             </div>
         </div>

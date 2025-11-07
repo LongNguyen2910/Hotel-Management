@@ -48,8 +48,8 @@
                     <dt class="col-sm-3">Ngày vào làm</dt>
                     <dd class="col-sm-9">@Model?.Ngayvaolam</dd>
 
-                    <dt class="col-sm-3">Trạng thái</dt>
-                    <dd class="col-sm-9">@((Model?.Trangthai == 1) ? "Đang làm" : "Nghỉ làm")</dd>
+                <dt class="col-sm-3">Trạng thái</dt>
+                <dd class="col-sm-9">@((Convert.ToBoolean(Model?.Trangthai) == true) ? "Đang làm" : "Nghỉ làm")</dd>
 
                     <dt class="col-sm-3">Bộ phận</dt>
                     <dd class="col-sm-9">@(Model?.MabophanNavigation?.Tenbophan ?? "Chưa phân công")</dd>

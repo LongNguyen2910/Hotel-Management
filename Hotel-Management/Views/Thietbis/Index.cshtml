@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Hotel_Management.Models.Thietbi>
+﻿@model Hotel_Management.Helpers.PaginatedList<Hotel_Management.Models.Thietbi>
 
 @{
     ViewData["Title"] = "Danh sách thiết bị";
@@ -28,6 +28,7 @@
                         <th class="text-truncate">Mã thiết bị</th>
                         <th class="text-truncate">Tên thiết bị</th>
                         <th class="text-truncate">Tình trạng</th>
+                        <th class="text-truncate">Loại thiết bị</th>
                         <th class="text-truncate">Thao tác</th>
                     </tr>
                 </thead>
@@ -40,13 +41,14 @@
                         <td class="text-truncate">
                             @if (item.Tinhtrang == true)
                             {
-                                <span class="badge bg-label-success rounded-pill">Active</span>
+                                <span class="badge bg-label-success rounded-pill">Sẵn sàng</span>
                             }
                             else
                             {
-                                <span class="badge bg-label-secondary rounded-pill">Inactive</span>
+                                <span class="badge bg-label-secondary rounded-pill">Không sẵn sàng</span>
                             }
                         </td>
+                        <td class="text-truncate">@item.MaloaithietbiNavigation?.Tenloaithietbi</td>
                         <td>
                             <a asp-controller="Thietbis" asp-action="Edit" asp-route-id="@item.Mathietbi" class="btn btn-sm btn-outline-primary me-2">Sửa</a>
                             <a asp-controller="Thietbis" asp-action="Delete" asp-route-id="@item.Mathietbi" class="btn btn-sm btn-outline-danger">Xóa</a>
@@ -57,4 +59,27 @@
             </table>
         </div>
     </div>
+</div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<div class="mt-3">
+    <a asp-action="Index"
+       asp-route-pageNumber="@(Model.PageIndex - 1)"
+       asp-route-searchString="@ViewData["CurrentFilter"]"
+       class="btn btn-outline-primary @prevDisabled">
+        <i class="bx bx-chevron-left"></i> Trước
+    </a>
+    <a asp-action="Index"
+       asp-route-pageNumber="@(Model.PageIndex + 1)"
+       asp-route-searchString="@ViewData["CurrentFilter"]"
+       class="btn btn-outline-primary @nextDisabled">
+        Sau <i class="bx bx-chevron-right"></i>
+    </a>
+    <span class="ms-2 text-muted">
+        Trang @Model.PageIndex / @Model.TotalPages
+    </span>
 </div>

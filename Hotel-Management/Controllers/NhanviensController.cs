@@ -173,7 +173,7 @@ namespace Hotel_Management.Controllers
             {
                 return NotFound();
             }
-            ViewData["Mabophan"] = new SelectList(_context.Bophans, "Mabophan", "Mabophan", nhanvien.Mabophan);
+            ViewData["Mabophan"] = new SelectList(_context.Bophans, "Mabophan", "Tenbophan", nhanvien.Mabophan);
             ViewData["Tenchucvu"] = new SelectList(_context.Chucvus, "Tenchucvu", "Tenchucvu", nhanvien.Tenchucvu);
 
             ViewBag.AllCalamviecs = await _context.Calamviecs.ToListAsync();

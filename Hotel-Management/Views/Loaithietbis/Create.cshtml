@@ -4,35 +4,31 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1 class="text-center mb-4">Thêm loại thiết bị</h1>
 
-<h4>Loaithietbi</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="row justify-content-center">
+    <div class="col-md-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Maloaithietbi" class="control-label"></label>
-                <input asp-for="Maloaithietbi" class="form-control" />
+
+            <div class="form-group mb-3">
+                <label asp-for="Maloaithietbi" class="form-label">Mã loại thiết bị</label>
+                <input asp-for="Maloaithietbi" class="form-control" placeholder="Nhập mã loại thiết bị" />
                 <span asp-validation-for="Maloaithietbi" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Tenloaithietbi" class="control-label"></label>
-                <input asp-for="Tenloaithietbi" class="form-control" />
+
+            <div class="form-group mb-3">
+                <label asp-for="Tenloaithietbi" class="form-label">Tên loại thiết bị</label>
+                <input asp-for="Tenloaithietbi" class="form-control" placeholder="Nhập tên loại thiết bị"/>
                 <span asp-validation-for="Tenloaithietbi" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <div class="form-group text-center mt-4">
+                <button type="submit" class="btn btn-primary px-4">Lưu</button>
+                <a asp-action="Index" class="btn btn-secondary px-4 ms-2">Quay lại</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<partial name="_ValidationScriptsPartial" />

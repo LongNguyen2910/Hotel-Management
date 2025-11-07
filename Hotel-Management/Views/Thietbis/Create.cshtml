@@ -30,22 +30,17 @@
                     <label class="form-label">Tình trạng</label>
                     <select asp-for="Tinhtrang" class="form-select">
                         <option value="">-- Chọn tình trạng --</option>
-                        <option value="true">Active</option>
-                        <option value="false">Inactive</option>
+                        <option value="true">Sẵn sàng</option>
+                        <option value="false">Không sẵn sàng</option>
                     </select>
                     <span asp-validation-for="Tinhtrang" class="text-danger"></span>
                 </div>
 
-                @* <div class="mb-3">
-                    <label class="form-label">Mã loại thiết bị (UI-only)</label>
-                    <input asp-for="Maloaithietbi" class="form-control" />
-                    <span asp-validation-for="Maloaithietbi" class="text-danger"></span>
-                </div>
                 <div class="mb-3">
-                    <label class="form-label">Tên loại thiết bị (UI-only)</label>
-                    <input asp-for="Tenloaithietbi" class="form-control" />
-                    <span asp-validation-for="Tenloaithietbi" class="text-danger"></span>
-                </div> *@
+                    <label class="form-label">Loại thiết bị</label>
+                    <select asp-for="Maloaithietbi" class="form-select" asp-items="ViewBag.Maloaithietbi"></select>
+                </div>
+              
                 <button type="submit" class="btn btn-primary">Lưu</button>
                 <a asp-action="Index" class="btn btn-secondary">Hủy</a>
             </form>

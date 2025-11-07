@@ -1,11 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Hotel_Management.Models;
+using Hotel_Management.Helpers;
+using Microsoft.Extensions.Logging;
 
-namespace Hotel_Management.Controllers {   
+namespace Hotel_Management.Controllers
+{
     public class ThietbisController : Controller
     {
         private readonly AppDbContext _context;
@@ -18,11 +23,14 @@ namespace Hotel_Management.Controllers {
         }
 
         // GET: Thietbis
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             ViewData["CurrentFilter"] = searchString ?? string.Empty;
 
-            var query = _context.Thietbis.AsQueryable();
+            var query = _context.Thietbis
+                .AsNoTracking()
+                .Include(t => t.MaloaithietbiNavigation)
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchString))
             {
@@ -31,21 +39,42 @@ namespace Hotel_Management.Controllers {
                 query = query.Where(t => EF.Functions.Like(t.Tenthietbi, $"%{trimmed}%"));
             }
 
-            var list = await query.ToListAsync();
-            return View(list);
+            int pageSize = 10;
+            return View(await PaginatedList<Thietbi>.CreateAsync(query, pageNumber ?? 1, pageSize));
+        }
+
+        // GET: Thietbis/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var thietbi = await _context.Thietbis
+                .Include(t => t.MaloaithietbiNavigation)
+                .FirstOrDefaultAsync(m => m.Mathietbi == id);
+            if (thietbi == null)
+            {
+                return NotFound();
+            }
+
+            return View(thietbi);
         }
 
         // GET: Thietbis/Create
         public IActionResult Create()
         {
+            ViewData["Maloaithietbi"] = new SelectList(_context.Loaithietbis, "Maloaithietbi", "Tenloaithietbi");
             return View();
         }
 
         // POST: Thietbis/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Mathietbi,Tenthietbi,Tinhtrang,Maloaithietbi,Tenloaithietbi")] Thietbi thietbi)
+        public async Task<IActionResult> Create([Bind("Mathietbi,Tenthietbi,Tinhtrang,Maloaithietbi")] Thietbi thietbi)
         {
+            ViewData["Maloaithietbi"] = new SelectList(_context.Loaithietbis, "Maloaithietbi", "Tenloaithietbi", thietbi.Maloaithietbi);
             if (!ModelState.IsValid)
             {
                 // Log modelstate errors for debugging
@@ -80,13 +109,72 @@ namespace Hotel_Management.Controllers {
             }
         }
 
+        // GET: Thietbis/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var thietbi = await _context.Thietbis.FindAsync(id);
+            if (thietbi == null)
+            {
+                return NotFound();
+            }
+            ViewData["Maloaithietbi"] = new SelectList(_context.Loaithietbis, "Maloaithietbi", "Maloaithietbi", thietbi.Maloaithietbi);
+            return View(thietbi);
+        }
+
+        // POST: Thietbis/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Mathietbi,Tenthietbi,Tinhtrang,Maloaithietbi")] Thietbi thietbi)
+        {
+            if (id != thietbi.Mathietbi)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(thietbi);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ThietbiExists(thietbi.Mathietbi))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["Maloaithietbi"] = new SelectList(_context.Loaithietbis, "Maloaithietbi", "Maloaithietbi", thietbi.Maloaithietbi);
+            return View(thietbi);
+        }
+
         // GET: Thietbis/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            var thietbi = await _context.Thietbis.FirstOrDefaultAsync(m => m.Mathietbi == id);
-            if (thietbi == null) return NotFound();
+            var thietbi = await _context.Thietbis
+                .Include(t => t.MaloaithietbiNavigation)
+                .FirstOrDefaultAsync(m => m.Mathietbi == id);
+            if (thietbi == null)
+            {
+                return NotFound();
+            }
 
             return View(thietbi);
         }
@@ -100,9 +188,15 @@ namespace Hotel_Management.Controllers {
             if (thietbi != null)
             {
                 _context.Thietbis.Remove(thietbi);
-                await _context.SaveChangesAsync();
             }
+
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool ThietbiExists(int id)
+        {
+            return _context.Thietbis.Any(e => e.Mathietbi == id);
         }
     }
 }

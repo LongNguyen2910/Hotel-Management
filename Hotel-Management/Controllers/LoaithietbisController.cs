@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Hotel_Management.Models;
+using Hotel_Management.Helpers;
 
 namespace Hotel_Management.Controllers
 {
@@ -19,11 +20,27 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Loaithietbis
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
-            return View(await _context.Loaithietbis.ToListAsync());
-        }
+            ViewData["CurrentFilter"] = searchString ?? string.Empty;
 
+            var query = _context.Loaithietbis
+                .AsNoTracking()
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                var trimmed = searchString.Trim();
+                // Searching both id and name is possible; keep original behavior (id) but use Like
+                query = query.Where(t => EF.Functions.Like(t.Maloaithietbi, $"%{trimmed}%")
+                                         || EF.Functions.Like(t.Tenloaithietbi, $"%{trimmed}%"));
+            }
+
+            query = query.OrderBy(t => t.Maloaithietbi);
+
+            int pageSize = 10;
+            return View(await PaginatedList<Loaithietbi>.CreateAsync(query, pageNumber ?? 1, pageSize));
+        }
         // GET: Loaithietbis/Details/5
         public async Task<IActionResult> Details(string id)
         {

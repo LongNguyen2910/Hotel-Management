@@ -1,7 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hotel_Management.Models;
 
@@ -59,8 +58,7 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<Thucdon> Thucdons { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseOracle("Name=Oracle");
+        => optionsBuilder.UseOracle("Name = Oracle");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -322,14 +320,14 @@ public partial class AppDbContext : DbContext
 
             entity.ToTable("MON");
 
-            entity.Property(e => e.Anhmon)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("ANHMON");
             entity.Property(e => e.Mamon)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("MAMON");
+            entity.Property(e => e.Anhmon)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("ANHMON");
             entity.Property(e => e.Gia)
                 .HasColumnType("NUMBER(12,3)")
                 .HasColumnName("GIA");
@@ -456,11 +454,11 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Nhacungcap>(entity =>
         {
-            entity.HasKey(e => e.Mancc).HasName("SYS_C007672");
+            entity.HasKey(e => e.Manhacungcap).HasName("SYS_C007672");
 
             entity.ToTable("NHACUNGCAP");
 
-            entity.Property(e => e.Mancc)
+            entity.Property(e => e.Manhacungcap)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("MANCC");
@@ -472,11 +470,11 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false)
                 .HasColumnName("EMAIL");
-            entity.Property(e => e.Sdt)
+            entity.Property(e => e.Sodienthoai)
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("SDT");
-            entity.Property(e => e.Tenncc)
+            entity.Property(e => e.Tennhacungcap)
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("TENNCC");
@@ -563,7 +561,7 @@ public partial class AppDbContext : DbContext
 
             entity.HasOne(d => d.ManvNavigation).WithMany(p => p.Nhanvienlamcas)
                 .HasForeignKey(d => d.Manv)
-                .OnDelete(DeleteBehavior.Cascade)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_NVLC_NHANVIEN");
         });
 

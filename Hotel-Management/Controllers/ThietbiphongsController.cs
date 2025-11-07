@@ -1,9 +1,11 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using Hotel_Management.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Hotel_Management.Models;
+using System.Linq;
+using System.Threading.Tasks;
+using Hotel_Management.Helpers;
 
 namespace Hotel_Management.Controllers
 {
@@ -20,13 +22,14 @@ namespace Hotel_Management.Controllers
 
         // GET: Thietbiphongs
         // Search by mã thiết bị (Mathietbi) and return view models so the view's model type matches
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             ViewData["CurrentFilter"] = searchString ?? string.Empty;
             var trimmed = (searchString ?? string.Empty).Trim();
 
             var query = _context.Thietbis
-                                .Include(t => t.Maphongs) // ensure related Phong rows are loaded
+                                .AsNoTracking()
+                                .Include(t => t.Maphongs)
                                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(trimmed))
@@ -41,13 +44,18 @@ namespace Hotel_Management.Controllers
                 }
             }
 
-            var list = await query.ToListAsync();
-            return View(list);
+            query = query.OrderBy(t => t.Mathietbi);
+
+            int pageSize = 10;
+            var model = await PaginatedList<Thietbi>.CreateAsync(query, pageNumber ?? 1, pageSize);
+
+            return View(model);
         }
 
         // GET: Thietbiphongs/Create
         public IActionResult Create()
         {
+            ViewData["Maphong"] = new SelectList(_context.Loaiphongs, "Maphong", "Tenphong");
             return View();
         }
 
@@ -56,6 +64,7 @@ namespace Hotel_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Mathietbi,Tenthietbi,Tinhtrang")] Thietbi thietbi)
         {
+            ViewData["Maphong"] = new SelectList(_context.Loaiphongs, "Maphong", "Tenphong", thietbi.Maphongs);
             if (!ModelState.IsValid)
             {
                 foreach (var kv in ModelState)

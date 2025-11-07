@@ -1,10 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Hotel_Management.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Hotel_Management.Models;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Hotel_Management.Helpers;
 
 namespace Hotel_Management.Controllers
 {
@@ -20,24 +22,29 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Thietbiduocbaotris
-        public async Task<IActionResult> Index(int? searchMathietbi)
+        public async Task<IActionResult> Index(int? searchMathietbi, int? pageNumber)
         {
             ViewData["CurrentFilter"] = searchMathietbi?.ToString() ?? string.Empty;
 
-            var query = _context.Thietbiduocbaotris.AsQueryable();
+            var query = _context.Thietbiduocbaotris
+                .AsNoTracking()
+                .AsQueryable();
 
             if (searchMathietbi.HasValue)
             {
                 query = query.Where(t => t.Mathietbi == searchMathietbi.Value);
             }
 
-            var list = await query.OrderByDescending(t => t.Ngaybatdau).ToListAsync();
-            return View(list);
+            query = query.OrderByDescending(t => t.Ngaybatdau);
+
+            int pageSize = 10;
+            return View(await PaginatedList<Thietbiduocbaotri>.CreateAsync(query, pageNumber ?? 1, pageSize));
         }
 
         // GET: Thietbiduocbaotris/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            await PopulateThietbiSelectListAsync();
             return View();
         }
 
@@ -46,7 +53,18 @@ namespace Hotel_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Ngaybatdau,Ngayketthuc,Mathietbi")] Thietbiduocbaotri entity)
         {
-            // log modelstate errors for debugging
+            ModelState.Remove(nameof(entity.Baotri));
+            ModelState.Remove("Baotri");
+
+            if (entity.Mathietbi == 0)
+            {
+                ModelState.AddModelError(nameof(entity.Mathietbi), "Vui lòng chọn thiết bị.");
+            }
+            if (entity.Ngayketthuc < entity.Ngaybatdau)
+            {
+                ModelState.AddModelError(nameof(entity.Ngayketthuc), "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.");
+            }
+
             if (!ModelState.IsValid)
             {
                 foreach (var kv in ModelState)
@@ -56,27 +74,20 @@ namespace Hotel_Management.Controllers
                         _logger.LogWarning("ModelState error for '{Key}': {Errors}", kv.Key, string.Join(" | ", kv.Value.Errors.Select(e => e.ErrorMessage)));
                     }
                 }
+                await PopulateThietbiSelectListAsync(entity.Mathietbi);
                 return View(entity);
             }
 
-            // basic validation: end date must be >= start date
-            if (entity.Ngayketthuc < entity.Ngaybatdau)
-            {
-                ModelState.AddModelError(nameof(entity.Ngayketthuc), "Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.");
-                return View(entity);
-            }
-
-            // verify Thietbi exists (if required)
             var tb = await _context.Thietbis.FindAsync(entity.Mathietbi);
             if (tb == null)
             {
                 ModelState.AddModelError(nameof(entity.Mathietbi), $"Thiết bị với mã {entity.Mathietbi} không tồn tại.");
+                await PopulateThietbiSelectListAsync(entity.Mathietbi);
                 return View(entity);
             }
 
             try
             {
-                // Ensure a Baotri row exists for the date pair (FK from Thietbiduocbaotri -> Baotri)
                 var existingBaotri = await _context.Baotris.FindAsync(entity.Ngaybatdau, entity.Ngayketthuc);
                 if (existingBaotri == null)
                 {
@@ -90,7 +101,7 @@ namespace Hotel_Management.Controllers
                     _context.Baotris.Add(newBaotri);
                 }
 
-                _context.Thietbiduocbaotris.Add(entity);
+                _context.Add(entity);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
@@ -99,17 +110,19 @@ namespace Hotel_Management.Controllers
             {
                 _logger.LogError(dbEx, "Database update failed when creating maintenance record (Thietbi={Id})", entity?.Mathietbi);
                 ModelState.AddModelError(string.Empty, "Lỗi khi lưu vào cơ sở dữ liệu: " + (dbEx.InnerException?.Message ?? dbEx.Message));
+                await PopulateThietbiSelectListAsync(entity.Mathietbi);
                 return View(entity);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error when creating maintenance record");
                 ModelState.AddModelError(string.Empty, "Đã có lỗi xảy ra: " + ex.Message);
+                await PopulateThietbiSelectListAsync(entity.Mathietbi);
                 return View(entity);
             }
         }
 
-        // GET: Thietbiduocbaotris/Delete?ngaybatdauticks=...&ngayketthucticks=...&mathietbi=...
+   
         public async Task<IActionResult> Delete(long? ngaybatdauticks, long? ngayketthucticks, int? mathietbi)
         {
             if (!ngaybatdauticks.HasValue || !ngayketthucticks.HasValue || !mathietbi.HasValue)
@@ -144,6 +157,16 @@ namespace Hotel_Management.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        private async Task PopulateThietbiSelectListAsync(int? selectedId = null)
+        {
+            var items = await _context.Thietbis
+                .OrderBy(tb => tb.Mathietbi)
+                .Select(tb => new { tb.Mathietbi, Label = tb.Mathietbi + " - " + (tb.Tenthietbi ?? string.Empty) })
+                .ToListAsync();
+
+            ViewBag.ThietbiList = new SelectList(items, "Mathietbi", "Label", selectedId);
         }
     }
 }

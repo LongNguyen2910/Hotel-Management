@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Hotel_Management.Models;
+using Hotel_Management.Helpers;
 
 namespace Hotel_Management.Controllers
 {
@@ -20,9 +21,10 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Mons
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
-            return View(await _context.Mons.ToListAsync());
+            int pageSize = 10;
+            return View(await PaginatedList<Mon>.CreateAsync(_context.Mons.AsNoTracking(),pageNumber ?? 1, pageSize));
         }
 
         // GET: Mons/Create

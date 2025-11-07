@@ -1,13 +1,14 @@
-﻿@model Hotel_Management.Helpers.PaginatedList<Hotel_Management.Models.Loaiphong>
+﻿@model Hotel_Management.Helpers.PaginatedList<Hotel_Management.Models.Nhacungcap>
 
 @{
+    ViewData["Title"] = "Danh sách nhà cung cấp";
     var currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
 }
 
 <div class="col-12">
     <div class="card overflow-hidden">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Loại phòng</h5>
+            <h5 class="mb-0">Nhà cung cấp</h5>
             <div class="d-flex align-items-center">
                 <form asp-action="Index" method="get" class="d-flex me-3">
                     <input name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm kiếm..." />
@@ -17,7 +18,7 @@
                         <a asp-action="Index" class="btn btn-sm btn-link ms-2">Xóa</a>
                     }
                 </form>
-                <a asp-controller="Loaiphongs" asp-action="Create" class="btn btn-sm btn-primary">Thêm loại phòng</a>
+                <a asp-controller="Nhacungcaps" asp-action="Create" class="btn btn-sm btn-primary">Thêm nhà cung cấp</a>
             </div>
         </div>
 
@@ -25,10 +26,11 @@
             <table class="table table-sm">
                 <thead>
                     <tr>
-                        <th class="text-truncate">Mã</th>
-                        <th class="text-truncate">Tên loại phòng</th>
-                        <th class="text-truncate">Sức chứa</th>
-                        <th class="text-truncate">Giá</th>
+                        <th class="text-truncate">Mã nhà cung cấp</th>
+                        <th class="text-truncate">Tên nhà cung cấp</th>
+                        <th class="text-truncate">Địa chỉ</th>
+                        <th class="text-truncate">SĐT</th>
+                        <th class="text-truncate">Email</th>
                         <th class="text-truncate">Thao tác</th>
                     </tr>
                 </thead>
@@ -36,19 +38,14 @@
 @foreach (var item in Model)
 {
                     <tr>
+                        <td class="text-truncate">@item.Manhacungcap</td>
+                        <td class="text-truncate">@item.Tennhacungcap</td>
+                        <td class="text-truncate">@item.Diachi</td>
+                        <td class="text-truncate">@item.Sodienthoai</td>
+                        <td class="text-truncate">@item.Email</td>
                         <td>
-                            <div class="d-flex align-items-center">
-                                <div>
-                                    <h6 class="mb-0 text-truncate">@item.Maloaiphong</h6>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="text-truncate">@item.Tenloaiphong</td>
-                        <td class="text-truncate">@item.Succhua</td>
-                        <td class="text-truncate">@(item.Gia.HasValue ? item.Gia.Value.ToString("C") : "")</td>
-                        <td>
-                            <a asp-controller="Loaiphongs" asp-action="Edit" asp-route-id="@item.Maloaiphong" class="btn btn-sm btn-outline-primary me-2">Sửa</a>
-                            <a asp-controller="Loaiphongs" asp-action="Delete" asp-route-id="@item.Maloaiphong" class="btn btn-sm btn-outline-danger">Xóa</a>
+                            <a asp-controller="Nhacungcaps" asp-action="Edit" asp-route-id="@item.Manhacungcap" class="btn btn-sm btn-outline-primary me-2">Sửa</a>
+                            <a asp-controller="Nhacungcaps" asp-action="Delete" asp-route-id="@item.Manhacungcap" class="btn btn-sm btn-outline-danger">Xóa</a>
                         </td>
                     </tr>
 }

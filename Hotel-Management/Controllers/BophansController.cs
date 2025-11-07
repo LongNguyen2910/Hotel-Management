@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Hotel_Management.Models;
+using Hotel_Management.Helpers;
 
 namespace Hotel_Management.Controllers
 {
@@ -19,9 +20,10 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Bophans
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber)
         {
-            return View(await _context.Bophans.ToListAsync());
+            int pageSize = 10;
+            return View(await PaginatedList<Bophan>.CreateAsync(_context.Bophans.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Bophans/Create

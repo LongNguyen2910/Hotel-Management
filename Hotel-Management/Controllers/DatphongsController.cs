@@ -22,7 +22,7 @@ namespace Hotel_Management.Controllers
 
         private async Task CapNhatHoaDonAsync(int makhachhang, string maphong)
         {
-            // 🔹 Tìm hoặc tạo hóa đơn cho khách hàng
+            // Tìm hoặc tạo hóa đơn cho khách hàng
             var hoadon = await _context.Hoadons
                 .FirstOrDefaultAsync(h => h.Makhachhang == makhachhang);
 
@@ -51,10 +51,10 @@ namespace Hotel_Management.Controllers
                 };
 
                 _context.Hoadons.Add(hoadon);
-                await _context.SaveChangesAsync(); // 🔹 Lưu hóa đơn mới
+                await _context.SaveChangesAsync(); // Lưu hóa đơn mới
             }
 
-            // 🔹 Load phòng và loại phòng (để có giá)
+            // Load phòng và loại phòng (để có giá)
             var phong = await _context.Phongs
                 .Include(p => p.MaloaiphongNavigation)
                 .FirstOrDefaultAsync(p => p.Maphong == maphong);
@@ -64,7 +64,7 @@ namespace Hotel_Management.Controllers
 
             decimal giaPhong = phong.MaloaiphongNavigation.Gia ?? 0m;
 
-            // 🔹 Kiểm tra khách có dòng đặt phòng này chưa
+            // Kiểm tra khách có dòng đặt phòng này chưa
             var datphong = await _context.Khachhangdatphongs
                 .FirstOrDefaultAsync(dp => dp.Makhachhang == makhachhang && dp.Maphong == maphong);
 
@@ -80,13 +80,13 @@ namespace Hotel_Management.Controllers
                 };
 
                 _context.Khachhangdatphongs.Add(datphong);
-                await _context.SaveChangesAsync(); // 🔹 Lưu bản ghi đặt phòng
+                await _context.SaveChangesAsync(); // Lưu bản ghi đặt phòng
             }
 
-            // 🔹 Cộng giá phòng vào hóa đơn
+            // Cộng giá phòng vào hóa đơn
             hoadon.Giaphong += giaPhong;
 
-            // 🔹 Đánh dấu entity đã thay đổi và lưu lại
+            // Đánh dấu entity đã thay đổi và lưu lại
             _context.Hoadons.Update(hoadon);
             await _context.SaveChangesAsync();
 
@@ -94,7 +94,7 @@ namespace Hotel_Management.Controllers
         }
 
 
-        // 🔹 Xử lý đặt phòng
+        // Xử lý đặt phòng
         [HttpPost]
         public async Task<IActionResult> DatPhong(int makhachhang, string maphong)
         {
@@ -121,10 +121,10 @@ namespace Hotel_Management.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // ✅ Cập nhật hóa đơn và danh sách đặt phòng
+            // Cập nhật hóa đơn và danh sách đặt phòng
             await CapNhatHoaDonAsync(makhachhang, maphong);
 
-            // ✅ Cập nhật trạng thái phòng: đã được đặt
+            // Cập nhật trạng thái phòng: đã được đặt
             phong.Tinhtrang = false;
             _context.Update(phong);
             await _context.SaveChangesAsync();

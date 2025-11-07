@@ -31,6 +31,7 @@ namespace Hotel_Management.Controllers
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 var trimmed = searchString.Trim();
+                // Searching both id and name is possible; keep original behavior (id) but use Like
                 query = query.Where(t => EF.Functions.Like(t.Maloaithietbi, $"%{trimmed}%")
                                          || EF.Functions.Like(t.Tenloaithietbi, $"%{trimmed}%"));
             }
@@ -65,6 +66,8 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Loaithietbis/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Maloaithietbi,Tenloaithietbi")] Loaithietbi loaithietbi)
@@ -95,6 +98,8 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Loaithietbis/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Maloaithietbi,Tenloaithietbi")] Loaithietbi loaithietbi)

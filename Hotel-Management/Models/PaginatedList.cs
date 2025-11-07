@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hotel_Management.Helpers // Hoặc namespace Hotel_Management.Models tuỳ bạn chọn
+namespace Hotel_Management.Helpers 
 {
     public class PaginatedList<T> : List<T>
     {

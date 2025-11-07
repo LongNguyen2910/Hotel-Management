@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Hotel_Management.Models;
+using Hotel_Management.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace Hotel_Management.Controllers
 {
@@ -21,7 +23,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Thietbis
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             ViewData["CurrentFilter"] = searchString ?? string.Empty;
 
@@ -37,8 +39,8 @@ namespace Hotel_Management.Controllers
                 query = query.Where(t => EF.Functions.Like(t.Tenthietbi, $"%{trimmed}%"));
             }
 
-            var list = await query.ToListAsync();
-            return View(list);
+            int pageSize = 10;
+            return View(await PaginatedList<Thietbi>.CreateAsync(query, pageNumber ?? 1, pageSize));
         }
 
         // GET: Thietbis/Details/5

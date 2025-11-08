@@ -1,34 +1,30 @@
 ﻿@model Hotel_Management.Models.Ncccungcapnguyenlieu
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Xoá thông tin";
 }
 
+<h1>Xoá thông tin nguyên liệu</h1>
 
-    <h1>Xoá thông tin khách hàng</h1>
+<h5 class="text-muted">Bạn có chắc chắn muốn xoá thông tin nguyên liệu này không?</h5>
 
-    <h5 class="text-muted">Bạn có chắc chắn muốn xoá thông tin khách hàng này không?</h5>
+<div class="border rounded p-4 shadow-sm bg-light">
+    <dl class="row">
+        <dt class="col-sm-2 fw-bold text-secondary">Tên nguyên liệu</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Tennguyenlieu)</dd>
 
-    <div class="border rounded p-4 shadow-sm bg-light">
-        <dl class="row">
-            <dt class="col-sm-2 fw-bold text-secondary">Họ tên</dt>
-            <dd class="col-sm-10">@Html.DisplayFor(model => model.Luong)</dd>
+        <dt class="col-sm-2 fw-bold text-secondary">Số lượng</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Luong)</dd>
 
-            <dt class="col-sm-2 fw-bold text-secondary">Quốc tịch</dt>
-            <dd class="col-sm-10">@Html.DisplayFor(model => model.Tennguyenlieu)</dd>
-           
-            <dt class="col-sm-2 fw-bold text-secondary">CCCD</dt>
-            <dd class="col-sm-10">@Html.DisplayNameFor(model => model.ManccNavigation)</dd>
+        <dt class="col-sm-2 fw-bold text-secondary">Tiền nguyên liệu</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(model => model.Tiennguyenlieu)</dd>
 
-            <dt class="col-sm-2 fw-bold text-secondary">Số điện thoại</dt>
-            <dd class="col-sm-10">@Html.DisplayFor(model => model.Tiennguyenlieu)</dd>
+    </dl>
+</div>
 
-        </dl>
-    </div>
-    <form asp-action="Delete" class="mt-4">
-        <input type="hidden" asp-for="Mancc" />
-        <input type="hidden" asp-for="Manguyenlieu" />
-        <button type="submit" class="btn btn-danger px-4 me-2">Xoá</button>
-        <a asp-action="Index" class="btn btn-secondary px-4">Quay lại</a>
-    </form>
-
+<form asp-action="Delete" class="mt-4">
+    <input type="hidden" asp-for="Mancc" />
+    <input type="hidden" asp-for="Manguyenlieu" />
+    <button type="submit" class="btn btn-danger px-4 me-2">Xoá</button>
+    <a asp-action="Index" class="btn btn-secondary px-4">Quay lại</a>
+</form>

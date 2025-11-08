@@ -1,7 +1,6 @@
 ﻿@model Hotel_Management.Models.Loaithietbi
-
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Sửa loại thiết bị";
 }
 
 <div class="col-12">
@@ -10,15 +9,14 @@
             <h5 class="mb-0">Sửa thông tin loại thiết bị</h5>
         </div>
         <div class="card-body">
-            <form asp-action="Edit" method="post" form enctype="multipart/form-data">
+            <form asp-action="Edit" method="post">
                 @Html.AntiForgeryToken()
-
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                 <input type="hidden" asp-for="Maloaithietbi" />
 
                 <div class="mb-3">
-                    <label class="form-label">Tên loại thiết bị</label>
+                    <label asp-for="Tenloaithietbi" class="form-label"></label>
                     <input asp-for="Tenloaithietbi" class="form-control" />
                     <span asp-validation-for="Tenloaithietbi" class="text-danger"></span>
                 </div>
@@ -31,7 +29,5 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
 }

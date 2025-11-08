@@ -10,7 +10,6 @@ using Hotel_Management.Helpers;
 
 namespace Hotel_Management.Controllers
 {
-    [Route("~/[controller]/[action]")]
     public class LoaithietbisController : Controller
     {
         private readonly AppDbContext _context;

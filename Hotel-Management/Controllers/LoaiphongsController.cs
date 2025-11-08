@@ -8,7 +8,6 @@ using Hotel_Management.Helpers;
 
 namespace Hotel_Management.Controllers
 {
-    [Route("~/[controller]/[action]")]
     public class LoaiphongsController : Controller
     {
         private readonly AppDbContext _context;

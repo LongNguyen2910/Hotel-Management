@@ -3,18 +3,14 @@
   string? currentPage = ViewContext.HttpContext.Request.Path;
 }
 
-<!-- Menu -->
 <aside id="layout-menu" class="layout-menu menu-vertical menu">
-
-  @* ! Hide app brand if navbar-full *@
   <div class='app-brand demo @((@ViewData["navbarFull"] != null && Convert.ToBoolean(@ViewData["navbarFull"])) ? "d-xl-none" : "")'>
-    <a asp-controller="Dashboards" asp-action="Index" class="app-brand-link gap-xl-0 gap-2">
+    <a asp-area="" asp-controller="Dashboards" asp-action="Index" class="app-brand-link gap-xl-0 gap-2">
       <span class="app-brand-logo demo me-1">
         @await Html.PartialAsync("../_Partials/_Macros")
       </span>
       <span class="app-brand-text demo menu-text fw-semibold ms-2">@TempData.Peek("appName")</span>
     </a>
-
     <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
       <i class="menu-toggle-icon d-xl-inline-block align-middle"></i>
     </a>
@@ -22,195 +18,126 @@
 
   <div class="menu-inner-shadow"></div>
 
-  @* ! Full version menu-items *@
   <ul class="menu-inner py-1">
-    @* <!-- Dashboards -->
-    <li class='menu-item@(currentPage.EndsWith("/") || currentPage.StartsWith("/Dashboards") ? " active open" : "")'>
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon icon-base ri ri-home-smile-line"></i>
-        <div>Dashboards</div>
-      </a>
-      <ul class="menu-sub">
-        <li class='menu-item@(currentPage == "/" ? " active" : "")'>
-          <a asp-controller="Dashboards" asp-action="Index" class="menu-link">
-            <div>Analytics</div>
-          </a>
-        </li>
-      </ul>
-    </li> *@
-    <!-- Apps & Pages -->
     <li class="menu-header mt-7">
       <span class="menu-header-text">Quản lý khách sạn</span>
     </li>
 
-        <li class='menu-item@((currentPage.StartsWith("/Datphongs") || currentPage.StartsWith("/Khachhangdatphongs")) ? " active open" : "")'>
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <div>Đặt phòng</div>
-            </a>
-            <ul class="menu-sub">
-                <li class='menu-item@(currentPage == "/Datphongs/Index" ? " active" : "")'>
-                    <a asp-controller="Datphongs" asp-action="Index" class="menu-link">
-                        <div>Đặt phòng</div>
-                    </a>
-                </li>
-                <li class='menu-item@(currentPage == "/Khachhangdatphongs/Index" ? " active" : "")'>
-                    <a asp-controller="Khachhangdatphongs" asp-action="Index" class="menu-link">
-                        <div>Danh sách đặt phòng</div>
-                    </a>
-                </li>
-            </ul>
+    <li class='menu-item@((currentPage.StartsWith("/Datphongs") || currentPage.StartsWith("/Khachhangdatphongs")) ? " active open" : "")'>
+      <a href="javascript:void(0);" class="menu-link menu-toggle"><div>Đặt phòng</div></a>
+      <ul class="menu-sub">
+        <li class='menu-item@(currentPage == "/Datphongs/Index" ? " active" : "")'>
+          <a asp-area="" asp-controller="Datphongs" asp-action="Index" class="menu-link"><div>Đặt phòng</div></a>
         </li>
-        <li class='menu-item@((currentPage.StartsWith("/Datmons") || currentPage.StartsWith("/Khachhangdatmons")) ? " active open" : "")'>
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <div>Đặt món</div>
-            </a>
-            <ul class="menu-sub">
-                <li class='menu-item@(currentPage == "/Datmons/Index" ? " active" : "")'>
-                    <a asp-controller="Datmons" asp-action="Index" class="menu-link">
-                        <div>Đặt món</div>
-                    </a>
-                </li>
-                <li class='menu-item@(currentPage == "/Khachhangdatmons/Index" ? " active" : "")'>
-                    <a asp-controller="Khachhangdatmons" asp-action="Index" class="menu-link">
-                        <div>Danh sách đặt món</div>
-                    </a>
-                </li>
-            </ul>
+        <li class='menu-item@(currentPage == "/Khachhangdatphongs/Index" ? " active" : "")'>
+          <a asp-area="" asp-controller="Khachhangdatphongs" asp-action="Index" class="menu-link"><div>Danh sách đặt phòng</div></a>
         </li>
-        <li class='menu-item@((currentPage.StartsWith("/Khachhangs") || currentPage.StartsWith("/Hoadons")) ? " active open" : "")'>
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <div>Khách hàng</div>
-            </a>
-            <ul class="menu-sub">
-                <li class='menu-item@(currentPage == "/Hoadons/Index" ? " active" : "")'>
-                    <a asp-controller="Hoadons" asp-action="Index" class="menu-link">
-                        <div>Quản lý hóa đơn</div>
-                    </a>
-                </li>
-                <li class='menu-item@(currentPage == "/Khachhangs/Index" ? " active" : "")'>
-                    <a asp-controller="Khachhangs" asp-action="Index" class="menu-link">
-                        <div>Thông tin Khách hàng</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class='menu-item@((currentPage.StartsWith("/Thietbis") || currentPage.StartsWith("/Thietbiduocbaotris") || currentPage.StartsWith("/Loaithietbis")) ? " active open" : "")'>
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <div>Quản lý thiết bị</div>
-            </a>
-            <ul class="menu-sub">
-                <li class='menu-item@(currentPage == "/Thietbis/Index" ? " active" : "")'>
-                    <a asp-controller="Thietbis" asp-action="Index" class="menu-link">
-                        <div>Danh sách thiết bị</div>
-                    </a>
-                </li>
-                <li class='menu-item@(currentPage == "/Thietbiduocbaotris/Index" ? " active" : "")'>
-                    <a asp-controller="Thietbiduocbaotris" asp-action="Index" class="menu-link">
-                        <div>Bảo trì thiết bị</div>
-                    </a>
-                </li>
-                <li class='menu-item@(currentPage == "/Loaithietbis/Index" ? " active" : "")'>
-                    <a asp-controller="Loaithietbis" asp-action="Index" class="menu-link">
-                        <div>Loại thiết bị</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class='menu-item@((currentPage.StartsWith("/Phongs") || currentPage.StartsWith("/Loaiphongs") || currentPage.StartsWith("/Thietbiphongs")) ? " active open" : "")'>
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <div>Quản lý phòng</div>
-            </a>
-            <ul class="menu-sub">
-                <li class='menu-item@(currentPage.StartsWith("/Phongs") ? " active" : "")'>
-                    <a asp-controller="Phongs" asp-action="Index" class="menu-link">
-                        <div>Phòng</div>
-                    </a>
-                </li>
-                <li class='menu-item@(currentPage.StartsWith("/Loaiphongs") ? " active" : "")'>
-                    <a asp-controller="Loaiphongs" asp-action="Index" class="menu-link">
-                        <div>Loại phòng</div>
-                    </a>
-                </li>
-                <li class='menu-item@(currentPage.StartsWith("/Thietbiphongs") ? " active" : "")'>
-                    <a asp-controller="Thietbiphongs" asp-action="Index" class="menu-link">
-                        <div>Thiết bị trong phòng</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class='menu-item@((currentPage.StartsWith("/Thucdons") || currentPage.StartsWith("/Mons")) ? " active open" : "")'>
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <div>Quản lý nhà hàng</div>
-            </a>
-            <ul class="menu-sub">
-                <li class='menu-item@(currentPage.StartsWith("/Thucdons") ? " active" : "")'>
-                    <a asp-controller="Thucdons" asp-action="Index" class="menu-link">
-                        <div>Thực đơn</div>
-                    </a>
-                </li>
-                <li class='menu-item@(currentPage.StartsWith("/Mons") ? " active" : "")'>
-                    <a asp-controller="Mons" asp-action="Index" class="menu-link">
-                        <div>Món ăn</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class='menu-item@((currentPage.StartsWith("/Nhanviens") || currentPage.StartsWith("/Bophans") || (currentPage.StartsWith("/Chucvus") || currentPage.StartsWith("/Calamviecs"))) ? " active open" : "")'>
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <div>Quản lý nhân sự</div>
-            </a>
-            <ul class="menu-sub">
-                <li class='menu-item@(currentPage.StartsWith("/Nhanviens") ? " active" : "")'>
-                    <a asp-controller="Nhanviens" asp-action="Index" class="menu-link">
-                        <div>Nhân viên </div>
-                    </a>
-                </li>
-                <li class='menu-item@(currentPage.StartsWith("/Bophans") ? " active" : "")'>
-                    <a asp-controller="Bophans" asp-action="Index" class="menu-link">
-                        <div>Bộ phận</div>
-                    </a>
-                </li>
-                <li class='menu-item@(currentPage.StartsWith("/Chucvus") ? " active" : "")'>
-                    <a asp-controller="Chucvus" asp-action="Index" class="menu-link">
-                        <div>Chức vụ</div>
-                    </a>
-                </li>
-                <li class='menu-item@(currentPage.StartsWith("/Calamviecs") ? " active" : "")'>
-                    <a asp-controller="Calamviecs" asp-action="Index" class="menu-link">
-                        <div>Ca làm việc</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class='menu-item@((currentPage.StartsWith("/Nhacungcaps") || currentPage.StartsWith("/Ncccungcapnguyenlieux") || currentPage.StartsWith("/Ncccungcapthietbis")) ? " active open" : "")'>
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <div>Quản lý kho</div>
-            </a>
-            <ul class="menu-sub">
-                <li class='menu-item@(currentPage.StartsWith("/Nhacungcaps") ? " active" : "")'>
-                    <a asp-controller="Nhacungcaps" asp-action="Index" class="menu-link">
-                        <div>Nhà cung cấp</div>
-                    </a>
-                </li>
-                <li class='menu-item@(currentPage.StartsWith("/Ncccungcapnguyenlieux/Index") ? " active" : "")'>
-                    <a asp-controller="Ncccungcapnguyenlieux" asp-action="Index" class="menu-link">
-                        <div>Nguyên liệu</div>
-                    </a>
-                </li>
-                <li class='menu-item@(currentPage.StartsWith("/Ncccungcapthietbis/Index") ? " active" : "")'>
-                    <a asp-controller="Ncccungcapthietbis" asp-action="Index" class="menu-link">
-                        <div>Thiết bị</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class='menu-item@(currentPage.StartsWith("/Admin") ? " active open" : "")'>
-            <a asp-area="Admin" asp-controller="UserManagement" asp-action="Index" class="menu-link">
-                <div>Users</div>
-            </a>
-        </li>
+      </ul>
+    </li>
 
+    <li class='menu-item@((currentPage.StartsWith("/Datmons") || currentPage.StartsWith("/Khachhangdatmons")) ? " active open" : "")'>
+      <a href="javascript:void(0);" class="menu-link menu-toggle"><div>Đặt món</div></a>
+      <ul class="menu-sub">
+        <li class='menu-item@(currentPage == "/Datmons/Index" ? " active" : "")'>
+          <a asp-area="" asp-controller="Datmons" asp-action="Index" class="menu-link"><div>Đặt món</div></a>
+        </li>
+        <li class='menu-item@(currentPage == "/Khachhangdatmons/Index" ? " active" : "")'>
+          <a asp-area="" asp-controller="Khachhangdatmons" asp-action="Index" class="menu-link"><div>Danh sách đặt món</div></a>
+        </li>
+      </ul>
+    </li>
+
+    <li class='menu-item@((currentPage.StartsWith("/Khachhangs") || currentPage.StartsWith("/Hoadons")) ? " active open" : "")'>
+      <a href="javascript:void(0);" class="menu-link menu-toggle"><div>Khách hàng</div></a>
+      <ul class="menu-sub">
+        <li class='menu-item@(currentPage == "/Hoadons/Index" ? " active" : "")'>
+          <a asp-area="" asp-controller="Hoadons" asp-action="Index" class="menu-link"><div>Quản lý hóa đơn</div></a>
+        </li>
+        <li class='menu-item@(currentPage == "/Khachhangs/Index" ? " active" : "")'>
+          <a asp-area="" asp-controller="Khachhangs" asp-action="Index" class="menu-link"><div>Thông tin Khách hàng</div></a>
+        </li>
+      </ul>
+    </li>
+
+    <li class='menu-item@((currentPage.StartsWith("/Thietbis") || currentPage.StartsWith("/Thietbiduocbaotris") || currentPage.StartsWith("/Loaithietbis")) ? " active open" : "")'>
+      <a href="javascript:void(0);" class="menu-link menu-toggle"><div>Quản lý thiết bị</div></a>
+      <ul class="menu-sub">
+        <li class='menu-item@(currentPage == "/Thietbis/Index" ? " active" : "")'>
+          <a asp-area="" asp-controller="Thietbis" asp-action="Index" class="menu-link"><div>Danh sách thiết bị</div></a>
+        </li>
+        <li class='menu-item@(currentPage == "/Thietbiduocbaotris/Index" ? " active" : "")'>
+          <a asp-area="" asp-controller="Thietbiduocbaotris" asp-action="Index" class="menu-link"><div>Bảo trì thiết bị</div></a>
+        </li>
+        <li class='menu-item@(currentPage == "/Loaithietbis/Index" ? " active" : "")'>
+          <a asp-area="" asp-controller="Loaithietbis" asp-action="Index" class="menu-link"><div>Loại thiết bị</div></a>
+        </li>
+      </ul>
+    </li>
+
+    <li class='menu-item@((currentPage.StartsWith("/Phongs") || currentPage.StartsWith("/Loaiphongs") || currentPage.StartsWith("/Thietbiphongs")) ? " active open" : "")'>
+      <a href="javascript:void(0);" class="menu-link menu-toggle"><div>Quản lý phòng</div></a>
+      <ul class="menu-sub">
+        <li class='menu-item@(currentPage.StartsWith("/Phongs") ? " active" : "")'>
+          <a asp-area="" asp-controller="Phongs" asp-action="Index" class="menu-link"><div>Phòng</div></a>
+        </li>
+        <li class='menu-item@(currentPage.StartsWith("/Loaiphongs") ? " active" : "")'>
+          <a asp-area="" asp-controller="Loaiphongs" asp-action="Index" class="menu-link"><div>Loại phòng</div></a>
+        </li>
+        <li class='menu-item@(currentPage.StartsWith("/Thietbiphongs") ? " active" : "")'>
+          <a asp-area="" asp-controller="Thietbiphongs" asp-action="Index" class="menu-link"><div>Thiết bị trong phòng</div></a>
+        </li>
+      </ul>
+    </li>
+
+    <li class='menu-item@((currentPage.StartsWith("/Thucdons") || currentPage.StartsWith("/Mons")) ? " active open" : "")'>
+      <a href="javascript:void(0);" class="menu-link menu-toggle"><div>Quản lý nhà hàng</div></a>
+      <ul class="menu-sub">
+        <li class='menu-item@(currentPage.StartsWith("/Thucdons") ? " active" : "")'>
+          <a asp-area="" asp-controller="Thucdons" asp-action="Index" class="menu-link"><div>Thực đơn</div></a>
+        </li>
+        <li class='menu-item@(currentPage.StartsWith("/Mons") ? " active" : "")'>
+          <a asp-area="" asp-controller="Mons" asp-action="Index" class="menu-link"><div>Món ăn</div></a>
+        </li>
+      </ul>
+    </li>
+
+    <li class='menu-item@((currentPage.StartsWith("/Nhanviens") || currentPage.StartsWith("/Bophans") || currentPage.StartsWith("/Chucvus") || currentPage.StartsWith("/Calamviecs")) ? " active open" : "")'>
+      <a href="javascript:void(0);" class="menu-link menu-toggle"><div>Quản lý nhân sự</div></a>
+      <ul class="menu-sub">
+        <li class='menu-item@(currentPage.StartsWith("/Nhanviens") ? " active" : "")'>
+          <a asp-area="" asp-controller="Nhanviens" asp-action="Index" class="menu-link"><div>Nhân viên</div></a>
+        </li>
+        <li class='menu-item@(currentPage.StartsWith("/Bophans") ? " active" : "")'>
+          <a asp-area="" asp-controller="Bophans" asp-action="Index" class="menu-link"><div>Bộ phận</div></a>
+        </li>
+        <li class='menu-item@(currentPage.StartsWith("/Chucvus") ? " active" : "")'>
+          <a asp-area="" asp-controller="Chucvus" asp-action="Index" class="menu-link"><div>Chức vụ</div></a>
+        </li>
+        <li class='menu-item@(currentPage.StartsWith("/Calamviecs") ? " active" : "")'>
+          <a asp-area="" asp-controller="Calamviecs" asp-action="Index" class="menu-link"><div>Ca làm việc</div></a>
+        </li>
+      </ul>
+    </li>
+
+    <li class='menu-item@((currentPage.StartsWith("/Nhacungcaps") || currentPage.StartsWith("/Ncccungcapnguyenlieux") || currentPage.StartsWith("/Ncccungcapthietbis")) ? " active open" : "")'>
+      <a href="javascript:void(0);" class="menu-link menu-toggle"><div>Quản lý kho</div></a>
+      <ul class="menu-sub">
+        <li class='menu-item@(currentPage.StartsWith("/Nhacungcaps") ? " active" : "")'>
+          <a asp-area="" asp-controller="Nhacungcaps" asp-action="Index" class="menu-link"><div>Nhà cung cấp</div></a>
+        </li>
+        <li class='menu-item@(currentPage.StartsWith("/Ncccungcapnguyenlieux") ? " active" : "")'>
+          <a asp-area="" asp-controller="Ncccungcapnguyenlieux" asp-action="Index" class="menu-link"><div>Nguyên liệu</div></a>
+        </li>
+        <li class='menu-item@(currentPage.StartsWith("/Ncccungcapthietbis") ? " active" : "")'>
+          <a asp-area="" asp-controller="Ncccungcapthietbis" asp-action="Index" class="menu-link"><div>Thiết bị</div></a>
+        </li>
+      </ul>
+    </li>
+
+    <li class='menu-item@(currentPage.StartsWith("/Admin") ? " active open" : "")'>
+      <a asp-area="Admin" asp-controller="UserManagement" asp-action="Index" class="menu-link">
+        <div>Users</div>
+      </a>
+    </li>
   </ul>
-
 </aside>
-<!-- / Menu -->

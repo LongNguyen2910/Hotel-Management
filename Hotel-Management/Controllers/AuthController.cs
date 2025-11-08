@@ -35,7 +35,7 @@ public class AuthController : Controller
         var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, isPersistent: false, lockoutOnFailure: true);
         if (result.Succeeded)
         {
-            return RedirectToAction("Index", "Dashboards");
+            return RedirectToAction("Index", "Datphongs");
         }
         if (result.IsNotAllowed)
         {

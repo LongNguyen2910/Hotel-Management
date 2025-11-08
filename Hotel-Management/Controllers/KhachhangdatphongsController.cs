@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace Hotel_Management.Controllers
 {
-    [Route("~/[controller]/[action]")]
     public class KhachhangdatphongsController : Controller
     {
         private readonly AppDbContext _context;

@@ -3,8 +3,21 @@
 @{
     ViewData["Title"] = "Đặt món";
     var currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
+    var errorMessage = TempData["Error"] as string;
 }
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div id="alertMessage" class="alert alert-danger text-center" role="alert">
+        @errorMessage
+    </div>
 
+    <script>
+        setTimeout(() => {
+            var alertBox = document.getElementById("alertMessage");
+            if (alertBox) alertBox.style.display = "none";
+        }, 5000);
+    </script>
+}
 <div class="card-header d-flex justify-content-between align-items-center mb-4">
     <h5 class="mb-0">Đặt món</h5>
     <div class="d-flex align-items-center">

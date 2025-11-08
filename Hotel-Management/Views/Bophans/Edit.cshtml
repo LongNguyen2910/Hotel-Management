@@ -15,8 +15,9 @@
                 @Html.AntiForgeryToken()
 
                 <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="Mabophan" />
                 <div class="mb-3">
-                    <label class="form-label">Tên bộ phận</label>
+                    <label asp-for="Tenbophan" class="control-label">Tên bộ phận</label>
                     <input asp-for="Tenbophan" class="form-control" />
                     <span asp-validation-for="Tenbophan" class="text-danger"></span>
                 </div>

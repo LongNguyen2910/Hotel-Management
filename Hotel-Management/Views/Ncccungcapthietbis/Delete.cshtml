@@ -1,0 +1,46 @@
+﻿@model Hotel_Management.Models.Ncccungcapthietbi
+
+@{
+    ViewData["Title"] = "Xoá thiết bị";
+}
+
+<h1>Xoá thông tin thiết bị</h1>
+
+<h3>Bạn có muốn xoá thiết bị không? </h3>
+<div>
+    <h4>Ncccungcapthietbi</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Soluong)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Soluong)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Tienthietbi)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Tienthietbi)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ManccNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ManccNavigation.Manhacungcap)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MathietbiNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MathietbiNavigation.Mathietbi)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Mancc" />
+        <input type="hidden" asp-for="Mathietbi" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

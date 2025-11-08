@@ -192,13 +192,13 @@
                         <div>Nhà cung cấp</div>
                     </a>
                 </li>
-                <li class='menu-item@(currentPage == "/Auth/RegisterBasic" ? " active" : "")'>
-                    <a asp-controller="Auth" asp-action="RegisterBasic" class="menu-link">
+                <li class='menu-item@(currentPage.StartsWith("/Ncccungcapnguyenlieux/Index") ? " active" : "")'>
+                    <a asp-controller="Ncccungcapnguyenlieux" asp-action="Index" class="menu-link">
                         <div>Nguyên liệu</div>
                     </a>
                 </li>
-                <li class='menu-item@(currentPage == "/Auth/ForgotPasswordBasic" ? " active" : "")'>
-                    <a asp-controller="Auth" asp-action="ForgotPasswordBasic" class="menu-link">
+                <li class='menu-item@(currentPage.StartsWith("/Ncccungcapthietbis/Index") ? " active" : "")'>
+                    <a asp-controller="Ncccungcapthietbis" asp-action="Index" class="menu-link">
                         <div>Thiết bị</div>
                     </a>
                 </li>

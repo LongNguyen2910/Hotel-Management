@@ -1,0 +1,59 @@
+﻿@model Hotel_Management.Models.Ncccungcapnguyenlieu
+
+@{
+    ViewData["Title"] = "Sửa thông tin";
+}
+
+<h1 class="text-center mb-4">Sửa thông tin nguyên liệu</h1>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form asp-action="Edit" asp-route-mancc="@Model.Mancc" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Mancc" />
+            <input type="hidden" asp-for="Manguyenlieu" />
+            <div class="form-group mb-3">
+                <label asp-for="Tennguyenlieu" class="form-label">Tên nguyên liệu</label>
+                <input asp-for="Tennguyenlieu" class="form-control" placeholder="Nhập tên nguyên liệu" />
+                <span asp-validation-for="Tennguyenlieu" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Ngày nhập</label>
+                <input asp-for="Ngaynhap" type="date" class="form-control" placeholder="Nhập ngày nhập" />
+                <span asp-validation-for="Ngaynhap" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Hạn sử dụng</label>
+                <input asp-for="Hansudung" type="date" class="form-control" placeholder="Nhập hạn sử dụng" />
+                <span asp-validation-for="Hansudung" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Ngày sản xuất</label>
+                <input asp-for="Ngaysanxuat" type="date" class="form-control" placeholder="Nhập ngày sản xuất" />
+                <span asp-validation-for="Ngaysanxuat" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Luong" class="form-label">Số lượng</label>
+                <input asp-for="Luong" class="form-control" placeholder="Nhập họ và tên" />
+                <span asp-validation-for="Luong" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Tiennguyenlieu" class="form-label">Tiền nguyên liệu</label>
+                <input asp-for="Tiennguyenlieu" class="form-control" placeholder="Nhập tiền nguyên liệu"/>
+                <span asp-validation-for="Tiennguyenlieu" class="text-danger"></span>
+            </div>
+
+            <div class="form-group text-center mt-4">
+                <button type="submit" class="btn btn-primary px-4">Lưu</button>
+                <a asp-action="Index" class="btn btn-secondary px-4 ms-2">Quay lại</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<partial name="_ValidationScriptsPartial" />

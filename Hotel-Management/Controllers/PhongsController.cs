@@ -27,8 +27,8 @@ namespace Hotel_Management.Controllers
         private bool IsAjaxRequest()
     => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
 
+        [Authorize(Policy = "CanViewData")]
         // GET: Phongs
-        [Authorize(Roles = "Nhân Viên")]
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             var trimmed = (searchString ?? string.Empty).Trim().ToUpper();
@@ -64,6 +64,7 @@ namespace Hotel_Management.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Quản lý khách sạn, Admin")]
         // GET: Phongs/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -83,6 +84,7 @@ namespace Hotel_Management.Controllers
             return View(phong);
         }
 
+        [Authorize(Roles = "Quản lý khách sạn, Admin")]
         // GET: Phongs/Create
         public IActionResult Create()
         {
@@ -90,6 +92,7 @@ namespace Hotel_Management.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Quản lý khách sạn, Admin")]
         // POST: Phongs/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -146,6 +149,7 @@ namespace Hotel_Management.Controllers
             return View(phong);
         }
 
+        [Authorize(Roles = "Quản lý khách sạn, Admin")]
         // GET: Phongs/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -163,6 +167,7 @@ namespace Hotel_Management.Controllers
             return View(phong);
         }
 
+        [Authorize(Roles = "Quản lý khách sạn, Admin")]
         // POST: Phongs/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -241,6 +246,7 @@ namespace Hotel_Management.Controllers
             }
         }
 
+        [Authorize(Roles = "Quản lý khách sạn, Admin")]
         // GET: Phongs/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -265,6 +271,7 @@ namespace Hotel_Management.Controllers
             return View(phong);
         }
 
+        [Authorize(Roles = "Quản lý khách sạn, Admin")]
         // POST: Phongs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -304,6 +311,7 @@ namespace Hotel_Management.Controllers
             }
         }
 
+        [Authorize]
         public IActionResult GetImage(string id)
         {
             var phong = _context.Phongs

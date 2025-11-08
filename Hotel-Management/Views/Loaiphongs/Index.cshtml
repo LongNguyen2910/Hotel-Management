@@ -17,7 +17,10 @@
                         <a asp-action="Index" class="btn btn-sm btn-link ms-2">Xóa</a>
                     }
                 </form>
+                @if (User.IsInRole("Admin") || User.IsInRole("Quản lý khách sạn"))
+                        {
                 <a asp-controller="Loaiphongs" asp-action="Create" class="btn btn-sm btn-primary">Thêm loại phòng</a>
+                        }
             </div>
         </div>
 
@@ -47,8 +50,11 @@
                         <td class="text-truncate">@item.Succhua</td>
                         <td class="text-truncate">@(item.Gia.HasValue ? item.Gia.Value.ToString("C") : "")</td>
                         <td>
+    @if (User.IsInRole("Admin") || User.IsInRole("Quản lý khách sạn"))
+    {
                             <a asp-controller="Loaiphongs" asp-action="Edit" asp-route-id="@item.Maloaiphong" class="btn btn-sm btn-outline-primary me-2">Sửa</a>
                             <a asp-controller="Loaiphongs" asp-action="Delete" asp-route-id="@item.Maloaiphong" class="btn btn-sm btn-outline-danger">Xóa</a>
+    }
                         </td>
                     </tr>
 }

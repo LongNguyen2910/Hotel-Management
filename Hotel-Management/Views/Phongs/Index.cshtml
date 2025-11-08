@@ -15,7 +15,10 @@
                            class="form-control form-control-sm me-2" placeholder="Tìm theo mã phòng..." />
                     <button type="submit" id="btnSearch" class="btn btn-sm btn-outline-primary">Tìm</button>
                 </form>
-                <a asp-controller="Phongs" asp-action="Create" class="btn btn-sm btn-primary">Thêm phòng</a>
+                @if (User.IsInRole("Admin") || User.IsInRole("Quản lý khách sạn"))
+                {
+                    <a asp-controller="Phongs" asp-action="Create" class="btn btn-sm btn-primary">Thêm phòng</a>
+                }
             </div>
         </div>
         <div class="table-responsive" id="phongs-container">

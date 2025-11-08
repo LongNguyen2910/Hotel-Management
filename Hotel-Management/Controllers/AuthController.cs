@@ -1,5 +1,6 @@
 ﻿using Hotel_Management.Models;
 using Hotel_Management.Models.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,14 +19,10 @@ public class AuthController : Controller
 
     public IActionResult ForgotPassword() => View();
 
-    [HttpGet]
-    public IActionResult Login()
-    {
-        return View();
-    }
+    [HttpGet, AllowAnonymous]
+    public IActionResult Login() => View();
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
+    [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
     public async Task<IActionResult> Login(AccountViewModel model)
     {
         if (!ModelState.IsValid)
@@ -56,14 +53,10 @@ public class AuthController : Controller
         return RedirectToAction("Login", "Auth");
     }
 
-    [HttpGet]
-    public IActionResult Register()
-    {
-        return View();
-    }
+    [HttpGet, AllowAnonymous]
+    public IActionResult Register() => View();
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
+    [HttpPost, AllowAnonymous, ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(AccountViewModel model)
     {
         if (!ModelState.IsValid)
@@ -76,6 +69,9 @@ public class AuthController : Controller
 
         if (result.Succeeded)
         {
+            // Gán role mặc định
+            await _userManager.AddToRoleAsync(user, "Nhân Viên");
+
             await _signInManager.SignInAsync(user, isPersistent: false);
             TempData["SuccessMessage"] = "Registration successful!";
             return RedirectToAction("Login", "Auth");

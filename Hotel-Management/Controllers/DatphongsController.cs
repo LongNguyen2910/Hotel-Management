@@ -1,5 +1,6 @@
 ﻿using Hotel_Management.Helpers;
 using Hotel_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -140,6 +141,7 @@ namespace Hotel_Management.Controllers
 
         // GET: Datphongs
         // Search by mã phòng (Maphong)
+        [Authorize(Roles = "Nhân Viên")]
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
 

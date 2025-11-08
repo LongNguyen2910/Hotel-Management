@@ -1,4 +1,5 @@
 ﻿using Hotel_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ namespace Hotel_Management.Controllers
     => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
 
         // GET: Phongs
+        [Authorize(Roles = "Nhân Viên")]
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             var trimmed = (searchString ?? string.Empty).Trim().ToUpper();
@@ -38,7 +40,6 @@ namespace Hotel_Management.Controllers
 
             if (!string.IsNullOrWhiteSpace(trimmed))
             {
-                // preserve existing behavior — search text was uppercased before
                 query = query.Where(p => EF.Functions.Like(p.Tenphong, $"%{trimmed}%"));
             }
 

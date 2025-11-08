@@ -10,7 +10,10 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Danh sách bộ phận</h5>
             <div class="d-flex align-items-center">
-                <a asp-controller="Bophans" asp-action="Create" class="btn btn-sm btn-primary">Thêm bộ phận</a>
+                @if (User.IsInRole("Admin") || User.IsInRole("Quản lý nhân sự"))
+                {
+                    <a asp-controller="Bophans" asp-action="Create" class="btn btn-sm btn-primary">Thêm bộ phận</a>
+                }
             </div>
         </div>
         <div class="table-responsive">
@@ -35,8 +38,11 @@
                             </td>
                             <td class="text-truncate">@item.Ngaythanhlap</td>
                             <td>
-                                <a asp-controller="Bophans" asp-action="Edit" asp-route-id="@item.Mabophan" class="btn btn-sm btn-outline-primary">Sửa</a>
-                                <a asp-controller="Bophans" asp-action="Delete" asp-route-id="@item.Mabophan" class="btn btn-sm btn-outline-danger">Xóa</a>
+                                @if (User.IsInRole("Admin") || User.IsInRole("Quản lý nhân sự"))
+                                {
+                                    <a asp-controller="Bophans" asp-action="Edit" asp-route-id="@item.Mabophan" class="btn btn-sm btn-outline-primary">Sửa</a>
+                                    <a asp-controller="Bophans" asp-action="Delete" asp-route-id="@item.Mabophan" class="btn btn-sm btn-outline-danger">Xóa</a>
+                                }
                             </td>
                         </tr>
                     }

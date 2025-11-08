@@ -16,24 +16,46 @@ namespace Hotel_Management.Controllers
         {
             _context = context;
         }
-
+        // Add Ajax
+        private bool IsAjaxRequest()
+    => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
         // GET: Datmons
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
+            // Nếu không có searchString hoặc pageNumber, lấy từ session
+            if (searchString == null && !pageNumber.HasValue)
+            {
+                var ss = HttpContext.Session.GetString("Datmons_Search");
+                var sp = HttpContext.Session.GetInt32("Datmons_Page");
+                if (!string.IsNullOrEmpty(ss))
+                    searchString = ss;
+                if (sp.HasValue)
+                    pageNumber = sp;
+            }
+
+            var trimmed = (searchString ?? string.Empty).Trim();
+            int pageSize = 10;
             ViewData["CurrentFilter"] = searchString ?? string.Empty;
 
             var query = _context.Mons.AsNoTracking().AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(searchString))
+            if (!string.IsNullOrWhiteSpace(trimmed))
             {
-                var trimmed = searchString.Trim();
+                // Sử dụng SQL LIKE để tìm theo tên món
                 query = query.Where(m => EF.Functions.Like(m.Tenmon ?? "", $"%{trimmed}%"));
             }
 
             query = query.OrderBy(m => m.Mamon);
 
-            int pageSize = 10;
             var model = await PaginatedList<Mon>.CreateAsync(query, pageNumber ?? 1, pageSize);
+
+            // Lưu session để nhớ tìm kiếm và trang hiện tại
+            HttpContext.Session.SetString("Datmons_Search", searchString ?? string.Empty);
+            HttpContext.Session.SetInt32("Datmons_Page", model.PageIndex);
+
+            // Nếu là AJAX request, trả về partial view
+            if (IsAjaxRequest())
+                return PartialView("_DatmonsList", model);
 
             return View(model);
         }
@@ -42,14 +64,21 @@ namespace Hotel_Management.Controllers
         public async Task<IActionResult> Create(string mamon)
         {
             if (string.IsNullOrEmpty(mamon))
-                return BadRequest();
+            {
+                TempData["Error"] = "Không tìm thấy món cần đặt.";
+                return RedirectToAction("Index");
+            }
 
-            var mon = await _context.Mons.FindAsync(mamon);
+            var mon = await _context.Mons
+                .FirstOrDefaultAsync(m => m.Mamon == mamon);
+
             if (mon == null)
-                return NotFound();
+            {
+                TempData["Error"] = "Món không tồn tại.";
+                return RedirectToAction("Index");
+            }
 
-            ViewBag.Mon = mon;
-            return View();
+            return View(new List<Mon> { mon });
         }
 
         // POST: Datmons/SaveOrder

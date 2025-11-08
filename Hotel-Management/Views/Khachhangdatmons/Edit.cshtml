@@ -1,36 +1,35 @@
 ﻿@model Hotel_Management.Models.Khachhangdatmon
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Sửa thông tin đặt món";
 }
 
-<h1>Edit</h1>
+<h1 class="text-center mb-4">Sửa thông tin đặt món</h1>
 
-<h4>Khachhangdatmon</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form asp-action="Edit" asp-route-makhachhang="@Model.Makhachhang" asp-route-mamon="@Model.Mamon" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="Makhachhang" />
             <input type="hidden" asp-for="Mamon" />
-            <input type="hidden" asp-for="Ngaydat" />
-            <div class="form-group">
-                <label asp-for="Soluong" class="control-label"></label>
-                <input asp-for="Soluong" class="form-control" />
+            <div class="form-group mb-3">
+                <label asp-for="Soluong" class="form-label">Số lượng</label>
+                <input asp-for="Soluong" class="form-control" placeholder="Nhập số lượng" />
                 <span asp-validation-for="Soluong" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            <div class="form-group text-center mt-4">
+                <button type="submit" asp-route-makhachhang="@Model.Makhachhang"
+                        asp-route-mamon="@Model.Mamon"
+                        asp-route-ngaydat="@Model.Ngaydat.ToString("o")" class="btn btn-primary px-4">
+                    Lưu
+                </button>
+                <a asp-action="Index" class="btn btn-secondary px-4 ms-2">Quay lại</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<partial name="_ValidationScriptsPartial" />

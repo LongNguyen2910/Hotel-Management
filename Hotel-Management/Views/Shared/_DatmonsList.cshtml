@@ -1,0 +1,74 @@
+﻿@model Hotel_Management.Helpers.PaginatedList<Hotel_Management.Models.Mon>
+
+<div class="col-12">
+    <div class="card overflow-hidden">
+        <h2 class="mb-3 mt-3 text-center">Danh sách món ăn</h2>
+
+        <form asp-action="Create" method="get">
+            <table class="table table-striped align-middle text-center">
+                <thead>
+                    <tr>
+                        <th>Chọn</th>
+                        <th>Ảnh</th>
+                        <th>Tên món</th>
+                        <th>Giá</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ViewData["NoResults"] != null)
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                <i class="bi bi-exclamation-circle">Không tìm thấy món phù hợp</i>
+                            </td>
+                        </tr>
+                    }
+                    else
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="mamon" value="@item.Mamon" />
+                                </td>
+                                <td>
+                                    <img src="@Url.Action("GetImage", "Mons", new { id = item.Mamon })"
+                                         alt="Ảnh món"
+                                         class="img-thumbnail"
+                                         style="width:100px; height:100px; object-fit:cover;" />
+                                </td>
+                                <td>@item.Tenmon</td>
+                                <td>@item.Gia</td>
+                            </tr>
+                        }
+                </tbody>
+            </table>
+
+            <div class="text-center mt-3 mb-3">
+                <button type="submit" class="btn btn-primary px-4">Đặt món</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<div class="mt-3">
+    <a asp-action="Index"
+       asp-route-pageNumber="@(Model.PageIndex - 1)"
+       asp-route-searchString="@ViewData["CurrentFilter"]"
+       class="btn btn-outline-primary @prevDisabled">
+        <i class="bx bx-chevron-left"></i> Trước
+    </a>
+    <a asp-action="Index"
+       asp-route-pageNumber="@(Model.PageIndex + 1)"
+       asp-route-searchString="@ViewData["CurrentFilter"]"
+       class="btn btn-outline-primary @nextDisabled">
+        Sau <i class="bx bx-chevron-right"></i>
+    </a>
+    <span class="ms-2 text-muted">
+        Trang @Model.PageIndex / @Model.TotalPages
+    </span>
+</div>

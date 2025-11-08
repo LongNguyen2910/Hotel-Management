@@ -18,7 +18,8 @@ namespace Hotel_Management.Controllers
         {
             _context = context;
         }
-
+        private bool IsAjaxRequest()
+=> string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
         // GET: Khachhangdatmons
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
@@ -34,14 +35,19 @@ namespace Hotel_Management.Controllers
                 datmons = datmons.Where(d => d.Makhachhang.ToString().Contains(searchString));
             }
 
-            datmons = datmons.OrderBy(d => d.Makhachhang).ThenBy(d => d.Mamon); // Sắp xếp
+            datmons = datmons.OrderBy(d => d.Makhachhang).ThenBy(d => d.Mamon);
 
-            int pageSize = 10; // số bản ghi mỗi trang
+            int pageSize = 10;
             var model = await PaginatedList<Khachhangdatmon>.CreateAsync(datmons.AsNoTracking(), pageNumber ?? 1, pageSize);
 
             if (!model.Any())
                 ViewData["NoResults"] = true;
 
+            // Nếu là AJAX thì chỉ render phần danh sách
+            if (IsAjaxRequest())
+                return PartialView("_KhachhangdatmonsList", model);
+
+            // Còn nếu là request bình thường thì render cả view
             return View(model);
         }
 
@@ -112,21 +118,26 @@ namespace Hotel_Management.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(khachhangdatmon);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!KhachhangdatmonExists(makhachhang, mamon, ngaydat))
-                        return NotFound();
-                    else
-                        throw;
-                }
+                var existing = await _context.Khachhangdatmons
+                       .FirstOrDefaultAsync(k => k.Makhachhang == makhachhang && k.Mamon == mamon && k.Ngaydat == ngaydat);
+
+                if (existing == null)
+                    return NotFound();
+
+                existing.Soluong = khachhangdatmon.Soluong;
+                await _context.SaveChangesAsync();
+                await CapNhatHoaDonAsync(makhachhang);
+
                 return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!KhachhangdatmonExists(makhachhang, mamon, ngaydat))
+                    return NotFound();
+                else
+                    throw;
             }
             ViewData["Makhachhang"] = new SelectList(_context.Khachhangs, "Makhachhang", "Makhachhang", khachhangdatmon.Makhachhang);
             ViewData["Mamon"] = new SelectList(_context.Mons, "Mamon", "Tenmon", khachhangdatmon.Mamon);
@@ -172,6 +183,48 @@ namespace Hotel_Management.Controllers
                 e.Makhachhang == makhachhang &&
                 e.Mamon == mamon &&
                 e.Ngaydat == ngaydat);
+        }
+        private async Task CapNhatHoaDonAsync(int makhachhang)
+        {
+            var hoadon = await _context.Hoadons
+                .FirstOrDefaultAsync(h => h.Makhachhang == makhachhang);
+
+            if (hoadon == null)
+            {
+                var lastMa = await _context.Hoadons
+                    .OrderByDescending(h => h.Mahoadon)
+                    .Select(h => h.Mahoadon)
+                    .FirstOrDefaultAsync();
+
+                string newMa = "HD001";
+                if (!string.IsNullOrEmpty(lastMa) && lastMa.Length > 2 &&
+                    int.TryParse(lastMa.Substring(2), out int num))
+                {
+                    newMa = "HD" + (num + 1).ToString("D3");
+                }
+
+                hoadon = new Hoadon
+                {
+                    Mahoadon = newMa,
+                    Makhachhang = makhachhang,
+                    Ngaylap = DateTime.Now,
+                    Giaphong = 0,
+                    Giamon = 0
+                };
+
+                _context.Hoadons.Add(hoadon);
+                await _context.SaveChangesAsync();
+            }
+
+            var tongTienMon = await _context.Khachhangdatmons
+                .Include(dm => dm.MamonNavigation)
+                .Where(dm => dm.Makhachhang == makhachhang)
+                .SumAsync(dm => (dm.MamonNavigation!.Gia ?? 0) * (dm.Soluong ?? 1));
+
+            hoadon.Giamon = tongTienMon;
+            hoadon.Ngaylap = DateTime.Now;
+
+            await _context.SaveChangesAsync();
         }
     }
 }

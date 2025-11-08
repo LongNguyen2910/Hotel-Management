@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Hotel_Management.Helpers;
+using Hotel_Management.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Hotel_Management.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Hotel_Management.Controllers
 {
@@ -19,21 +20,27 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Khachhangs
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
-            ViewData["CurrentFilter"] = searchString;
-            var khachhangs = from k in _context.Khachhangs select k;
-            if (!String.IsNullOrEmpty(searchString))
+            ViewData["CurrentFilter"] = searchString ?? string.Empty;
+
+            var khachhangs = _context.Khachhangs.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
             {
-                khachhangs = khachhangs
-                    .Where(k => k.Hoten != null && k.Hoten.Contains(searchString));
+                khachhangs = khachhangs.Where(k =>
+                    k.Hoten != null && EF.Functions.Like(k.Hoten, $"%{searchString}%"));
             }
-            var list = await khachhangs.ToListAsync();
-            if (!list.Any())
-            {
+
+            khachhangs = khachhangs.OrderBy(k => k.Makhachhang); 
+
+            int pageSize = 10; 
+            var model = await PaginatedList<Khachhang>.CreateAsync(khachhangs.AsNoTracking(), pageNumber ?? 1, pageSize);
+
+            if (!model.Any())
                 ViewData["NoResults"] = true;
-            }
-            return View(list);
+
+            return View(model);
         }
 
         // GET: Khachhangs/Details/5

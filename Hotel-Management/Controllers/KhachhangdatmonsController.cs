@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Hotel_Management.Helpers;
+using Hotel_Management.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Hotel_Management.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Hotel_Management.Controllers
 {
@@ -19,24 +20,29 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Khachhangdatmons
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
-            ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentFilter"] = searchString ?? string.Empty;
+
             var datmons = _context.Khachhangdatmons
                 .Include(d => d.MakhachhangNavigation)
                 .Include(d => d.MamonNavigation)
                 .AsQueryable();
+
             if (!string.IsNullOrEmpty(searchString))
             {
                 datmons = datmons.Where(d => d.Makhachhang.ToString().Contains(searchString));
             }
-            var list = await datmons.ToListAsync();
 
-            if (!list.Any())
-            {
+            datmons = datmons.OrderBy(d => d.Makhachhang).ThenBy(d => d.Mamon); // Sắp xếp
+
+            int pageSize = 10; // số bản ghi mỗi trang
+            var model = await PaginatedList<Khachhangdatmon>.CreateAsync(datmons.AsNoTracking(), pageNumber ?? 1, pageSize);
+
+            if (!model.Any())
                 ViewData["NoResults"] = true;
-            }
-            return View(list);
+
+            return View(model);
         }
 
         // GET: Khachhangdatmons/Details

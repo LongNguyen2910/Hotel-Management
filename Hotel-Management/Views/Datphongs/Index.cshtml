@@ -1,37 +1,114 @@
-﻿@model IEnumerable<Hotel_Management.Models.Phong>
+﻿@model Hotel_Management.Helpers.PaginatedList<Hotel_Management.Models.Phong>
 @{
     ViewData["Title"] = "Đặt phòng";
     var currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
 }
 
-<div class="card-header d-flex justify-content-between align-items-center mb-6">
+<div class="card-header d-flex justify-content-between align-items-center mb-3">
     <h5 class="mb-0">Đặt phòng</h5>
     <div class="d-flex align-items-center">
-        <form asp-action="Index" method="get" class="d-flex me-3">
-            <input name="searchString" value="" class="form-control form-control-sm me-2" placeholder="Tìm theo tên loại phòng..." />
-            <button type="submit" class="btn btn-sm btn-outline-primary">Tìm</button>
-            @if (!string.IsNullOrWhiteSpace(currentFilter))
-            {
-                <a asp-action="Index" class="btn btn-sm btn-outline-danger btn-link ms-2">Xóa</a>
-            }
+        <form id="search-form" asp-action="Index" method="get" class="d-flex me-3" autocomplete="off">
+            <input id="searchString" value="@currentFilter" name="searchString"
+                   class="form-control form-control-sm me-2" placeholder="Tìm theo tên loại phòng..." />
+            <button type="submit" id="btnSearch" class="btn btn-sm btn-outline-primary">Tìm</button>
         </form>
     </div>
 </div>
-<div class="row mb-12 g-6">
-    @foreach (var item in Model)
-    {
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
-                <img class="card-img-top" src="@Url.Action("GetImage", "Phongs", new { id = item.Maphong })" alt="Ảnh phòng" width="448" height="448" />
-                <div class="card-body">
-                    <h5 class="card-title">@item.MaloaiphongNavigation.Tenloaiphong - @item.Tenphong</h5>
-                    <p class="card-text">@item.Mota</p>
-                    <form asp-action="Create" method="get">
-                        <input type="hidden" name="maphong" value="@item.Maphong" />
-                        <button type="submit" class="btn btn-outline-primary px-3">Đặt phòng</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    }
+
+<div id="datphongs-container">
+    @await Html.PartialAsync("_DatphongsList", Model)
 </div>
+
+@section Scripts {
+    <script src="~/vendor/libs/jquery/jquery.js"></script>
+    <script>
+        (function ($) {
+
+            const $container = $('#datphongs-container');
+            const baseUrl = '@Url.Action("Index", "Datphongs")';
+
+            function ClearButton(keyword) {
+                const $form = $('#search-form');
+                let $btn = $('#btnClear');
+                if (keyword && !$btn.length) {
+                    $btn = $('<button type="button" id="btnClear" class="btn btn-sm btn-outline-danger ms-2">Xóa</button>');
+                    $form.append($btn);
+                    $btn.on('click', function () {
+                        $('#searchString').val('');
+                        loadAjax(1, '');
+                    });
+                } else if (!keyword && $btn.length) {
+                    $btn.remove();
+                }
+            }
+
+            function showLoading() {
+                $container.css('opacity', '.5');
+            }
+            function hideLoading() {
+                $container.css('opacity', '1');
+            }
+
+            function loadAjax(page, keyword, push = true) {
+                showLoading();
+                $.ajax({
+                    url: baseUrl,
+                    method: 'GET',
+                    data: {
+                        pageNumber: page,
+                        searchString: keyword
+                    },
+                    success: function (response) {
+                        $container.html(response);
+                        ClearButton(keyword);
+                        if (push) {
+                            history.pushState({ page, keyword }, '', location.pathname);
+                        }
+                    },
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .always(function () {
+                    hideLoading();
+                });
+            }
+
+            // Pagination click (delegation)
+            $('body').on('click', 'a.ajax-page', function (e) {
+                e.preventDefault();
+                if ($(this).hasClass('disabled')) return;
+                const page = $(this).data('page');
+                const keyword = $('#searchString').val().trim();
+                loadAjax(page, keyword, true);
+            });
+
+            // Search submit
+            $('#search-form').on('submit', function (e) {
+                e.preventDefault();
+                const keyword = $('#searchString').val().trim();
+                loadAjax(1, keyword, true);
+            });
+
+            // Clear filter
+            $('#btnClear').on('click', function () {
+                $('#searchString').val('');
+                loadAjax(1, '', true);
+            });
+
+            window.addEventListener('popstate', function(e){
+                const state = e.state;
+                if(state){
+                    $('#searchString').val(state.keyword || '');
+                    toggleClear(state.keyword || '');
+                    loadAjax(state.page || 1, state.keyword || '', false);
+                }
+            });
+
+            $(function(){
+                const kw = $('#searchString').val().trim();
+                toggleClear(kw);
+            });
+
+
+        })(jQuery);
+    </script>
+}

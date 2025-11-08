@@ -1,0 +1,50 @@
+﻿@model Hotel_Management.Helpers.PaginatedList<Hotel_Management.Models.Phong>
+
+<div class="row mb-3 g-3">
+    @if (Model.Count == 0)
+    {
+        <div class="text-center">
+            <i class="bi bi-exclamation-circle">Không tìm thấy phòng phù hợp</i>
+        </div>
+    }
+    @foreach (var item in Model)
+    {
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <img class="card-img-top" src="@Url.Action("GetImage", "Phongs", new { id = item.Maphong })"
+                     alt="Ảnh phòng" width="448" height="448" />
+                <div class="card-body">
+                    <h5 class="card-title">@item.MaloaiphongNavigation.Tenloaiphong - @item.Tenphong</h5>
+                    <p class="card-text">@item.Mota</p>
+                    <form asp-action="Create" method="get">
+                        <input type="hidden" name="maphong" value="@item.Maphong" />
+                        <button type="submit" class="btn btn-outline-primary px-3">Đặt phòng</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage;
+    var nextDisabled = !Model.HasNextPage;
+}
+
+<div class="mt-2 d-flex align-items-center">
+    <a href="#"
+       class="btn btn-outline-primary me-2 ajax-page @(prevDisabled ? "disabled" : "")"
+       data-page="@(Model.PageIndex - 1)"
+       @(prevDisabled ? "aria-disabled=true" : "")>
+        <i class="bx bx-chevron-left"></i> Trước
+    </a>
+    <a href="#"
+       class="btn btn-outline-primary ajax-page @(nextDisabled ? "disabled" : "")"
+       data-page="@(Model.PageIndex + 1)"
+       @(nextDisabled ? "aria-disabled=true" : "")>
+        Sau <i class="bx bx-chevron-right"></i>
+    </a>
+    <span class="ms-3 text-muted">
+        Trang @Model.PageIndex / @Model.TotalPages
+    </span>
+</div>

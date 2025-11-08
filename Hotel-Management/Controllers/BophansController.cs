@@ -81,11 +81,19 @@ namespace Hotel_Management.Controllers
                 return NotFound();
             }
 
+            var bophanToUpdate = await _context.Bophans.FindAsync(id);
+
+            if (bophanToUpdate == null)
+            {
+                return NotFound();
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(bophan);
+                    bophanToUpdate.Tenbophan = bophan.Tenbophan;
+                    bophanToUpdate.Ngaythanhlap = bophan.Ngaythanhlap;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

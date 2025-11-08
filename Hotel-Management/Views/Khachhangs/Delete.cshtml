@@ -1,34 +1,36 @@
 ﻿@model Hotel_Management.Models.Khachhang
 
 @{
-    ViewData["Title"] = "Xoá thông tin";
+    ViewData["Title"] = "Delete";
 }
 
-<h1>Xoá thông tin khách hàng</h1>
 
-<h5 class="text-muted">Bạn có chắc chắn muốn xoá thông tin khách hàng này không?</h5>
+    <h1>Xoá thông tin khách hàng</h1>
 
-<div class="border rounded p-4 shadow-sm bg-light">
-    <dl class="row">
-        <dt class="col-sm-2 fw-bold text-secondary">Họ tên</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Hoten)</dd>
+    <h5 class="text-muted">Bạn có chắc chắn muốn xoá thông tin khách hàng này không?</h5>
 
-        <dt class="col-sm-2 fw-bold text-secondary">Quốc tịch</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Quoctich)</dd>
+    <div class="border rounded p-4 shadow-sm bg-light">
+        <dl class="row">
+            <dt class="col-sm-2 fw-bold text-secondary">Họ tên</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.Hoten)</dd>
 
-        <dt class="col-sm-2 fw-bold text-secondary">CCCD</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Cccd)</dd>
+            <dt class="col-sm-2 fw-bold text-secondary">Quốc tịch</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.Quoctich)</dd>
+           
+            <dt class="col-sm-2 fw-bold text-secondary">CCCD</dt>
+            <dd class="col-sm-10">@Html.DisplayNameFor(model => model.Cccd)</dd>
 
-        <dt class="col-sm-2 fw-bold text-secondary">Số điện thoại</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Sdt)</dd>
+            <dt class="col-sm-2 fw-bold text-secondary">Số điện thoại</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.Sdt)</dd>
 
-        <dt class="col-sm-2 fw-bold text-secondary">Hộ chiếu</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Hochieu)</dd>
-    </dl>
-</div>
+            <dt class="col-sm-2 fw-bold text-secondary">Hộ chiếu(nếu có)</dt>
+            <dd class="col-sm-10">@Html.DisplayFor(model => model.Hochieu)</dd>
 
-<form asp-action="Delete" class="mt-4">
-    <input type="hidden" asp-for="Makhachhang" />
-    <button type="submit" class="btn btn-danger px-4 me-2">Xoá</button>
-    <a asp-action="Index" class="btn btn-secondary px-4">Quay lại</a>
-</form>
+        </dl>
+    </div>
+    <form asp-action="Delete" class="mt-4">
+        <input type="hidden" asp-for="Makhachhang" />
+        <button type="submit" class="btn btn-danger px-4 me-2">Xoá</button>
+        <a asp-action="Index" class="btn btn-secondary px-4">Quay lại</a>
+    </form>
+

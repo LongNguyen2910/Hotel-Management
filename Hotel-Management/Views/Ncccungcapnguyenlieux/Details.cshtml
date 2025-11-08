@@ -1,0 +1,50 @@
+﻿@model Hotel_Management.Models.Ncccungcapnguyenlieu
+
+@{
+    ViewData["Title"] = "Chi tiết nguyên liệu";
+}
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Chi tiết nguyên liệu</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Mã nhà cung cấp</dt>
+                <dd class="col-sm-9">@Model.Mancc</dd>
+
+                <dt class="col-sm-3">Mã nguyên liệu</dt>
+                <dd class="col-sm-9">@Model.Manguyenlieu</dd>
+
+                <dt class="col-sm-3">Tên nguyên liệu</dt>
+                <dd class="col-sm-9">@Model.Tennguyenlieu</dd>
+
+                <dt class="col-sm-3">Ngày nhập</dt>
+                <dd class="col-sm-9">
+                    @(Model.Ngaynhap.HasValue? Model.Ngaynhap.Value.ToString("dd/MM/yyyy") : "")
+                </dd>
+
+                <dt class="col-sm-3">Hạn sử dụng</dt>
+                <dd class="col-sm-9">
+                    @(Model.Hansudung.HasValue? Model.Hansudung.Value.ToString("dd/MM/yyyy") : "")
+                </dd>
+
+                <dt class="col-sm-3">Ngày sản xuất</dt>
+                <dd class="col-sm-9">
+                    @(Model.Ngaysanxuat.HasValue? Model.Ngaysanxuat.Value.ToString("dd/MM/yyyy") : "")
+                </dd>
+
+                <dt class="col-sm-3">Số lượng</dt>
+                <dd class="col-sm-9">@Model.Luong</dd>
+
+                <dt class="col-sm-3">Tiền nguyên liệu</dt>
+                <dd class="col-sm-9">@Model.Tiennguyenlieu</dd>
+            </dl>
+
+            <div class="mt-3">
+                <a asp-action="Index" class="btn btn-outline-secondary">Quay lại danh sách</a>
+            </div>
+        </div>
+    </div>
+</div>

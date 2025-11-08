@@ -301,7 +301,6 @@ namespace Hotel_Management.Controllers
                 ModelState.AddModelError("", $"Có lỗi xảy ra khi lưu dữ liệu: {innerMessage}");
                 return View(phong);
             }
-            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult GetImage(string id)

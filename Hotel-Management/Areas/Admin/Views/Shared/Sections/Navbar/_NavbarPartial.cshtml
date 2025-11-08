@@ -42,8 +42,14 @@
         </div>
       </a>
       <ul class="dropdown-menu dropdown-menu-end mt-3 py-2">
+        <li>
+          <a class="dropdown-item" asp-controller="Pages" asp-action="AccountSettings">
+            <i class="icon-base ri ri-settings-4-line icon-22px me-2"></i>
+            <span class="align-middle">Change Password</span>
+          </a>
+        </li>
           <div class="d-grid px-4 pt-2 pb-1">
-            <a class="btn btn-danger d-flex" asp-action="Logout" asp-controller="Auth">
+            <a class="btn btn-danger d-flex" asp-action="Logout" asp-controller="Auth"">
               <small class="align-middle">Logout</small>
               <i class="icon-base ri ri-logout-box-r-line ms-2 icon-16px"></i>
             </a>

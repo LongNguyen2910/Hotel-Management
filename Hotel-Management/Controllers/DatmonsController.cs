@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Hotel_Management.Models;
+using Hotel_Management.Helpers;
 
 namespace Hotel_Management.Controllers
 {
@@ -16,31 +17,92 @@ namespace Hotel_Management.Controllers
         {
             _context = context;
         }
+
         // GET: Datmons
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
-            ViewData["CurrentFilter"] = searchString;
+            ViewData["CurrentFilter"] = searchString ?? string.Empty;
 
-            var mons = from h in _context.Mons
-                       select h;
+            var query = _context.Mons.AsNoTracking().AsQueryable();
 
-            if (!string.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrWhiteSpace(searchString))
             {
-                mons = mons.Where(h =>
-                    !string.IsNullOrEmpty(h.Tenmon) &&
-                    EF.Functions.Like(h.Tenmon, "%" + searchString + "%")
-                );
+                var trimmed = searchString.Trim();
+                query = query.Where(m => EF.Functions.Like(m.Tenmon ?? "", $"%{trimmed}%"));
             }
 
-            var list = await mons.ToListAsync();
+            query = query.OrderBy(m => m.Mamon);
 
-            if (!list.Any())
-                ViewData["NoResults"] = true;
+            int pageSize = 10;
+            var model = await PaginatedList<Mon>.CreateAsync(query, pageNumber ?? 1, pageSize);
 
-            return View(list);
+            return View(model);
         }
 
-        // Cập nhật hoặc tạo hóa đơn
+        // GET: Datmons/Create?mamon=xxx
+        public async Task<IActionResult> Create(string mamon)
+        {
+            if (string.IsNullOrEmpty(mamon))
+                return BadRequest();
+
+            var mon = await _context.Mons.FindAsync(mamon);
+            if (mon == null)
+                return NotFound();
+
+            ViewBag.Mon = mon;
+            return View();
+        }
+
+        // POST: Datmons/SaveOrder
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SaveOrder(int makhachhang, string[] mamon, int[] soluong)
+        {
+            if (mamon == null || soluong == null || mamon.Length == 0)
+            {
+                TempData["Error"] = "Không có món nào được chọn.";
+                return RedirectToAction("Index");
+            }
+
+            var khachhang = await _context.Khachhangs.FindAsync(makhachhang);
+            if (khachhang == null)
+            {
+                TempData["Error"] = $"Không tìm thấy khách hàng có mã {makhachhang}.";
+                return RedirectToAction("Index");
+            }
+
+            for (int i = 0; i < mamon.Length; i++)
+            {
+                string maMon = mamon[i];
+                int sl = soluong[i];
+
+                var existing = await _context.Khachhangdatmons
+                    .FirstOrDefaultAsync(k => k.Makhachhang == makhachhang && k.Mamon == maMon);
+
+                if (existing != null)
+                {
+                    existing.Soluong = (existing.Soluong ?? 0) + sl;
+                }
+                else
+                {
+                    _context.Khachhangdatmons.Add(new Khachhangdatmon
+                    {
+                        Makhachhang = makhachhang,
+                        Mamon = maMon,
+                        Soluong = sl,
+                        Ngaydat = DateTime.Now
+                    });
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            await CapNhatHoaDonAsync(makhachhang);
+
+            TempData["Success"] = "Đặt món và cập nhật hoá đơn thành công!";
+            return RedirectToAction("Index", "Khachhangdatmons");
+        }
+
+        // Cập nhật hóa đơn
         private async Task CapNhatHoaDonAsync(int makhachhang)
         {
             var hoadon = await _context.Hoadons
@@ -73,7 +135,6 @@ namespace Hotel_Management.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            // Tính tổng tiền món
             var tongTienMon = await _context.Khachhangdatmons
                 .Include(dm => dm.MamonNavigation)
                 .Where(dm => dm.Makhachhang == makhachhang)
@@ -83,87 +144,6 @@ namespace Hotel_Management.Controllers
             hoadon.Ngaylap = DateTime.Now;
 
             await _context.SaveChangesAsync();
-        }
-
-        // Xử lý đặt món
-        public async Task<IActionResult> SaveOrder(int makhachhang, string[] mamon, int[] soluong)
-        {
-            if (mamon == null || soluong == null || mamon.Length == 0)
-            {
-                TempData["Error"] = "Không có món nào được chọn.";
-                return RedirectToAction("Index");
-            }
-
-            var khachhang = await _context.Khachhangs.FindAsync(makhachhang);
-            if (khachhang == null)
-            {
-                TempData["Error"] = $"Không tìm thấy khách hàng có mã {makhachhang}.";
-                return RedirectToAction("Index");
-            }
-
-            // Lưu từng món
-            for (int i = 0; i < mamon.Length; i++)
-            {
-                string maMon = mamon[i];
-                int sl = soluong[i];
-
-                var existing = await _context.Khachhangdatmons
-                    .FirstOrDefaultAsync(k =>
-                        k.Makhachhang == makhachhang &&
-                        k.Mamon == maMon);
-
-                if (existing != null)
-                {
-                    existing.Soluong = (existing.Soluong ?? 0) + sl;
-                }
-                else
-                {
-                    _context.Khachhangdatmons.Add(new Khachhangdatmon
-                    {
-                        Makhachhang = makhachhang,
-                        Mamon = maMon,
-                        Soluong = sl,
-                        Ngaydat = DateTime.Now
-                    });
-                }
-            }
-
-            await _context.SaveChangesAsync();
-
-            // Cập nhật hóa đơn sau khi lưu xong tất cả món
-            await CapNhatHoaDonAsync(makhachhang);
-
-            TempData["Success"] = "Đặt món và cập nhật hoá đơn thành công!";
-            return RedirectToAction("Index", "Khachhangdatmons");
-        }
-
-        // GET: Datmons/Create
-        public async Task<IActionResult> Create(string mamon)
-        {
-            var mon = await _context.Mons.FindAsync(mamon);
-            if (mon == null)
-                return NotFound();
-
-            ViewBag.Mon = mon;
-            ViewBag.Mamon = mamon;
-            return View();
-        }
-
-        // POST: Datmons/Create
-        [HttpPost]
-        public IActionResult Create([FromForm] string[] selectedMons)
-        {
-            if (selectedMons == null || selectedMons.Length == 0)
-            {
-                TempData["Error"] = "Vui lòng chọn ít nhất một món.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            var mons = _context.Mons
-                .Where(m => selectedMons.Contains(m.Mamon))
-                .ToList();
-
-            return View(mons);
         }
     }
 }

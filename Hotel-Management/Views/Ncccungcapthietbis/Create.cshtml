@@ -1,0 +1,52 @@
+﻿@model Hotel_Management.Models.Ncccungcapthietbi
+
+@{
+    ViewData["Title"] = "Thêm nhà cung cấp thiết bị";
+}
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Thêm nhà cung cấp thiết bị</h5>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Mancc" class="form-label"></label>
+                    <select asp-for="Mancc" class="form-select" asp-items="ViewBag.Mancc">
+                        <option value="">-- Chọn nhà cung cấp --</option>
+                    </select>
+                    <span asp-validation-for="Mancc" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Mathietbi" class="form-label"></label>
+                    <select asp-for="Mathietbi" class="form-select" asp-items="ViewBag.Mathietbi">
+                        <option value="">-- Chọn thiết bị --</option>
+                    </select>
+                    <span asp-validation-for="Mathietbi" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Số lượng</label>
+                    <input asp-for="Soluong" class="form-control" />
+                    <span asp-validation-for="Soluong" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Tiền thiết bị</label>
+                    <input asp-for="Tienthietbi" class="form-control" />
+                    <span asp-validation-for="Tienthietbi" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Lưu</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<partial name="_ValidationScriptsPartial" />

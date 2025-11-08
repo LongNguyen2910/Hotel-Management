@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Hotel_Management.Helpers;
+using Hotel_Management.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Hotel_Management.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Hotel_Management.Controllers
 {
@@ -120,25 +121,28 @@ namespace Hotel_Management.Controllers
 
 
         // GET: Hoadons
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
-            ViewData["CurrentFilter"] = searchString;
-            var hoadons = from h in _context.Hoadons
-                          select h;
-            // Nếu người dùng nhập tìm kiếm
+            ViewData["CurrentFilter"] = searchString ?? string.Empty;
+
+            var hoadons = _context.Hoadons.AsQueryable();
+
             if (!string.IsNullOrEmpty(searchString))
             {
                 hoadons = hoadons.Where(h =>
                     h.Mahoadon.Contains(searchString) ||
-                    h.Makhachhang.ToString().Contains(searchString)
-                );
+                    h.Makhachhang.ToString().Contains(searchString));
             }
-            var list = await hoadons.ToListAsync();
-            if (!list.Any())
-            {
+
+            hoadons = hoadons.OrderBy(h => h.Mahoadon);
+
+            int pageSize = 10; 
+            var model = await PaginatedList<Hoadon>.CreateAsync(hoadons.AsNoTracking(), pageNumber ?? 1, pageSize);
+
+            if (!model.Any())
                 ViewData["NoResults"] = true;
-            }
-            return View(list);
+
+            return View(model);
         }
 
         // GET: Hoadons/Details/5

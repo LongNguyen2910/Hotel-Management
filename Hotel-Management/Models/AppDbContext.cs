@@ -16,7 +16,6 @@ public partial class AppDbContext : DbContext
         : base(options)
     {
     }
-
     public virtual DbSet<Baotri> Baotris { get; set; }
 
     public virtual DbSet<Bophan> Bophans { get; set; }
@@ -42,8 +41,6 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<Ncccungcapnguyenlieu> Ncccungcapnguyenlieus { get; set; }
 
     public virtual DbSet<Ncccungcapthietbi> Ncccungcapthietbis { get; set; }
-
-    public virtual DbSet<Nguyenlieu> Nguyenlieus { get; set; }
 
     public virtual DbSet<Nhacungcap> Nhacungcaps { get; set; }
 
@@ -380,6 +377,19 @@ public partial class AppDbContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("MANGUYENLIEU");
+            entity.Property(e => e.Tennguyenlieu)
+                .HasMaxLength(100)
+                .IsUnicode(false)
+                .HasColumnName("TENNGUYENLIEU");
+            entity.Property(e => e.Ngaynhap)
+                  .HasColumnType("DATE")
+                  .HasColumnName("NGAYNHAP");
+            entity.Property(e => e.Ngaysanxuat)
+                  .HasColumnType("DATE")
+                  .HasColumnName("NGAYSANXUAT");
+            entity.Property(e => e.Hansudung)
+                  .HasColumnType("DATE")
+                  .HasColumnName("HANSUDUNG");
             entity.Property(e => e.Luong)
                 .HasPrecision(10)
                 .HasColumnName("LUONG");
@@ -391,11 +401,6 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.Mancc)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_NCCCNL_NCC");
-
-            entity.HasOne(d => d.ManguyenlieuNavigation).WithMany(p => p.Ncccungcapnguyenlieus)
-                .HasForeignKey(d => d.Manguyenlieu)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_NCCCNL_NL");
         });
 
         modelBuilder.Entity<Ncccungcapthietbi>(entity =>
@@ -427,31 +432,6 @@ public partial class AppDbContext : DbContext
                 .HasForeignKey(d => d.Mathietbi)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_NCCTB_THIETBI");
-        });
-
-        modelBuilder.Entity<Nguyenlieu>(entity =>
-        {
-            entity.HasKey(e => e.Manguyenlieu).HasName("SYS_C007675");
-
-            entity.ToTable("NGUYENLIEU");
-
-            entity.Property(e => e.Manguyenlieu)
-                .HasMaxLength(10)
-                .IsUnicode(false)
-                .HasColumnName("MANGUYENLIEU");
-            entity.Property(e => e.Hansudung)
-                .HasColumnType("DATE")
-                .HasColumnName("HANSUDUNG");
-            entity.Property(e => e.Ngaynhap)
-                .HasColumnType("DATE")
-                .HasColumnName("NGAYNHAP");
-            entity.Property(e => e.Ngaysanxuat)
-                .HasColumnType("DATE")
-                .HasColumnName("NGAYSANXUAT");
-            entity.Property(e => e.Tennguyenlieu)
-                .HasMaxLength(100)
-                .IsUnicode(false)
-                .HasColumnName("TENNGUYENLIEU");
         });
 
         modelBuilder.Entity<Nhacungcap>(entity =>

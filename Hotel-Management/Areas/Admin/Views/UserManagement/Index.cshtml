@@ -1,9 +1,14 @@
-﻿@model IEnumerable<ApplicationUser>
+﻿@model IEnumerable<Hotel_Management.Models.ViewModel.UserWithRolesViewModel>
 @{
     ViewData["Title"] = "Quản lý users";
     Layout = "_ContentNavbarLayout";
 }
 
+@if (TempData["SuccessMessage"] is string ok)
+{
+    <div class="alert alert-success py-2 px-3 mb-2">@ok</div>
+    TempData.Remove("SuccessMessage");
+}
 @if (TempData["ErrorMessage"] is string err)
 {
     <div class="alert alert-danger py-2 px-3 mb-2">@err</div>
@@ -23,22 +28,34 @@
             <table class="table table-sm">
                 <thead>
                     <tr>
-                        <th>Id</th>
-                        <th>Username</th>
-                        <th>Role</th>
-                        <th>Thao tác</th>
+                        <th class="text-truncate">Id</th>
+                        <th class="text-truncate">Username</th>
+                        <th class="text-truncate">Roles</th>
+                        <th class="text-truncate">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
-@foreach (var item in Model)        
+@foreach (var item in Model)
 {
     <tr>
-        <td>@item.Id</td>
-        <td>@item.UserName</td>
-        <td>roles</td>
-        <td class="d-flex">
+        <td class="text-truncate">@item.Id</td>
+        <td class="text-truncate">@item.UserName</td>
+        <td class="text-truncate">
+            @if (item.Roles?.Count > 0)
+            {
+                foreach (var r in item.Roles)
+                {
+                    <span class="badge bg-label-primary me-1">@r</span>
+                }
+            }
+            else
+            {
+                <span class="text-muted">Chưa có</span>
+            }
+        </td>
+        <td>
             <a asp-controller="UserManagement" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-2">Sửa</a>
-
+            <a asp-controller="UserManagement" asp-action="Roles" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning me-2">Phân quyền</a>
             <form asp-controller="UserManagement" asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline"
                   onsubmit="return confirm('Bạn chắc chắn muốn xóa user này?');">
                 @Html.AntiForgeryToken()

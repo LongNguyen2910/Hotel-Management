@@ -18,7 +18,10 @@
                     <p class="card-text">@item.Mota</p>
                     <form asp-action="Create" method="get">
                         <input type="hidden" name="maphong" value="@item.Maphong" />
-                        <button type="submit" class="btn btn-outline-primary px-3">Đặt phòng</button>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Quản lý khách sạn") || User.IsInRole("Lễ tân"))
+                        {
+                            <button type="submit" class="btn btn-outline-primary px-3">Đặt phòng</button>
+                        }
                     </form>
                 </div>
             </div>

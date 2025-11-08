@@ -1,5 +1,6 @@
 ﻿using Hotel_Management.Helpers;
 using Hotel_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -140,6 +141,7 @@ namespace Hotel_Management.Controllers
 
         // GET: Datphongs
         // Search by mã phòng (Maphong)
+        [Authorize(Policy = "CanViewData")]
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
 
@@ -180,6 +182,7 @@ namespace Hotel_Management.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn")]
         // GET: Datphongs/Create
         [HttpGet]
         public async Task<IActionResult> Create(string maphong)
@@ -201,6 +204,7 @@ namespace Hotel_Management.Controllers
             return View(phong);
         }
 
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn")]
         // POST: Datphongs/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -254,6 +258,7 @@ namespace Hotel_Management.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn")]
         // GET: Datphongs/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -267,6 +272,7 @@ namespace Hotel_Management.Controllers
             return View(phong);
         }
 
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn")]
         // POST: Datphongs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

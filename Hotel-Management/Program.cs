@@ -1,7 +1,9 @@
-using Hotel_Management.Models;
+﻿using Hotel_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace Hotel_Management
 {
@@ -25,7 +27,6 @@ namespace Hotel_Management
 
             builder.Services.Configure<IdentityOptions>(options =>
             {
-                // Default Lockout settings.
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
@@ -41,16 +42,58 @@ namespace Hotel_Management
                 options.Cookie.IsEssential = true;
             });
 
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddAuthorization(options =>
+            {
+                // Chính sách cho phép xem dữ liệu chung (phòng, đặt phòng, v.v.)
+                options.AddPolicy("CanViewData", policy =>
+                    policy.RequireRole("Admin", "Nhân Viên", "Quản lý khách sạn", "Quản lý nhân sự", "Quản lý nhà hàng", "Kế toán", "Lễ tân"));
+            });
+
+            builder.Services.AddControllersWithViews(opt =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                opt.Filters.Add(new AuthorizeFilter(policy));
+            });
+
+            builder.Services.ConfigureApplicationCookie(o =>
+            {
+                o.LoginPath = "/Auth/Login";
+                o.AccessDeniedPath = "/Auth/Login";
+            });
 
             var app = builder.Build();
+
+            // SEED ROLES
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+                var roles = new[]
+                {
+                    "Quản lý khách sạn",
+                    "Lễ tân",
+                    "Quản lý nhà hàng",
+                    "Quản lý nhân sự",
+                    "Kế toán",
+                    "Admin",
+                    "Nhân Viên"
+                };
+
+                foreach (var role in roles)
+                {
+                    if (!roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
+                    {
+                        roleManager.CreateAsync(new IdentityRole(role)).GetAwaiter().GetResult();
+                    }
+                }
+            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -60,7 +103,7 @@ namespace Hotel_Management
             app.UseRouting();
 
             app.UseSession();
-            app.UseAuthentication(); // required before Authorization
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

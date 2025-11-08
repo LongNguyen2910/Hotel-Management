@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Hotel_Management.Models;
 using Hotel_Management.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hotel_Management.Controllers
 {
+   
     public class BophansController : Controller
     {
         private readonly AppDbContext _context;
@@ -19,6 +21,8 @@ namespace Hotel_Management.Controllers
             _context = context;
         }
 
+
+        [Authorize(Policy = "CanViewData")]
         // GET: Bophans
         public async Task<IActionResult> Index(int? pageNumber)
         {
@@ -26,12 +30,14 @@ namespace Hotel_Management.Controllers
             return View(await PaginatedList<Bophan>.CreateAsync(_context.Bophans.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
+        [Authorize(Roles = "Admin, Quản lý nhân sự")]
         // GET: Bophans/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize(Roles = "Admin, Quản lý nhân sự")]
         // POST: Bophans/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -53,6 +59,7 @@ namespace Hotel_Management.Controllers
             return View(bophan);
         }
 
+        [Authorize(Roles = "Admin, Quản lý nhân sự")]
         // GET: Bophans/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -69,6 +76,7 @@ namespace Hotel_Management.Controllers
             return View(bophan);
         }
 
+        [Authorize(Roles = "Admin, Quản lý nhân sự")]
         // POST: Bophans/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -112,6 +120,7 @@ namespace Hotel_Management.Controllers
             return View(bophan);
         }
 
+        [Authorize(Roles = "Admin, Quản lý nhân sự")]
         // GET: Bophans/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -130,6 +139,7 @@ namespace Hotel_Management.Controllers
             return View(bophan);
         }
 
+        [Authorize(Roles = "Admin, Quản lý nhân sự")]
         // POST: Bophans/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

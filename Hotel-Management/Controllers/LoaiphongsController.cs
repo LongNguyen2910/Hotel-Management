@@ -1,10 +1,11 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Hotel_Management.Models;
 using Hotel_Management.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Hotel_Management.Controllers
 {
@@ -19,6 +20,7 @@ namespace Hotel_Management.Controllers
             _logger = logger;
         }
 
+        [Authorize(Policy = "CanViewData")]
         // GET: Loaiphongs
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
@@ -48,6 +50,7 @@ namespace Hotel_Management.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Quản lý khách sạn, Admin")]
         // POST: Loaiphongs/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -74,6 +77,7 @@ namespace Hotel_Management.Controllers
             }
         }
 
+        [Authorize(Roles = "Quản lý khách sạn, Admin")]
         // GET: Loaiphongs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -85,6 +89,7 @@ namespace Hotel_Management.Controllers
             return View(loaiphong);
         }
 
+        [Authorize(Roles = "Quản lý khách sạn, Admin")]
         // POST: Loaiphongs/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -128,6 +133,7 @@ namespace Hotel_Management.Controllers
             }
         }
 
+        [Authorize(Roles = "Quản lý khách sạn, Admin")]
         // GET: Loaiphongs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -139,6 +145,7 @@ namespace Hotel_Management.Controllers
             return View(loaiphong);
         }
 
+        [Authorize(Roles = "Quản lý khách sạn, Admin")]
         // POST: Loaiphongs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

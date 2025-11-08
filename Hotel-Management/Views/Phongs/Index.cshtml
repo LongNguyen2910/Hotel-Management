@@ -15,7 +15,10 @@
                            class="form-control form-control-sm me-2" placeholder="Tìm theo mã phòng..." />
                     <button type="submit" id="btnSearch" class="btn btn-sm btn-outline-primary">Tìm</button>
                 </form>
-                <a asp-controller="Phongs" asp-action="Create" class="btn btn-sm btn-primary">Thêm phòng</a>
+                @if (User.IsInRole("Admin") || User.IsInRole("Quản lý khách sạn"))
+                {
+                    <a asp-controller="Phongs" asp-action="Create" class="btn btn-sm btn-primary">Thêm phòng</a>
+                }
             </div>
         </div>
         <div class="table-responsive" id="phongs-container">
@@ -32,32 +35,19 @@
                 <h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
             </div>
-            @if (TempData["DeletePhongError"] != null)
-            {
-                <div class="modal-body">
-                    <div class="alert alert-warning mb-0">
-                        @TempData["DeletePhongError"]
-                    </div>
-                </div>
-            } else
-            {
                 <div class="modal-body">
                     <div class="alert alert-warning mb-0">
                         Bạn có chắc chắn muốn xóa phòng <strong id="delete-item-name"></strong>
                         (<code id="delete-item-id"></code>) không?
                     </div>
                 </div>
-            }
             
             <div class="modal-footer">
                 <form id="deleteForm" method="post" asp-controller="Phongs" asp-action="Delete" class="m-0">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="id" id="delete-id" />
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    @if (TempData["DeletePhongError"] == null)
-                    {
                     <button type="submit" class="btn btn-danger">Xóa</button>
-                    }
                     
                 </form>
             </div>

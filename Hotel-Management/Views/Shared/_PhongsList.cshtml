@@ -38,6 +38,8 @@
                         </td>
                         <td><h6 class="mb-0 text-truncate">@item.Mota</h6></td>
                         <td>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Quản lý khách sạn"))
+                            {
                             <button type="button"
                                     class="btn btn-sm btn-outline-danger"
                                     data-bs-toggle="modal"
@@ -47,6 +49,7 @@
                                 Xóa
                             </button>
                             <a asp-controller="Phongs" asp-action="Details" asp-route-id="@item.Maphong" class="btn btn-sm btn-outline-danger">Chi tiết</a>
+                            }
                         </td>
                     </tr>
                 }

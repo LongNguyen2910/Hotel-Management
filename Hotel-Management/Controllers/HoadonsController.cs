@@ -161,34 +161,29 @@ namespace Hotel_Management.Controllers
             return View(hoadon);
         }
 
-        // Cho phép xóa hóa đơn (nếu cần)
-        [HttpGet]
+        // GET: Hoadons/Delete/
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
-                return NotFound();
+            if (id == null) return NotFound();
 
-            var hoadon = await _context.Hoadons.FindAsync(id);
-            if (hoadon == null)
-                return NotFound();
+            var hoadon = await _context.Hoadons
+                .FirstOrDefaultAsync(h => h.Mahoadon == id);
+            if (hoadon == null) return NotFound();
 
-            _context.Hoadons.Remove(hoadon);
-            await _context.SaveChangesAsync();
-
-            TempData["Success"] = "Đã xoá hoá đơn thành công!";
-            return RedirectToAction(nameof(Index));
+            return View(hoadon);
         }
 
-
+        // POST: Hoadons/Delete/
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var hoadon = await _context.Hoadons.FindAsync(id);
             if (hoadon != null)
+            {
                 _context.Hoadons.Remove(hoadon);
-
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
         [HttpPost]

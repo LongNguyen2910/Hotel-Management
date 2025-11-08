@@ -9,6 +9,7 @@ using Hotel_Management.Models;
 
 namespace Hotel_Management.Controllers
 {
+    [Route("~/[controller]/[action]")]
     public class KhachhangdatmonsController : Controller
     {
         private readonly AppDbContext _context;

@@ -77,7 +77,7 @@
                 </li>
             </ul>
         </li>
-        <li class='menu-item@(currentPage.StartsWith("/Khachhangs") ? " active open" : "")'>
+        <li class='menu-item@((currentPage.StartsWith("/Khachhangs") || currentPage.StartsWith("/Hoadons")) ? " active open" : "")'>
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <div>Khách hàng</div>
             </a>
@@ -94,7 +94,7 @@
                 </li>
             </ul>
         </li>
-        <li class='menu-item@(currentPage.StartsWith("/Auth") ? " active open" : "")'>
+        <li class='menu-item@((currentPage.StartsWith("/Thietbis") || currentPage.StartsWith("/Thietbiduocbaotris") || currentPage.StartsWith("/Loaithietbis")) ? " active open" : "")'>
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <div>Quản lý thiết bị</div>
             </a>
@@ -116,7 +116,7 @@
                 </li>
             </ul>
         </li>
-        <li class='menu-item@(currentPage.StartsWith("/Auth") ? " active open" : "")'>
+        <li class='menu-item@((currentPage.StartsWith("/Phongs") || currentPage.StartsWith("/Loaiphongs") || currentPage.StartsWith("/Thietbiphongs")) ? " active open" : "")'>
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <div>Quản lý phòng</div>
             </a>
@@ -138,7 +138,7 @@
                 </li>
             </ul>
         </li>
-        <li class='menu-item@(currentPage.StartsWith("/Auth") ? " active open" : "")'>
+        <li class='menu-item@((currentPage.StartsWith("/Thucdons") || currentPage.StartsWith("/Mons")) ? " active open" : "")'>
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <div>Quản lý nhà hàng</div>
             </a>
@@ -155,7 +155,7 @@
                 </li>
             </ul>
         </li>
-        <li class='menu-item@(currentPage.StartsWith("/Auth") ? " active open" : "")'>
+        <li class='menu-item@((currentPage.StartsWith("/Nhanviens") || currentPage.StartsWith("/Bophans") || (currentPage.StartsWith("/Chucvus") || currentPage.StartsWith("/Calamviecs"))) ? " active open" : "")'>
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <div>Quản lý nhân sự</div>
             </a>
@@ -182,7 +182,7 @@
                 </li>
             </ul>
         </li>
-        <li class='menu-item@(currentPage.StartsWith("/Auth") ? " active open" : "")'>
+        <li class='menu-item@((currentPage.StartsWith("/Nhacungcaps") || currentPage.StartsWith("/Bophans") || currentPage.StartsWith("/Chucvus")) ? " active open" : "")'>
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <div>Quản lý kho</div>
             </a>
@@ -203,6 +203,11 @@
                     </a>
                 </li>
             </ul>
+        </li>
+        <li class='menu-item@(currentPage.StartsWith("/Admin") ? " active open" : "")'>
+            <a asp-area="Admin" asp-controller="UserManagement" asp-action="Index" class="menu-link">
+                <div>Users</div>
+            </a>
         </li>
 
   </ul>

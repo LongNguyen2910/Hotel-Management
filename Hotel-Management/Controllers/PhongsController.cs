@@ -12,6 +12,7 @@ using Hotel_Management.Helpers;
 
 namespace Hotel_Management.Controllers
 {
+    [Route("~/[controller]/[action]")]
     public class PhongsController : Controller
     {
         private readonly AppDbContext _context;
@@ -301,7 +302,6 @@ namespace Hotel_Management.Controllers
                 ModelState.AddModelError("", $"Có lỗi xảy ra khi lưu dữ liệu: {innerMessage}");
                 return View(phong);
             }
-            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult GetImage(string id)

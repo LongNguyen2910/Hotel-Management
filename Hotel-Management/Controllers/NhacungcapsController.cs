@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Hotel_Management.Controllers
 {
+    [Route("~/[controller]/[action]")]
     public class NhacungcapsController : Controller
     {
         private readonly AppDbContext _context;

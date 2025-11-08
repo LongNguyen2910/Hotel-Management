@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Hotel_Management.Controllers
 {
+    [Route("~/[controller]/[action]")]
     public class ThietbisController : Controller
     {
         private readonly AppDbContext _context;

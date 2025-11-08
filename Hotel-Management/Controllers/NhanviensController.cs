@@ -13,6 +13,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Hotel_Management.Controllers
 {
+    [Route("~/[controller]/[action]")]
     public class NhanviensController : Controller
     {
         private readonly AppDbContext _context;

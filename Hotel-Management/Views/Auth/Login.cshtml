@@ -1,3 +1,4 @@
+@model Hotel_Management.Models.ViewModel.AccountViewModel
 @{
   Layout = "_BlankLayout";
   ViewData["Title"] = "Login";
@@ -24,19 +25,23 @@
         <!-- /Logo -->
 
         <div class="card-body mt-1">
-          <h4 class="mb-1">Welcome to @TempData.Peek("appName")! 👋🏻</h4>
-          <p class="mb-5">Please sign-in to your account and start the adventure</p>
-
-          <form id="formAuthentication" class="mb-5" action="/" method="POST">
+            <h4 class="text-center">Đăng nhập</h4>
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success" role="alert">@TempData["SuccessMessage"]</div>
+                    }
+          <form id="formAuthentication" class="mb-5" asp-action="Login" asp-controller="Auth" method="POST">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
             <div class="form-floating form-floating-outline mb-5 form-control-validation">
-              <input type="text" class="form-control" id="email" name="email-username" placeholder="Enter your email or username" autofocus />
-              <label for="email">Email or Username</label>
+              <input type="text" asp-for="UserName" class="form-control" name="username" placeholder="Enter your username" autofocus />
+              <label for="username">Username</label>
             </div>
             <div class="mb-5">
               <div class="form-password-toggle form-control-validation">
                 <div class="input-group input-group-merge">
                   <div class="form-floating form-floating-outline">
-                    <input type="password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                    <input type="password" asp-for="Password" id="password" class="form-control" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
                     <label for="password">Password</label>
                   </div>
                   <span class="input-group-text cursor-pointer"><i class="icon-base ri ri-eye-off-line icon-20px"></i></span>
@@ -50,7 +55,7 @@
 
           <p class="text-center mb-5">
             <span>New on our platform?</span>
-            <a href="/Auth/RegisterBasic">
+            <a href="/Auth/Register">
               <span>Create an account</span>
             </a>
           </p>
@@ -63,3 +68,6 @@
     </div>
   </div>
 </div>
+
+<partial name="_ValidationScriptsPartial" />
+

@@ -2,12 +2,15 @@
 
 namespace Hotel_Management.Models.ViewModel
 {
-    public class RegisterViewModel
+    public class AccountModel
     {
+        public string id { get; set; }
+
         [Required(ErrorMessage = "Vui lòng nhập username")]
+        [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d_]+$", ErrorMessage = "Username cần có kí tự, số và có thể có dấu gạch dưới")]
         public string UserName { get; set; }
 
-        [Required(ErrorMessage = "Vui lòng nhập mật khẩu để đăng ký")]
+        [Required(ErrorMessage = "Vui lòng nhập mật khẩu")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 

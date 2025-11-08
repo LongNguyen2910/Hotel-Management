@@ -8,6 +8,7 @@ using Hotel_Management.Helpers;
 
 namespace Hotel_Management.Controllers
 {
+    [Route("~/[controller]/[action]")]
     public class DatmonsController : Controller
     {
         private readonly AppDbContext _context;

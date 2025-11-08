@@ -60,7 +60,12 @@ namespace Hotel_Management
             app.UseRouting();
 
             app.UseSession();
+            app.UseAuthentication(); // required before Authorization
             app.UseAuthorization();
+
+            app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=UserManagement}/{action=Index}/{id?}");
 
             app.MapControllerRoute(
                 name: "default",

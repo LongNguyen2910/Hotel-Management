@@ -1,4 +1,4 @@
-@model Hotel_Management.Models.ViewModel.RegisterViewModel
+﻿@model Hotel_Management.Models.ViewModel.AccountViewModel
 @{
   Layout = "_BlankLayout";
   ViewData["Title"] = "Register Basic - Pages";
@@ -23,26 +23,32 @@
         </div>
         <!-- /Logo -->
         <div class="card-body mt-1">
-          <h4 class="mb-1">Adventure starts here 🚀</h4>
-          <p class="mb-5">Make your app management easy and fun!</p>
-
-          <form id="formAuthentication" class="mb-5" asp-action="Register" asp-controller="Auth" method="POST">
-            <div class="form-floating form-floating-outline form-control-validation">
-              <input type="text" class="form-control" id="Username" name="Username" placeholder="Enter your username" autofocus />
-              <label for="Username">Username</label>
-            </div>
-            <span asp-validation-for="UserName" class="text-danger  mb-5"></span>
-            <div class="form-floating form-floating-outline form-control-validation">
-                <input type="password" id="Password" class="form-control" name="Password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
-                <label for="Password">Password</label>
-            </div>
-            <span asp-validation-for="Password" class="text-danger mb-5"></span>
-            <button class="btn btn-primary d-grid w-100">Sign up</button>
+                    <h4 class="text-center">Đăng ký</h4>
+          <form id="formAuthentication" class="mb-5" asp-action="Register" asp-controller="Auth" method="post">
+            @Html.AntiForgeryToken()
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                        <div class="form-floating form-floating-outline mb-5 form-control-validation">
+                            <input asp-for="UserName" class="form-control" placeholder="Enter your username" autofocus />
+                            <label asp-for="UserName">Username</label>
+                        </div>
+                        <div class="mb-5">
+                            <div class="form-password-toggle form-control-validation">
+                                <div class="input-group input-group-merge">
+                                    <div class="form-floating form-floating-outline">
+                                        <input asp-for="Password" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" />
+                                        <label asp-for="Password">Password</label>
+                                    </div>
+                                    <span class="input-group-text cursor-pointer"><i class="icon-base ri ri-eye-off-line icon-20px"></i></span>
+                                </div>
+                            </div>
+                        </div>
+            
+            <button class="btn btn-primary d-grid w-100" type="submit">Sign up</button>
           </form>
 
           <p class="text-center mb-5">
             <span>Already have an account?</span>
-            <a href="/Auth/LoginBasic">
+            <a asp-controller="Auth" asp-action="Login">
               <span>Sign in instead</span>
             </a>
           </p>

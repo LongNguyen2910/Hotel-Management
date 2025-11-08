@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Hotel_Management.Helpers;
+using Hotel_Management.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Hotel_Management.Models;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Hotel_Management.Controllers
 {
@@ -19,28 +20,30 @@ namespace Hotel_Management.Controllers
             _context = context;
         }
 
+        private bool IsAjaxRequest()
+    => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
+
         // GET: Khachhangdatphongs
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
+            var modelContext = _context.Khachhangdatphongs.OrderBy(n => n.Makhachhang).AsQueryable();
 
             ViewData["CurrentFilter"] = searchString ?? string.Empty;
             var trimmed = (searchString ?? string.Empty).Trim().ToUpper();
-
-            var query = _context.Khachhangdatphongs
-                .AsQueryable();
+            int pageSize = 10;
 
             if (!string.IsNullOrWhiteSpace(trimmed))
             {
                 // use SQL LIKE 
-                query = query.Where(p => p.Makhachhang.ToString() == searchString);
+                modelContext = modelContext.Where(p => p.Makhachhang.ToString() == searchString);
             }
 
-            var list = await query.ToListAsync();
-            if (!list.Any())
-            {
-                ViewData["NoResults"] = true;
-            }
-            return View(list);
+            var model = await PaginatedList<Khachhangdatphong>.CreateAsync(modelContext.AsNoTracking(), pageNumber ?? 1, pageSize);
+
+            if (IsAjaxRequest())
+                return PartialView("_KhachhangdatphongsList", model);
+
+            return View(model);
         }
 
         // GET: Khachhangdatphongs/Details/5

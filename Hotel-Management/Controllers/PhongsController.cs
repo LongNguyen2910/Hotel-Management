@@ -23,10 +23,12 @@ namespace Hotel_Management.Controllers
             _env = env;
         }
 
+        private bool IsAjaxRequest()
+    => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
+
         // GET: Phongs
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
-            ViewData["CurrentFilter"] = searchString ?? string.Empty;
             var trimmed = (searchString ?? string.Empty).Trim().ToUpper();
 
             var query = _context.Phongs
@@ -54,6 +56,9 @@ namespace Hotel_Management.Controllers
             {
                 ViewData["NoResults"] = null;
             }
+
+            if (IsAjaxRequest())
+                return PartialView("_PhongsList", model);
 
             return View(model);
         }
@@ -89,6 +94,7 @@ namespace Hotel_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Maphong,Tenphong,Tinhtrang,Mota,Maloaiphong,Anhphong")] Phong phong, IFormFile? AnhFile)
         {
+            ViewData["Maloaiphong"] = new SelectList(_context.Loaiphongs, "Maloaiphong", "Tenloaiphong", phong.Maloaiphong);
             if (ModelState.IsValid)
             {
 
@@ -135,7 +141,7 @@ namespace Hotel_Management.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Maloaiphong"] = new SelectList(_context.Loaiphongs, "Maloaiphong", "Tenloaiphong", phong.Maloaiphong);
+            
             return View(phong);
         }
 

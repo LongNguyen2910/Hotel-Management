@@ -1,4 +1,5 @@
-﻿using Hotel_Management.Models;
+﻿using Hotel_Management.Helpers;
+using Hotel_Management.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -133,12 +134,28 @@ namespace Hotel_Management.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // Add Ajax
+        private bool IsAjaxRequest()
+    => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
+
         // GET: Datphongs
         // Search by mã phòng (Maphong)
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
-            ViewData["CurrentFilter"] = searchString ?? string.Empty;
+
+            if (searchString == null && !pageNumber.HasValue)
+            {
+                var ss = HttpContext.Session.GetString("Datphongs_Search");
+                var sp = HttpContext.Session.GetInt32("Datphongs_Page");
+                if (!string.IsNullOrEmpty(ss))
+                    searchString = ss;
+                if (sp.HasValue)
+                    pageNumber = sp;
+            }
+
             var trimmed = (searchString ?? string.Empty).Trim().ToUpper();
+            int pageSize = 6;
+            ViewData["CurrentFilter"] = searchString ?? string.Empty;
 
             var query = _context.Phongs
                 .Include(p => p.MaloaiphongNavigation)
@@ -151,14 +168,23 @@ namespace Hotel_Management.Controllers
                 query = query.Where(p => EF.Functions.Like(p.MaloaiphongNavigation.Tenloaiphong.ToUpper(), $"%{trimmed}%"));
             }
 
-            var list = await query.ToListAsync();
-            return View(list);
+            var model = await PaginatedList<Phong>.CreateAsync(query.AsNoTracking(), pageNumber ?? 1, pageSize);
+
+            HttpContext.Session.SetString("Datphongs_Search", searchString ?? string.Empty);
+            HttpContext.Session.SetInt32("Datphongs_Page", model.PageIndex);
+
+            //Add ajax
+            if (IsAjaxRequest())
+                return PartialView("_DatphongsList", model);
+
+            return View(model);
         }
 
         // GET: Datphongs/Create
         [HttpGet]
         public async Task<IActionResult> Create(string maphong)
         {
+
             if (string.IsNullOrEmpty(maphong))
                 return RedirectToAction(nameof(Index));
 

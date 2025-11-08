@@ -1,0 +1,58 @@
+﻿@model Hotel_Management.Helpers.PaginatedList<Hotel_Management.Models.Thietbi>
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th class="text-truncate">Mã thiết bị</th>
+            <th class="text-truncate">Tên thiết bị</th>
+            <th class="text-truncate">Tình trạng</th>
+            <th class="text-truncate">Loại thiết bị</th>
+            <th class="text-truncate">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td><h6 class="mb-0 text-truncate">@item.Mathietbi</h6></td>
+                <td class="text-truncate">@item.Tenthietbi</td>
+                <td class="text-truncate">
+                    @if (item.Tinhtrang == true)
+                    {
+                        <span class="badge bg-label-success rounded-pill">Sẵn sàng</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-label-secondary rounded-pill">Không sẵn sàng</span>
+                    }
+                </td>
+                <td class="text-truncate">@item.MaloaithietbiNavigation?.Tenloaithietbi</td>
+                <td>
+                    <a asp-controller="Thietbis" asp-action="Edit" asp-route-id="@item.Mathietbi" class="btn btn-sm btn-outline-primary me-2">Sửa</a>
+                    <a asp-controller="Thietbis" asp-action="Delete" asp-route-id="@item.Mathietbi" class="btn btn-sm btn-outline-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@{
+    var prevDisabled = !Model.HasPreviousPage;
+    var nextDisabled = !Model.HasNextPage;
+}
+
+<div class="mt-2 d-flex align-items-center card-footer">
+    <a href="#"
+       class="btn btn-outline-primary me-2 ajax-page @(prevDisabled ? "disabled" : "")"
+       data-page="@(Model.PageIndex - 1)"
+       @(prevDisabled ? "aria-disabled=true" : "")>
+        <i class="bx bx-chevron-left"></i> Trước
+    </a>
+    <a href="#"
+       class="btn btn-outline-primary ajax-page @(nextDisabled ? "disabled" : "")"
+       data-page="@(Model.PageIndex + 1)"
+       @(nextDisabled ? "aria-disabled=true" : "")>
+        Sau <i class="bx bx-chevron-right"></i>
+    </a>
+    <span class="ms-3 text-muted">
+        Trang @Model.PageIndex / @Model.TotalPages
+    </span>
+</div>

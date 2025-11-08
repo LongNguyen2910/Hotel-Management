@@ -21,26 +21,47 @@ namespace Hotel_Management.Controllers
             _context = context;
             _logger = logger;
         }
-
+        private bool IsAjaxRequest()
+=> string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
         // GET: Thietbis
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
+            // Lấy từ session nếu không có searchString/pageNumber
+            if (searchString == null && !pageNumber.HasValue)
+            {
+                var ss = HttpContext.Session.GetString("Thietbis_Search");
+                var sp = HttpContext.Session.GetInt32("Thietbis_Page");
+                if (!string.IsNullOrEmpty(ss))
+                    searchString = ss;
+                if (sp.HasValue)
+                    pageNumber = sp;
+            }
+
+            var trimmed = (searchString ?? string.Empty).Trim();
             ViewData["CurrentFilter"] = searchString ?? string.Empty;
 
             var query = _context.Thietbis
-                .AsNoTracking()
                 .Include(t => t.MaloaithietbiNavigation)
+                .AsNoTracking()
                 .AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(searchString))
+            if (!string.IsNullOrWhiteSpace(trimmed))
             {
-                var trimmed = searchString.Trim();
-                // use EF.Functions.Like for SQL LIKE; case-sensitivity depends on DB collation
                 query = query.Where(t => EF.Functions.Like(t.Tenthietbi, $"%{trimmed}%"));
             }
 
+            query = query.OrderBy(t => t.Mathietbi);
+
             int pageSize = 10;
-            return View(await PaginatedList<Thietbi>.CreateAsync(query, pageNumber ?? 1, pageSize));
+            var model = await PaginatedList<Thietbi>.CreateAsync(query, pageNumber ?? 1, pageSize);
+
+            // Lưu session để nhớ trạng thái tìm kiếm / trang
+            HttpContext.Session.SetString("Thietbis_Search", searchString ?? string.Empty);
+            HttpContext.Session.SetInt32("Thietbis_Page", model.PageIndex);
+            if (IsAjaxRequest())
+                return PartialView("_ThietbisList", model);
+
+            return View(model);
         }
 
         // GET: Thietbis/Details/5

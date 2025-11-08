@@ -18,27 +18,38 @@ namespace Hotel_Management.Controllers
         {
             _context = context;
         }
+        private bool IsAjaxRequest()
+           => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
 
         // GET: Khachhangs
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
-            ViewData["CurrentFilter"] = searchString ?? string.Empty;
-
-            var khachhangs = _context.Khachhangs.AsQueryable();
-
-            if (!string.IsNullOrEmpty(searchString))
+            // Lấy lại từ session nếu chưa có searchString hoặc pageNumber
+            if (searchString == null && !pageNumber.HasValue)
             {
-                khachhangs = khachhangs.Where(k =>
-                    k.Hoten != null && EF.Functions.Like(k.Hoten, $"%{searchString}%"));
+                var ss = HttpContext.Session.GetString("Khachhangs_Search");
+                var sp = HttpContext.Session.GetInt32("Khachhangs_Page");
+                if (!string.IsNullOrEmpty(ss))
+                    searchString = ss;
+                if (sp.HasValue)
+                    pageNumber = sp;
             }
+            var trimmed = (searchString ?? string.Empty).Trim();
+            ViewData["CurrentFilter"] = searchString ?? string.Empty;
+            var query = _context.Khachhangs.AsNoTracking().AsQueryable();
+            if (!string.IsNullOrWhiteSpace(trimmed))
+            {
+                query = query.Where(k => EF.Functions.Like(k.Hoten ?? "", $"%{trimmed}%"));
+            }
+            query = query.OrderBy(k => k.Makhachhang);
+            int pageSize = 10;
+            var model = await PaginatedList<Khachhang>.CreateAsync(query, pageNumber ?? 1, pageSize);
 
-            khachhangs = khachhangs.OrderBy(k => k.Makhachhang); 
-
-            int pageSize = 10; 
-            var model = await PaginatedList<Khachhang>.CreateAsync(khachhangs.AsNoTracking(), pageNumber ?? 1, pageSize);
-
-            if (!model.Any())
-                ViewData["NoResults"] = true;
+            // Lưu lại session để nhớ trạng thái tìm kiếm / trang
+            HttpContext.Session.SetString("Khachhangs_Search", searchString ?? string.Empty);
+            HttpContext.Session.SetInt32("Khachhangs_Page", model.PageIndex);
+            if (IsAjaxRequest())
+                return PartialView("_KhachhangsList", model);
 
             return View(model);
         }

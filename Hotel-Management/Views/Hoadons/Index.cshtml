@@ -10,86 +10,90 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Danh sách hoá đơn</h5>
             <div class="d-flex align-items-center">
-                <form asp-action="Index" method="get" class="d-flex me-3">
-                    <input name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm kiếm..." />
-                    <button type="submit" class="btn btn-sm btn-outline-primary">Tìm</button>
+                <form id="search-form" asp-action="Index" method="get" class="d-flex me-3" autocomplete="off">
+                    <input id="searchString" name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm kiếm..." />
+                    <button type="submit" id="btnSearch" class="btn btn-sm btn-outline-primary">Tìm</button>
                 </form>
             </div>
         </div>
 
-        <div class="table-responsive">
-            <table class="table table-sm align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th class="text-truncate">Mã hoá đơn</th>
-                        <th class="text-truncate">Ngày lập</th>
-                        <th class="text-truncate">Ngày thanh toán</th>
-                        <th class="text-truncate">Giá phòng</th>
-                        <th class="text-truncate">Giá món</th>
-                        <th class="text-truncate">Mã khách hàng</th>
-                        <th class="text-truncate text-center">Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (ViewData["NoResults"] != null)
-                    {
-                        <tr>
-                            <td colspan="7" class="text-center text-muted py-4">
-                                <i class="bi bi-exclamation-circle">Không tìm thấy hoá đơn phù hợp</i>
-                            </td>
-                        </tr>
-                    }
-                    else
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@item.Mahoadon</td>
-                                <td>@item.Ngaylap</td>
-                                <td>@item.Ngaythanhtoan</td>
-                                <td>@item.Giaphong</td>
-                                <td>@item.Giamon</td>
-                                <td>@item.Makhachhang</td>
-                                <td class="text-center">
-                                    @if (item.Ngaythanhtoan == null)
-                                    {
-                                        <form asp-controller="Hoadons"
-                                              asp-action="ThanhToan"
-                                              method="post"
-                                              class="d-inline">
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="mahoadon" value="@item.Mahoadon" />
-                                            <button type="submit" class="btn btn-primary">Thanh toán</button>
-                                        </form>
-                                    }
-                                    <a href="@Url.Action("Delete", "Hoadons", new { id = item.Mahoadon })"
-                                       class="btn btn-sm btn-outline-danger">Xóa</a>
-                                </td>
-                            </tr>
-                        }
-                </tbody>
-            </table>
+        <div class="table-responsive" id="Hoadons-container">
+            @await Html.PartialAsync("_HoadonsList", Model)
         </div>
     </div>
 </div>
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
+@* Add ajax *@
+@section Scripts {
+    <script src="~/vendor/libs/jquery/jquery.js"></script>
+    <script>
+        (function ($) {
 
-<div class="mt-3">
-    <a asp-action="Index"
-       asp-route-pageNumber="@(Model.PageIndex - 1)"
-       asp-route-searchString="@ViewData["CurrentFilter"]"
-       class="btn btn-outline-primary @prevDisabled">
-        <i class="bx bx-chevron-left"></i> Trước
-    </a>
-    <a asp-action="Index"
-       asp-route-pageNumber="@(Model.PageIndex + 1)"
-       asp-route-searchString="@ViewData["CurrentFilter"]"
-       class="btn btn-outline-primary @nextDisabled">
-        Sau <i class="bx bx-chevron-right"></i>
-    </a>
-    <span class="ms-2 text-muted">
-        Trang @Model.PageIndex / @Model.TotalPages
-    </span>
-</div>
+            const $container = $('#Hoadons-container');
+            const baseUrl = '@Url.Action("Index", "Hoadons")';
+
+            function ClearButton(keyword) {
+                const $form = $('#search-form');
+                let $btn = $('#btnClear');
+                if (keyword && !$btn.length) {
+                    $btn = $('<button type="button" id="btnClear" class="btn btn-sm btn-outline-danger ms-2">Xóa</button>');
+                    $form.append($btn);
+                    $btn.on('click', function () {
+                        $('#searchString').val('');
+                        loadAjax(1, '');
+                    });
+                } else if (!keyword && $btn.length) {
+                    $btn.remove();
+                }
+            }
+
+            function showLoading() {
+                $container.css('opacity', '.5');
+            }
+            function hideLoading() {
+                $container.css('opacity', '1');
+            }
+
+            function loadAjax(page, keyword) {
+                showLoading();
+                $.ajax({
+                    url: baseUrl,
+                    method: 'GET',
+                    data: {
+                        pageNumber: page,
+                        searchString: keyword
+                    },
+                    success: function (response) {
+                        $container.html(response);
+                        ClearButton(keyword);
+                    },
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .always(function () {
+                    hideLoading();
+                });
+            }
+
+            // Pagination click (delegation)
+            $('body').on('click', 'a.ajax-page', function (e) {
+                e.preventDefault();
+                if ($(this).hasClass('disabled')) return;
+                const page = $(this).data('page');
+                const keyword = $('#searchString').val().trim();
+                loadAjax(page, keyword);
+            });
+
+            // Search submit
+            $('#search-form').on('submit', function (e) {
+                e.preventDefault();
+                const keyword = $('#searchString').val().trim();
+                loadAjax(1, keyword); // reset to page 1
+            });
+
+            // Clear filter
+            $('#btnClear').on('click', function () {
+                $('#searchString').val('');
+                loadAjax(1, '');
+            });
+        })(jQuery);
+    </script>
+}

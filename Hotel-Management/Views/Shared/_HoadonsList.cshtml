@@ -1,0 +1,73 @@
+﻿@model Hotel_Management.Helpers.PaginatedList<Hotel_Management.Models.Hoadon>
+<table class="table table-sm align-middle">
+    <thead class="table-light">
+        <tr>
+            <th class="text-truncate">Mã hoá đơn</th>
+            <th class="text-truncate">Ngày lập</th>
+            <th class="text-truncate">Ngày thanh toán</th>
+            <th class="text-truncate">Giá phòng</th>
+            <th class="text-truncate">Giá món</th>
+            <th class="text-truncate">Mã khách hàng</th>
+            <th class="text-truncate text-center">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ViewData["NoResults"] != null)
+        {
+            <tr>
+                <td colspan="7" class="text-center text-muted py-4">
+                    <i class="bi bi-exclamation-circle">Không tìm thấy hoá đơn phù hợp</i>
+                </td>
+            </tr>
+        }
+        else
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Mahoadon</td>
+                    <td>@item.Ngaylap</td>
+                    <td>@item.Ngaythanhtoan</td>
+                    <td>@item.Giaphong</td>
+                    <td>@item.Giamon</td>
+                    <td>@item.Makhachhang</td>
+                    <td class="text-center">
+                        @if (item.Ngaythanhtoan == null)
+                        {
+                            <form asp-controller="Hoadons"
+                                  asp-action="ThanhToan"
+                                  method="post"
+                                  class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="mahoadon" value="@item.Mahoadon" />
+                                <button type="submit" class="btn btn-primary">Thanh toán</button>
+                            </form>
+                        }
+                        <a href="@Url.Action("Delete", "Hoadons", new { id = item.Mahoadon })"
+                           class="btn btn-sm btn-outline-danger">Xóa</a>
+                    </td>
+                </tr>
+            }
+    </tbody>
+</table>
+@{
+    var prevDisabled = !Model.HasPreviousPage;
+    var nextDisabled = !Model.HasNextPage;
+}
+
+<div class="mt-2 d-flex align-items-center card-footer">
+    <a href="#"
+       class="btn btn-outline-primary me-2 ajax-page @(prevDisabled ? "disabled" : "")"
+       data-page="@(Model.PageIndex - 1)"
+       @(prevDisabled ? "aria-disabled=true" : "")>
+        <i class="bx bx-chevron-left"></i> Trước
+    </a>
+    <a href="#"
+       class="btn btn-outline-primary ajax-page @(nextDisabled ? "disabled" : "")"
+       data-page="@(Model.PageIndex + 1)"
+       @(nextDisabled ? "aria-disabled=true" : "")>
+        Sau <i class="bx bx-chevron-right"></i>
+    </a>
+    <span class="ms-3 text-muted">
+        Trang @Model.PageIndex / @Model.TotalPages
+    </span>
+</div>

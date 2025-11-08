@@ -19,10 +19,23 @@ namespace Hotel_Management.Controllers
             _context = context;
             _logger = logger;
         }
-
+        private bool IsAjaxRequest()
+   => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
         // GET: Ncccungcapthietbis
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
+            // Nếu searchString và pageNumber null, lấy từ session
+            if (searchString == null && !pageNumber.HasValue)
+            {
+                var ss = HttpContext.Session.GetString("Ncccungcapthietbis_Search");
+                var sp = HttpContext.Session.GetInt32("Ncccungcapthietbis_Page");
+                if (!string.IsNullOrEmpty(ss))
+                    searchString = ss;
+                if (sp.HasValue)
+                    pageNumber = sp;
+            }
+
+            var trimmed = (searchString ?? string.Empty).Trim();
             ViewData["CurrentFilter"] = searchString ?? string.Empty;
 
             var query = _context.Ncccungcapthietbis
@@ -31,9 +44,8 @@ namespace Hotel_Management.Controllers
                 .AsNoTracking()
                 .AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(searchString))
+            if (!string.IsNullOrWhiteSpace(trimmed))
             {
-                var trimmed = searchString.Trim();
                 query = query.Where(n =>
                     EF.Functions.Like(n.Mancc ?? string.Empty, $"%{trimmed}%") ||
                     EF.Functions.Like(n.ManccNavigation.Tennhacungcap ?? string.Empty, $"%{trimmed}%") ||
@@ -44,6 +56,14 @@ namespace Hotel_Management.Controllers
 
             int pageSize = 10;
             var model = await PaginatedList<Ncccungcapthietbi>.CreateAsync(query, pageNumber ?? 1, pageSize);
+
+            // Lưu session
+            HttpContext.Session.SetString("Ncccungcapthietbis_Search", searchString ?? string.Empty);
+            HttpContext.Session.SetInt32("Ncccungcapthietbis_Page", model.PageIndex);
+
+            if (IsAjaxRequest())
+                return PartialView("_NcccungcapthietbisList", model);
+
             return View(model);
         }
 
@@ -82,20 +102,15 @@ namespace Hotel_Management.Controllers
                     .SelectMany(v => v.Errors)
                     .Select(e => e.ErrorMessage)
                     .ToList();
-
                 _logger.LogError("ModelState invalid: {Errors}", string.Join("; ", errors));
-                Console.WriteLine("❌ ModelState invalid: " + string.Join("; ", errors));
-
                 LoadSelectLists(entity.Mancc, entity.Mathietbi);
                 return View(entity);
             }
-
             try
             {
                 _context.Add(entity);
                 await _context.SaveChangesAsync();
                 TempData["Success"] = "Thêm nhà cung cấp thiết bị thành công!";
-                Console.WriteLine("✅ Lưu thành công: " + entity.Mancc + " - " + entity.Mathietbi);
                 return RedirectToAction(nameof(Index));
             }
             catch (DbUpdateException dbEx)
@@ -103,9 +118,6 @@ namespace Hotel_Management.Controllers
                 _logger.LogError(dbEx,
                     "Lỗi khi thêm Ncccungcapthietbi (Mancc={Mancc}, Mathietbi={Mathietbi})",
                     entity.Mancc, entity.Mathietbi);
-
-                Console.WriteLine("❌ DbUpdateException: " + dbEx.InnerException?.Message ?? dbEx.Message);
-
                 ModelState.AddModelError(string.Empty, "Không thể lưu dữ liệu vào cơ sở dữ liệu.");
                 LoadSelectLists(entity.Mancc, entity.Mathietbi);
                 return View(entity);

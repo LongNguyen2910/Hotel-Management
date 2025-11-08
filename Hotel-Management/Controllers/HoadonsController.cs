@@ -118,29 +118,38 @@ namespace Hotel_Management.Controllers
             return RedirectToAction("Details", new { id = hoadon.Mahoadon });
         }
 
-
+        private bool IsAjaxRequest()
+=> string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
         // GET: Hoadons
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
-            ViewData["CurrentFilter"] = searchString ?? string.Empty;
-
-            var hoadons = _context.Hoadons.AsQueryable();
-
-            if (!string.IsNullOrEmpty(searchString))
+            // Lấy lại từ session nếu chưa có searchString hoặc pageNumber
+            if (searchString == null && !pageNumber.HasValue)
             {
-                hoadons = hoadons.Where(h =>
-                    h.Mahoadon.Contains(searchString) ||
-                    h.Makhachhang.ToString().Contains(searchString));
+                var ss = HttpContext.Session.GetString("Hoadons_Search");
+                var sp = HttpContext.Session.GetInt32("Hoadons_Page");
+                if (!string.IsNullOrEmpty(ss))
+                    searchString = ss;
+                if (sp.HasValue)
+                    pageNumber = sp;
             }
-
-            hoadons = hoadons.OrderBy(h => h.Mahoadon);
-
-            int pageSize = 10; 
-            var model = await PaginatedList<Hoadon>.CreateAsync(hoadons.AsNoTracking(), pageNumber ?? 1, pageSize);
-
-            if (!model.Any())
-                ViewData["NoResults"] = true;
-
+            var trimmed = (searchString ?? string.Empty).Trim();
+            ViewData["CurrentFilter"] = searchString ?? string.Empty;
+            var query = _context.Hoadons.AsNoTracking().AsQueryable();
+            if (!string.IsNullOrWhiteSpace(trimmed))
+            {
+                query = query.Where(h =>
+                    EF.Functions.Like(h.Mahoadon ?? "", $"%{trimmed}%") ||
+                    EF.Functions.Like(h.Makhachhang.ToString(), $"%{trimmed}%"));
+            }
+            query = query.OrderBy(h => h.Mahoadon);
+            int pageSize = 10;
+            var model = await PaginatedList<Hoadon>.CreateAsync(query, pageNumber ?? 1, pageSize);
+            // Lưu lại session để nhớ trạng thái tìm kiếm / trang
+            HttpContext.Session.SetString("Hoadons_Search", searchString ?? string.Empty);
+            HttpContext.Session.SetInt32("Hoadons_Page", model.PageIndex);
+            if (IsAjaxRequest())
+                return PartialView("_HoadonsList", model);
             return View(model);
         }
 

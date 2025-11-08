@@ -17,17 +17,29 @@ namespace Hotel_Management.Controllers
         {
             _context = context;
         }
-
-        // GET: Ncccungcapnguyenlieux
+        private bool IsAjaxRequest()
+   => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
+        // GET: Ncccungcapnguyenlieus
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
+            // Lấy lại từ session nếu searchString hoặc pageNumber null
+            if (searchString == null && !pageNumber.HasValue)
+            {
+                var ss = HttpContext.Session.GetString("Ncccungcapnguyenlieux_Search");
+                var sp = HttpContext.Session.GetInt32("Ncccungcapnguyenlieux_Page");
+                if (!string.IsNullOrEmpty(ss))
+                    searchString = ss;
+                if (sp.HasValue)
+                    pageNumber = sp;
+            }
+
+            var trimmed = (searchString ?? string.Empty).Trim();
             ViewData["CurrentFilter"] = searchString ?? string.Empty;
 
             var query = _context.Ncccungcapnguyenlieus.AsNoTracking().AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(searchString))
+            if (!string.IsNullOrWhiteSpace(trimmed))
             {
-                var trimmed = searchString.Trim();
                 query = query.Where(n =>
                     EF.Functions.Like(n.Mancc ?? string.Empty, $"%{trimmed}%") ||
                     EF.Functions.Like(n.Manguyenlieu ?? string.Empty, $"%{trimmed}%") ||
@@ -38,6 +50,15 @@ namespace Hotel_Management.Controllers
 
             int pageSize = 10;
             var model = await PaginatedList<Ncccungcapnguyenlieu>.CreateAsync(query, pageNumber ?? 1, pageSize);
+
+            // Lưu lại session
+            HttpContext.Session.SetString("Ncccungcapnguyenlieux_Search", searchString ?? string.Empty);
+            HttpContext.Session.SetInt32("Ncccungcapnguyenlieux_Page", model.PageIndex);
+
+            // Nếu là AJAX request thì render partial view
+            if (IsAjaxRequest())
+                return PartialView("_NcccungcapnguyenlieuxList", model); // tạo PartialView riêng
+
             return View(model);
         }
 

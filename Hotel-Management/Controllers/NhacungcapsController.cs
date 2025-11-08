@@ -18,26 +18,40 @@ namespace Hotel_Management.Controllers
             _context = context;
             _logger = logger;
         }
-
+        private bool IsAjaxRequest()
+           => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
         // GET: Nhacungcaps
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
-            ViewData["CurrentFilter"] = searchString ?? string.Empty;
-
-            var query = _context.Set<Nhacungcap>().AsNoTracking().AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(searchString))
+            // Lấy lại từ session nếu searchString hoặc pageNumber null
+            if (searchString == null && !pageNumber.HasValue)
             {
-                var trimmed = searchString.Trim();
-                query = query.Where(n =>
-                    EF.Functions.Like(n.Manhacungcap ?? string.Empty, $"%{trimmed}%")
-                    || EF.Functions.Like(n.Tennhacungcap ?? string.Empty, $"%{trimmed}%"));
+                var ss = HttpContext.Session.GetString("Nhacungcaps_Search");
+                var sp = HttpContext.Session.GetInt32("Nhacungcaps_Page");
+                if (!string.IsNullOrEmpty(ss))
+                    searchString = ss;
+                if (sp.HasValue)
+                    pageNumber = sp;
             }
-
+            var trimmed = (searchString ?? string.Empty).Trim();
+            ViewData["CurrentFilter"] = searchString ?? string.Empty;
+            var query = _context.Set<Nhacungcap>().AsNoTracking().AsQueryable();
+            if (!string.IsNullOrWhiteSpace(trimmed))
+            {
+                query = query.Where(n =>
+                    EF.Functions.Like(n.Manhacungcap ?? string.Empty, $"%{trimmed}%") ||
+                    EF.Functions.Like(n.Tennhacungcap ?? string.Empty, $"%{trimmed}%"));
+            }
             query = query.OrderBy(n => n.Manhacungcap);
 
             int pageSize = 10;
             var model = await PaginatedList<Nhacungcap>.CreateAsync(query, pageNumber ?? 1, pageSize);
+            // Lưu lại session / trang
+            HttpContext.Session.SetString("Nhacungcaps_Search", searchString ?? string.Empty);
+            HttpContext.Session.SetInt32("Nhacungcaps_Page", model.PageIndex);
+            if (IsAjaxRequest())
+                return PartialView("_NhacungcapsList", model);
+
             return View(model);
         }
 

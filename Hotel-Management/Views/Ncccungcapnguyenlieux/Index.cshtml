@@ -10,83 +10,92 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Nhà cung cấp nguyên liệu</h5>>
             <div class="d-flex align-items-center">
-                <form asp-action="Index" method="get" class="d-flex me-3">
-                    <input name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm kiếm..." />
-                    <button type="submit" class="btn btn-sm btn-outline-primary">Tìm</button>
-                    @if (!string.IsNullOrWhiteSpace(currentFilter))
-                    {
-                        <a asp-action="Index" class="btn btn-sm btn-link ms-2">Xóa</a>
-                    }
+                <form id="search-form" asp-action="Index" method="get" class="d-flex me-3" autocomplete="off">
+                    <input id="searchString" name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm kiếm..." />
+                    <button type="submit" id="btnSearch" class="btn btn-sm btn-outline-primary">Tìm</button>
                 </form>
                 <a asp-controller="Ncccungcapnguyenlieux" asp-action="Create" class="btn btn-sm btn-primary">Thêm nguyên liệu</a>
             </div>
         </div>
 
-        <div class="table-responsive">
-            <table class="table table-sm">
-                <thead>
-                    <tr>
-                        <th class="text-truncate">Mã nhà cung cấp</th>
-                        <th class="text-truncate">Mã nguyên liệu</th>
-                        <th class="text-truncate">Tên nguyên liệu</th>
-                        <th class="text-truncate">Ngày nhập</th>
-                        @* <th class="text-truncate">Hạn sử dụng</th> 
-                        <th class="text-truncate">Ngày sản xuất</th> *@
-                        <th class="text-truncate">Số lượng</th>
-                        <th class="text-truncate">Tiền nguyên liệu</th>
-                        <th class="text-truncate text-center">Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td class="text-truncate">@item.Mancc</td>
-                            <td class="text-truncate">@item.Manguyenlieu</td>
-                            <td class="text-truncate">@item.Tennguyenlieu</td>
-                            <td class="text-truncate">
-                                @(item.Ngaynhap.HasValue? item.Ngaynhap.Value.ToString("dd/MM/yyyy") : "")
-                            </td>
-                            @* <td class="text-truncate">
-                                @(item.Hansudung.HasValue? item.Hansudung.Value.ToString("dd/MM/yyyy") : "")
-                            </td>
-                            <td class="text-truncate">
-                                @(item.Ngaysanxuat.HasValue? item.Ngaysanxuat.Value.ToString("dd/MM/yyyy") : "")
-                            </td> *@
-                            <td class="text-truncate">@item.Luong</td>
-                            <td class="text-truncate">@item.Tiennguyenlieu</td>
-                            <td>
-                                <a asp-controller="Ncccungcapnguyenlieux" asp-action="Details" asp-route-id="@item.Mancc" class="btn btn-sm btn-outline-primary me-2">Chi tiết</a>
-                                <a asp-controller="Ncccungcapnguyenlieux" asp-action="Edit" asp-route-mancc="@item.Mancc" class="btn btn-sm btn-outline-primary me-2">Sửa</a>
-                                <a asp-controller="Ncccungcapnguyenlieux" asp-action="Delete" asp-route-mancc="@item.Mancc" asp-route-manguyenlieu="@item.Manguyenlieu" class="btn btn-sm btn-outline-danger">Xóa</a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <div class="table-responsive" id="Ncccungcapnguyenlieux-container">
+            @await Html.PartialAsync("_NcccungcapnguyenlieuxList", Model)
         </div>
     </div>
 </div>
 
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
+@* Add ajax *@
+@section Scripts {
+    <script src="~/vendor/libs/jquery/jquery.js"></script>
+    <script>
+        (function ($) {
 
-<div class="mt-3">
-    <a asp-action="Index"
-       asp-route-pageNumber="@(Model.PageIndex - 1)"
-       asp-route-searchString="@ViewData["CurrentFilter"]"
-       class="btn btn-outline-primary @prevDisabled">
-        <i class="bx bx-chevron-left"></i> Trước
-    </a>
-    <a asp-action="Index"
-       asp-route-pageNumber="@(Model.PageIndex + 1)"
-       asp-route-searchString="@ViewData["CurrentFilter"]"
-       class="btn btn-outline-primary @nextDisabled">
-        Sau <i class="bx bx-chevron-right"></i>
-    </a>
-    <span class="ms-2 text-muted">
-        Trang @Model.PageIndex / @Model.TotalPages
-    </span>
-</div>
+            const $container = $('#Ncccungcapnguyenlieux-container');
+            const baseUrl = '@Url.Action("Index", "Ncccungcapnguyenlieux")';
+
+            function ClearButton(keyword) {
+                const $form = $('#search-form');
+                let $btn = $('#btnClear');
+                if (keyword && !$btn.length) {
+                    $btn = $('<button type="button" id="btnClear" class="btn btn-sm btn-outline-danger ms-2">Xóa</button>');
+                    $form.append($btn);
+                    $btn.on('click', function () {
+                        $('#searchString').val('');
+                        loadAjax(1, '');
+                    });
+                } else if (!keyword && $btn.length) {
+                    $btn.remove();
+                }
+            }
+
+            function showLoading() {
+                $container.css('opacity', '.5');
+            }
+            function hideLoading() {
+                $container.css('opacity', '1');
+            }
+
+            function loadAjax(page, keyword) {
+                showLoading();
+                $.ajax({
+                    url: baseUrl,
+                    method: 'GET',
+                    data: {
+                        pageNumber: page,
+                        searchString: keyword
+                    },
+                    success: function (response) {
+                        $container.html(response);
+                        ClearButton(keyword);
+                    },
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .always(function () {
+                    hideLoading();
+                });
+            }
+
+            // Pagination click (delegation)
+            $('body').on('click', 'a.ajax-page', function (e) {
+                e.preventDefault();
+                if ($(this).hasClass('disabled')) return;
+                const page = $(this).data('page');
+                const keyword = $('#searchString').val().trim();
+                loadAjax(page, keyword);
+            });
+
+            // Search submit
+            $('#search-form').on('submit', function (e) {
+                e.preventDefault();
+                const keyword = $('#searchString').val().trim();
+                loadAjax(1, keyword); // reset to page 1
+            });
+
+            // Clear filter
+            $('#btnClear').on('click', function () {
+                $('#searchString').val('');
+                loadAjax(1, '');
+            });
+        })(jQuery);
+    </script>
+}

@@ -2,7 +2,8 @@
 
 Requirements
 
-.NET 8.0
+.NET 8.0;
+
 Oracle Database 19c
 
 Package:
@@ -38,3 +39,10 @@ Set up Roles Table
 - Tại Package Manager Console gõ lệnh "Update-Database -Context UserContext"
 
 ---
+
+Thành Viên
+
+Giáp Minh Hiển
+Nguyễn Đăng Khoa
+Nguyễn Đức Long
+Đỗ Thanh Sơn

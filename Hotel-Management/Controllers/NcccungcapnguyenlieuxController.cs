@@ -1,11 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Hotel_Management.Helpers;
+﻿using Hotel_Management.Helpers;
 using Hotel_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Hotel_Management.Controllers
 {
@@ -20,6 +21,7 @@ namespace Hotel_Management.Controllers
         private bool IsAjaxRequest()
    => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
         // GET: Ncccungcapnguyenlieus
+        [Authorize(Policy = "CanViewData")]
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             // Lấy lại từ session nếu searchString hoặc pageNumber null
@@ -81,6 +83,7 @@ namespace Hotel_Management.Controllers
 
 
         // GET: Create
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         public IActionResult Create()
         {
             ViewData["Mancc"] = new SelectList(_context.Nhacungcaps, "Manhacungcap", "Tennhacungcap");
@@ -88,6 +91,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Create
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Mancc,Manguyenlieu,Tennguyenlieu,Luong,Tiennguyenlieu,Ngaysanxuat,Ngaynhap,Hansudung")] Ncccungcapnguyenlieu entity)
@@ -105,6 +109,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Edit
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         public async Task<IActionResult> Edit(string mancc)
         {
             if (string.IsNullOrEmpty(mancc))
@@ -120,6 +125,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Edit
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("Mancc,Manguyenlieu,Tennguyenlieu,Ngaynhap,Ngaysanxuat,Hansudung,Luong,Tiennguyenlieu")] Ncccungcapnguyenlieu model)
@@ -150,6 +156,7 @@ namespace Hotel_Management.Controllers
 
 
         // GET: Delete
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         public async Task<IActionResult> Delete(string mancc, string manguyenlieu)
         {
             if (mancc == null || manguyenlieu == null) return NotFound();
@@ -163,6 +170,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Delete
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string mancc, string manguyenlieu)

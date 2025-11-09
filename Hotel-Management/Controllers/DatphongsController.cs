@@ -92,7 +92,7 @@ namespace Hotel_Management.Controllers
             _context.Hoadons.Update(hoadon);
             await _context.SaveChangesAsync();
 
-            Console.WriteLine($"✅ Cập nhật hóa đơn cho KH {makhachhang}: +{giaPhong} (Tổng {hoadon.Giaphong})");
+            Console.WriteLine($"Cập nhật hóa đơn cho KH {makhachhang}: +{giaPhong} (Tổng {hoadon.Giaphong})");
         }
 
 

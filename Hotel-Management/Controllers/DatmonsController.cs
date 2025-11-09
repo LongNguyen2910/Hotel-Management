@@ -1,10 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Hotel_Management.Helpers;
+using Hotel_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Hotel_Management.Models;
-using Hotel_Management.Helpers;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Hotel_Management.Controllers
 {
@@ -20,6 +21,7 @@ namespace Hotel_Management.Controllers
         private bool IsAjaxRequest()
     => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
         // GET: Datmons
+        [Authorize(Policy = "CanViewData")]
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             // Nếu không có searchString hoặc pageNumber, lấy từ session
@@ -61,6 +63,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Datmons/Create?mamon=xxx
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn, Quản lý nhà hàng, Nhân viên")]
         public async Task<IActionResult> Create(string mamon)
         {
             if (string.IsNullOrEmpty(mamon))
@@ -82,6 +85,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Datmons/SaveOrder
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn, Quản lý nhà hàng, Nhân viên")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveOrder(int makhachhang, string[] mamon, int[] soluong)

@@ -1,5 +1,6 @@
 ﻿using Hotel_Management.Helpers;
 using Hotel_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ namespace Hotel_Management.Controllers
            => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
 
         // GET: Khachhangs
+        [Authorize(Policy = "CanViewData")]
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             // Lấy lại từ session nếu chưa có searchString hoặc pageNumber
@@ -55,6 +57,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Khachhangs/Details/5
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -73,6 +76,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Khachhangs/Create
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn")]
         public IActionResult Create(string? maphong)
         {
             var phong = _context.Phongs
@@ -86,6 +90,7 @@ namespace Hotel_Management.Controllers
         // POST: Khachhangs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Hoten,Quoctich,Cccd,Sdt,Hochieu")] Khachhang khachhang, string? maphong)
@@ -153,6 +158,7 @@ namespace Hotel_Management.Controllers
 
 
         // GET: Khachhangs/Edit/5
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -171,6 +177,7 @@ namespace Hotel_Management.Controllers
         // POST: Khachhangs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Makhachhang,Hoten,Quoctich,Cccd,Sdt,Hochieu")] Khachhang khachhang)
@@ -204,6 +211,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Khachhangs/Delete/5
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -222,6 +230,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Khachhangs/Delete/5
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

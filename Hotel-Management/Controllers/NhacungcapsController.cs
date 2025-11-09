@@ -1,10 +1,11 @@
-﻿using Hotel_Management.Models;
-using Hotel_Management.Helpers;
+﻿using Hotel_Management.Helpers;
+using Hotel_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
 namespace Hotel_Management.Controllers
 {
@@ -21,6 +22,7 @@ namespace Hotel_Management.Controllers
         private bool IsAjaxRequest()
            => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
         // GET: Nhacungcaps
+        [Authorize(Policy = "CanViewData")]
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             // Lấy lại từ session nếu searchString hoặc pageNumber null
@@ -56,6 +58,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Nhacungcaps/Details/5
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null) return NotFound();
@@ -73,6 +76,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Nhacungcaps/Create
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Manhacungcap,Tennhacungcap,Diachi,Sodienthoai,Email")] Nhacungcap nhacungcap)
@@ -97,6 +101,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Nhacungcaps/Edit/5
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null) return NotFound();
@@ -108,6 +113,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Nhacungcaps/Edit/5
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Manhacungcap,Tennhacungcap,Diachi,Sodienthoai,Email")] Nhacungcap nhacungcap)
@@ -137,6 +143,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Nhacungcaps/Delete/5
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null) return NotFound();
@@ -148,6 +155,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Nhacungcaps/Delete/5
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)

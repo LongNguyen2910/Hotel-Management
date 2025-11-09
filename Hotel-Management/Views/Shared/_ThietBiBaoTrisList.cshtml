@@ -1,0 +1,51 @@
+﻿@model Hotel_Management.Helpers.PaginatedList<Hotel_Management.Models.Thietbiduocbaotri>
+
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th class="text-truncate">Mã thiết bị</th>
+            <th class="text-truncate">Ngày bắt đầu</th>
+            <th class="text-truncate">Ngày kết thúc</th>
+            <th class="text-truncate">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-truncate">@item.Mathietbi</td>
+                <td class="text-truncate">@item.Ngaybatdau.ToString("yyyy-MM-dd")</td>
+                <td class="text-truncate">@item.Ngayketthuc.ToString("yyyy-MM-dd")</td>
+                <td>
+                    <a asp-controller="Thietbiduocbaotris" asp-action="Delete"
+                       asp-route-ngaybatdauticks="@item.Ngaybatdau.Ticks"
+                       asp-route-ngayketthucticks="@item.Ngayketthuc.Ticks"
+                       asp-route-mathietbi="@item.Mathietbi"
+                       class="btn btn-sm btn-outline-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@{
+    var prevDisabled = !Model.HasPreviousPage;
+    var nextDisabled = !Model.HasNextPage;
+}
+
+<div class="mt-2 d-flex align-items-center card-footer">
+    <a href="#"
+       class="btn btn-outline-primary me-2 ajax-page @(prevDisabled ? "disabled" : "")"
+       data-page="@(Model.PageIndex - 1)"
+       @(prevDisabled ? "aria-disabled=true" : "")>
+        <i class="bx bx-chevron-left"></i> Trước
+    </a>
+    <a href="#"
+       class="btn btn-outline-primary ajax-page @(nextDisabled ? "disabled" : "")"
+       data-page="@(Model.PageIndex + 1)"
+       @(nextDisabled ? "aria-disabled=true" : "")>
+        Sau <i class="bx bx-chevron-right"></i>
+    </a>
+    <span class="ms-3 text-muted">
+        Trang @Model.PageIndex / @Model.TotalPages
+    </span>
+</div>

@@ -42,9 +42,12 @@
                         }
                 </tbody>
             </table>
-
             <div class="text-center mt-3 mb-3">
-                <button type="submit" class="btn btn-primary px-4">Đặt món</button>
+                @if (User.IsInRole("Admin") || User.IsInRole("Quản lý khách sạn") || User.IsInRole("Lễ tân")
+                                || User.IsInRole("Quản lý nhà hàng") || User.IsInRole("Nhân viên"))
+                {
+                    <button type="submit" class="btn btn-primary px-4">Đặt món</button>
+                }
             </div>
         </form>
     </div>

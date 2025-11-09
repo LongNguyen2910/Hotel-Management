@@ -1,11 +1,12 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
+﻿using Hotel_Management.Helpers;
 using Hotel_Management.Models;
-using Hotel_Management.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Hotel_Management.Controllers
 {
@@ -22,6 +23,7 @@ namespace Hotel_Management.Controllers
         private bool IsAjaxRequest()
    => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
         // GET: Ncccungcapthietbis
+        [Authorize(Policy = "CanViewData")]
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             // Nếu searchString và pageNumber null, lấy từ session
@@ -83,6 +85,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Create
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         public IActionResult Create()
         {
             ViewData["Mancc"] = new SelectList(_context.Nhacungcaps, "Manhacungcap", "Tennhacungcap");
@@ -91,6 +94,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Create
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Mancc,Mathietbi,Soluong,Tienthietbi")] Ncccungcapthietbi entity)
@@ -126,6 +130,7 @@ namespace Hotel_Management.Controllers
 
 
         // GET: Edit
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         public async Task<IActionResult> Edit(string mancc, int mathietbi)
         {
             if (mancc == null) return NotFound();
@@ -139,6 +144,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Edit
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string mancc, int mathietbi, [Bind("Mancc,Mathietbi,Soluong,Tienthietbi")] Ncccungcapthietbi entity)
@@ -173,6 +179,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Delete
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         public async Task<IActionResult> Delete(string mancc, int mathietbi)
         {
             if (mancc == null) return NotFound();
@@ -188,6 +195,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Delete
+        [Authorize(Roles = "Admin, Quản lý khách sạn")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string mancc, int mathietbi)

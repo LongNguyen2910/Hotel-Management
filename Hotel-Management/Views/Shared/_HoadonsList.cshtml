@@ -39,11 +39,14 @@
                                   class="d-inline">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="mahoadon" value="@item.Mahoadon" />
-                                <button type="submit" class="btn btn-primary">Thanh toán</button>
+                                @if (User.IsInRole("Admin") || User.IsInRole("Quản lý khách sạn") || User.IsInRole("Lễ tân") || User.IsInRole("Nhân viên"))
+                                {
+                                    <button type="submit" class="btn btn-primary">Thanh toán</button>                                    
+                                }
                             </form>
                         }
-                        <a href="@Url.Action("Delete", "Hoadons", new { id = item.Mahoadon })"
-                           class="btn btn-sm btn-outline-danger">Xóa</a>
+                            <a href="@Url.Action("Delete", "Hoadons", new { id = item.Mahoadon })"
+                               class="btn btn-sm btn-outline-danger">Xóa</a>
                     </td>
                 </tr>
             }

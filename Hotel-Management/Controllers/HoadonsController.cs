@@ -1,5 +1,6 @@
 ﻿using Hotel_Management.Helpers;
 using Hotel_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -121,6 +122,7 @@ namespace Hotel_Management.Controllers
         private bool IsAjaxRequest()
 => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
         // GET: Hoadons
+        [Authorize(Policy = "CanViewData")]
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             // Lấy lại từ session nếu chưa có searchString hoặc pageNumber
@@ -154,6 +156,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Hoadons/Details/5
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn, Nhân viên")]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -171,6 +174,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Hoadons/Delete/
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn, Nhân viên")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null) return NotFound();
@@ -183,6 +187,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Hoadons/Delete/
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn, Nhân viên")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
@@ -195,6 +200,7 @@ namespace Hotel_Management.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+        [Authorize(Roles = "Admin, Lễ tân, Quản lý khách sạn, Nhân viên")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ThanhToan(string mahoadon)

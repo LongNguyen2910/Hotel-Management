@@ -31,8 +31,11 @@
                     <td>@item.Sdt</td>
                     <td>@item.Hochieu</td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.Makhachhang" class="btn btn-sm btn-primary me-2">Sửa</a>
-                        <a asp-action="Delete" asp-route-id="@item.Makhachhang" class="btn btn-sm btn-outline-danger">Xóa</a>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Quản lý khách sạn") || User.IsInRole("Lễ tân"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.Makhachhang" class="btn btn-sm btn-primary me-2">Sửa</a>
+                            <a asp-action="Delete" asp-route-id="@item.Makhachhang" class="btn btn-sm btn-outline-danger">Xóa</a>
+                        }
                     </td>
                 </tr>
             }

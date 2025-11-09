@@ -4,6 +4,9 @@ using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Hotel_Management.Models;
+using Hotel_Management.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +28,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: NhanVien
+        [Authorize(Policy = "CanViewData")]
         public async Task<IActionResult> Index(string searchString, int? pageNumber)
         {
             var modelContext = _context.Nhanviens.OrderBy(n => n.Hoten).AsQueryable();
@@ -36,15 +40,25 @@ namespace Hotel_Management.Controllers
 
             ViewData["CurrentFilter"] = searchString;
             int pageSize = 10;
+            var paginatedList = await PaginatedList<Nhanvien>.CreateAsync(modelContext.AsNoTracking(), pageNumber ?? 1, pageSize);
+
+            bool isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+
+            if (isAjax)
+            {
+                // Nếu là AJAX, chỉ trả về phần HTML của bảng
+                return PartialView("NhanviensTable", paginatedList);
+            }
 
             ViewBag.Trangthai = new List<SelectListItem>()
             {
                 new SelectListItem { Text = "Nghỉ việc", Value = "0" },
                 new SelectListItem { Text = "Đang làm", Value = "1" }
             };
-            return View(await PaginatedList<Nhanvien>.CreateAsync(modelContext.AsNoTracking(), pageNumber ?? 1, pageSize));
-        }
 
+            return View(paginatedList);
+        }
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         // GET: NhanVien/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -68,6 +82,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: NhanVien/Create
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         public IActionResult Create()
         {
             ViewData["Mabophan"] = new SelectList(_context.Bophans, "Mabophan", "Tenbophan");
@@ -84,6 +99,7 @@ namespace Hotel_Management.Controllers
         // POST: NhanVien/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
@@ -157,7 +173,7 @@ namespace Hotel_Management.Controllers
             };
             return View(nhanvien);
         }
-
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         // GET: NhanVien/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -188,6 +204,7 @@ namespace Hotel_Management.Controllers
         // POST: NhanVien/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, 
@@ -319,6 +336,7 @@ namespace Hotel_Management.Controllers
             nhanvien.Anhnv = oldAnhnv;
             return View(nhanvien);
         }
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         public async Task<IActionResult> EditPhoto(string id)
         {
             if (id == null) return NotFound();
@@ -328,7 +346,7 @@ namespace Hotel_Management.Controllers
 
             return View(nhanvien);
         }
-
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         // POST: NhanVien/EditPhoto/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -363,7 +381,7 @@ namespace Hotel_Management.Controllers
             // Quay lại trang chi tiết của nhân viên đó
             return RedirectToAction(nameof(Details), new { id = nhanvienToUpdate.Manv});
         }
-
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         // GET: NhanVien/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -385,7 +403,7 @@ namespace Hotel_Management.Controllers
 
             return View(nhanvien);
         }
-
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         // POST: NhanVien/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

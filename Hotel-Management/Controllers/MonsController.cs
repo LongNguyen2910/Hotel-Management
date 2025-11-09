@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Hotel_Management.Helpers;
+using Hotel_Management.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Hotel_Management.Models;
-using Hotel_Management.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Hotel_Management.Controllers
 {
@@ -19,14 +21,22 @@ namespace Hotel_Management.Controllers
             _context = context;
             _env = env;
         }
-
+        [Authorize(Policy = "CanViewData")]
         // GET: Mons
         public async Task<IActionResult> Index(int? pageNumber)
         {
             int pageSize = 10;
-            return View(await PaginatedList<Mon>.CreateAsync(_context.Mons.AsNoTracking(),pageNumber ?? 1, pageSize));
-        }
+            var paginatedList = await PaginatedList<Mon>.CreateAsync(_context.Mons.AsNoTracking(), pageNumber ?? 1, pageSize);
 
+            bool isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+            if (isAjax)
+            {
+                return PartialView("MonTable", paginatedList);
+            }
+
+            return View(paginatedList);
+        }
+        [Authorize(Roles = "Admin, Quản lý nhà hàng, Quản lý khách sạn")]
         // GET: Mons/Create
         public IActionResult Create()
         {
@@ -36,6 +46,7 @@ namespace Hotel_Management.Controllers
         // POST: Mons/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Quản lý nhà hàng, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Mamon,Tenmon,Gia,Anhmon")] Mon mon, IFormFile? AnhFile)
@@ -88,6 +99,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Mons/Edit/5
+        [Authorize(Roles = "Admin, Quản lý nhà hàng, Quản lý khách sạn")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -106,6 +118,7 @@ namespace Hotel_Management.Controllers
         // POST: Mons/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Quản lý nhà hàng, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Mamon,Tenmon,Gia,Anhmon")] Mon mon, IFormFile? AnhFile)
@@ -193,7 +206,7 @@ namespace Hotel_Management.Controllers
             mon.Anhmon = oldAnhmon;
             return View(mon);
         }
-
+        [Authorize(Roles = "Admin, Quản lý nhà hàng, Quản lý khách sạn")]
         // GET: Mons/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -213,6 +226,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Mons/Delete/5
+        [Authorize(Roles = "Admin, Quản lý nhà hàng, Quản lý khách sạn")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)

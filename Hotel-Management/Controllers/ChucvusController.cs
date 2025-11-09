@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Hotel_Management.Helpers;
+using Hotel_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Hotel_Management.Models;
-using Hotel_Management.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Hotel_Management.Controllers
 {
@@ -18,16 +19,24 @@ namespace Hotel_Management.Controllers
         {
             _context = context;
         }
-
+        [Authorize(Policy = "CanViewData")]
         // GET: Chucvus
         public async Task<IActionResult> Index(int? pageNumber)
         {
             int pageSize = 10;
-            return View(await PaginatedList<Chucvu>.CreateAsync(_context.Chucvus.AsNoTracking(),pageNumber ?? 1,pageSize));
+            var paginatedList = await PaginatedList<Chucvu>.CreateAsync(_context.Chucvus.AsNoTracking(), pageNumber ?? 1, pageSize);
+            bool isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+            if (isAjax)
+            {
+                return PartialView("ChucvuTable", paginatedList);
+            }
+
+            return View(paginatedList);
         }
 
 
         // GET: Chucvus/Create
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         public IActionResult Create()
         {
             return View();
@@ -36,6 +45,7 @@ namespace Hotel_Management.Controllers
         // POST: Chucvus/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Tenchucvu,Luongcoban")] Chucvu chucvu)
@@ -54,6 +64,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Chucvus/Edit/5
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -72,6 +83,7 @@ namespace Hotel_Management.Controllers
         // POST: Chucvus/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Tenchucvu,Luongcoban")] Chucvu chucvu)
@@ -105,6 +117,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Chucvus/Delete/5
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -123,6 +136,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Chucvus/Delete/5
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)

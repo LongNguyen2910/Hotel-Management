@@ -16,58 +16,58 @@
                 }
             </div>
         </div>
-        <div class="table-responsive">
-            <table class="table table-sm">
-                <thead>
-                    <tr>
-                        <th class="text-truncate">Tên bộ phận</th>
-                        <th class="text-truncate">Ngày thành lập</th>
-                        <th class="text-truncate">Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div>
-                                        <h6 class="mb-0 text-truncate">@item.Tenbophan</h6>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="text-truncate">@item.Ngaythanhlap</td>
-                            <td>
-                                @if (User.IsInRole("Admin") || User.IsInRole("Quản lý nhân sự"))
-                                {
-                                    <a asp-controller="Bophans" asp-action="Edit" asp-route-id="@item.Mabophan" class="btn btn-sm btn-outline-primary">Sửa</a>
-                                    <a asp-controller="Bophans" asp-action="Delete" asp-route-id="@item.Mabophan" class="btn btn-sm btn-outline-danger">Xóa</a>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <div id="bophanTableContainer">
+            @await Html.PartialAsync("BophanTable", Model)
         </div>
     </div>
 </div>
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
-<div class="mt-3">
-    <a asp-action="Index"
-       asp-route-pageNumber="@(Model.PageIndex - 1)"
-       class="btn btn-outline-primary @prevDisabled">
-        <i class="bx bx-chevron-left"></i> Trước
-    </a>
-    <a asp-action="Index"
-       asp-route-pageNumber="@(Model.PageIndex + 1)"
-       class="btn btn-outline-primary @nextDisabled">
-        Sau <i class="bx bx-chevron-right"></i>
-    </a>
-    <span class="ms-2 text-muted">
-        Trang @Model.PageIndex / @Model.TotalPages
-    </span>
-</div>
+            const tableContainer = document.getElementById('bophanTableContainer');
+
+            // Hàm tải nội dung AJAX
+            function loadTable(url) {
+                // Hiển thị loading (nếu muốn)
+                // tableContainer.innerHTML = 'Đang tải...';
+
+                fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest' // Đây là chìa khóa để Controller nhận diện AJAX
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    tableContainer.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Lỗi khi tải dữ liệu:', error);
+                    // Xử lý lỗi (ví dụ: hiển thị thông báo)
+                });
+            }
+
+            // 2. Bắt sự kiện click cho Phân trang, Xóa filter, và Click vào hàng
+            // Chúng ta dùng "event delegation" vì các nút này được tải lại liên tục
+            tableContainer.addEventListener('click', function(e) {
+
+                // Tìm xem có click vào nút phân trang/xóa filter không
+                const ajaxLink = e.target.closest('a.ajax-link');
+                if (ajaxLink && !ajaxLink.classList.contains('disabled')) {
+                    e.preventDefault(); // Ngăn link tải lại trang
+                    loadTable(ajaxLink.href);
+                    return; // Dừng lại
+                }
+
+                // Tìm xem có click vào nút Sửa/Xóa không
+                const actionLink = e.target.closest('a.ajax-action');
+                if (actionLink) {
+                    // Đây là nút Sửa/Xóa, không làm gì cả, để link hoạt động bình thường
+                    return;
+                }
+            });
+
+        });
+    </script>
+}

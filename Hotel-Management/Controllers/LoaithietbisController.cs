@@ -39,8 +39,20 @@ namespace Hotel_Management.Controllers
             query = query.OrderBy(t => t.Maloaithietbi);
 
             int pageSize = 10;
-            return View(await PaginatedList<Loaithietbi>.CreateAsync(query, pageNumber ?? 1, pageSize));
+            var model = await PaginatedList<Loaithietbi>.CreateAsync(query, pageNumber ?? 1, pageSize);
+
+            if (IsAjaxRequest())
+            {
+                // return only the partial (table list) when called by AJAX
+                return PartialView("~/Views/Shared/LoaiThietBisList.cshtml", model);
+            }
+
+            return View(model);
         }
+
+        private bool IsAjaxRequest()
+            => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
+
         // GET: Loaithietbis/Details/5
         public async Task<IActionResult> Details(string id)
         {

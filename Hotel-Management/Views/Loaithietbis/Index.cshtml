@@ -10,85 +10,40 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Loại thiết bị</h5>
             <div class="d-flex align-items-center">
-                <form asp-action="Index" method="get" class="d-flex me-3">
-                    <input name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm kiếm..." />
+                <form id="search-form" asp-action="Index" method="get" class="d-flex me-3" autocomplete="off">
+                    <input id="searchString" name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm kiếm..." />
                     <button type="submit" class="btn btn-sm btn-outline-primary">Tìm</button>
                     @if (!string.IsNullOrWhiteSpace(currentFilter))
                     {
-                        <a asp-action="Index" class="btn btn-sm btn-link ms-2">Xóa</a>
+                        <button type="button" id="serverClear" class="btn btn-sm btn-link ms-2">Xóa</button>
                     }
                 </form>
                 <a asp-controller="Loaithietbis" asp-action="Create" class="btn btn-sm btn-primary">Thêm loại thiết bị</a>
             </div>
         </div>
-        <div class="table-responsive">
-            <table class="table table-sm">
-                <thead>
-                    <tr>
-                        <th class="text-truncate">Mã loại thiết bị</th>
-                        <th class="text-truncate">Tên loại thiết bị</th>
-                        <th class="text-truncate">Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-@foreach (var item in Model)
-{
-                    <tr>
-                        <td class="text-truncate">@item.Maloaithietbi</td>
-                        <td class="text-truncate">@item.Tenloaithietbi</td>
-                        <td>
-                            <a asp-controller="Loaithietbis" asp-action="Edit" asp-route-id="@item.Maloaithietbi" class="btn btn-sm btn-outline-primary me-2">Sửa</a>
-                            <a asp-controller="Loaithietbis" asp-action="Delete" asp-route-id="@item.Maloaithietbi" class="btn btn-sm btn-outline-danger">Xóa</a>
-                        </td>
-                    </tr>
-}
-                </tbody>
-            </table>
+
+        <div class="table-responsive" id="loaiThietBiList">
+            @* Render the shared partial (table + pager). Ensures initial page and AJAX updates use the same markup *@
+            @await Html.PartialAsync("LoaiThietBisList", Model)
         </div>
     </div>
-</div>
-
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
-
-<div class="mt-3">
-    <a asp-action="Index"
-       asp-route-pageNumber="@(Model.PageIndex - 1)"
-       asp-route-searchString="@ViewData["CurrentFilter"]"
-       class="btn btn-outline-primary @prevDisabled">
-        <i class="bx bx-chevron-left"></i> Trước
-    </a>
-    <a asp-action="Index"
-       asp-route-pageNumber="@(Model.PageIndex + 1)"
-       asp-route-searchString="@ViewData["CurrentFilter"]"
-       class="btn btn-outline-primary @nextDisabled">
-        Sau <i class="bx bx-chevron-right"></i>
-    </a>
-    <span class="ms-2 text-muted">
-        Trang @Model.PageIndex / @Model.TotalPages
-    </span>
 </div>
 
 @section Scripts {
     <script src="~/vendor/libs/jquery/jquery.js"></script>
     <script>
         (function ($) {
-
-            // container: use the first table-responsive on the page so we don't need to change markup
-            const $container = $('.table-responsive').first();
+            const $container = $('#loaiThietBiList');
             const baseUrl = '@Url.Action("Index", "Loaithietbis")';
+            const $searchForm = $('#search-form');
 
             function ClearButton(keyword) {
-                // try to find the search form (no id in markup)
-                const $form = $('form').filter(function () { return $(this).find('[name="searchString"]').length; }).first();
                 let $btn = $('#btnClear');
                 if (keyword && !$btn.length) {
                     $btn = $('<button type="button" id="btnClear" class="btn btn-sm btn-outline-danger ms-2">Xóa</button>');
-                    $form.append($btn);
+                    $searchForm.append($btn);
                     $btn.on('click', function () {
-                        $form.find('[name="searchString"]').val('');
+                        $('#searchString').val('');
                         loadAjax(1, '');
                     });
                 } else if (!keyword && $btn.length) {
@@ -96,61 +51,43 @@
                 }
             }
 
-            function showLoading() {
-                $container.css('opacity', '.5');
-            }
-            function hideLoading() {
-                $container.css('opacity', '1');
-            }
+            function showLoading() { $container.css('opacity', '.5'); }
+            function hideLoading() { $container.css('opacity', '1'); }
 
             function loadAjax(page, keyword) {
                 showLoading();
                 $.ajax({
                     url: baseUrl,
                     method: 'GET',
-                    data: {
-                        pageNumber: page,
-                        searchString: keyword
-                    },
+                    data: { pageNumber: page, searchString: keyword },
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
                     success: function (response) {
-                        // If the controller returns a partial when X-Requested-With is set,
-                        // replace the inner contents of the table container.
                         $container.html(response);
                         ClearButton(keyword);
-                    },
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                })
-                .always(function () {
-                    hideLoading();
-                });
+                    }
+                }).always(function () { hideLoading(); });
             }
 
-            // Pagination click (delegation). Partial should render links with class "ajax-page".
             $('body').on('click', 'a.ajax-page', function (e) {
                 e.preventDefault();
                 if ($(this).hasClass('disabled')) return;
                 const page = $(this).data('page');
-                const keyword = $('form').filter(function () { return $(this).find('[name="searchString"]').length; }).first().find('[name="searchString"]').val().trim();
+                const keyword = $('#searchString').val().trim();
                 loadAjax(page, keyword);
             });
 
-            // Search submit (find the search form dynamically)
-            const $searchForm = $('form').filter(function () { return $(this).find('[name="searchString"]').length; }).first();
             $searchForm.on('submit', function (e) {
                 e.preventDefault();
-                const keyword = $(this).find('[name="searchString"]').val().trim();
-                loadAjax(1, keyword); // reset to page 1
+                const keyword = $('#searchString').val().trim();
+                loadAjax(1, keyword);
             });
 
-            // Clear filter (if pre-existing button added server-side)
-            $('body').on('click', '#btnClear', function () {
-                $searchForm.find('[name="searchString"]').val('');
+            $('body').on('click', '#serverClear', function () {
+                $('#searchString').val('');
                 loadAjax(1, '');
             });
 
-            // init: ensure clear button state on load
-            ClearButton($searchForm.find('[name="searchString"]').val().trim());
-
+            ClearButton($('#searchString').val().trim());
         })(jQuery);
     </script>
 }

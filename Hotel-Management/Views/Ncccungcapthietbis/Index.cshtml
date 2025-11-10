@@ -14,7 +14,7 @@
                     <input id="searchString" name="searchString" value="@currentFilter" class="form-control form-control-sm me-2" placeholder="Tìm kiếm..." />
                     <button type="submit" id="btnSearch" class="btn btn-sm btn-outline-primary">Tìm</button>
                 </form>
-                @if (User.IsInRole("Admin") || User.IsInRole("Quản lý khách sạn"))
+                @if (User.IsInRole("Admin") || User.IsInRole("Quản lý khách sạn") || User.IsInRole("Kế toán"))
                 {
                     <a asp-controller="Ncccungcapthietbis" asp-action="Create" class="btn btn-sm btn-primary">Thêm thiết bị</a>
                 }

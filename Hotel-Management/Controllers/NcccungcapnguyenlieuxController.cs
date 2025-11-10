@@ -83,7 +83,7 @@ namespace Hotel_Management.Controllers
 
 
         // GET: Create
-        [Authorize(Roles = "Admin, Quản lý khách sạn")]
+        [Authorize(Roles = "Admin, Quản lý khách sạn, Kế toán")]
         public IActionResult Create()
         {
             ViewData["Mancc"] = new SelectList(_context.Nhacungcaps, "Manhacungcap", "Tennhacungcap");
@@ -91,7 +91,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Create
-        [Authorize(Roles = "Admin, Quản lý khách sạn")]
+        [Authorize(Roles = "Admin, Quản lý khách sạn, Kế toán")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Mancc,Manguyenlieu,Tennguyenlieu,Luong,Tiennguyenlieu,Ngaysanxuat,Ngaynhap,Hansudung")] Ncccungcapnguyenlieu entity)
@@ -109,7 +109,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Edit
-        [Authorize(Roles = "Admin, Quản lý khách sạn")]
+        [Authorize(Roles = "Admin, Quản lý khách sạn, Kế toán")]
         public async Task<IActionResult> Edit(string mancc)
         {
             if (string.IsNullOrEmpty(mancc))
@@ -125,7 +125,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Edit
-        [Authorize(Roles = "Admin, Quản lý khách sạn")]
+        [Authorize(Roles = "Admin, Quản lý khách sạn, Kế toán")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit([Bind("Mancc,Manguyenlieu,Tennguyenlieu,Ngaynhap,Ngaysanxuat,Hansudung,Luong,Tiennguyenlieu")] Ncccungcapnguyenlieu model)
@@ -156,7 +156,7 @@ namespace Hotel_Management.Controllers
 
 
         // GET: Delete
-        [Authorize(Roles = "Admin, Quản lý khách sạn")]
+        [Authorize(Roles = "Admin, Quản lý khách sạn, Kế toán")]
         public async Task<IActionResult> Delete(string mancc, string manguyenlieu)
         {
             if (mancc == null || manguyenlieu == null) return NotFound();
@@ -170,7 +170,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Delete
-        [Authorize(Roles = "Admin, Quản lý khách sạn")]
+        [Authorize(Roles = "Admin, Quản lý khách sạn, Kế toán")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string mancc, string manguyenlieu)

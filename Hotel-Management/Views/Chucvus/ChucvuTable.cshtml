@@ -1,0 +1,56 @@
+﻿@model Hotel_Management.Helpers.PaginatedList<Hotel_Management.Models.Chucvu>
+
+<div class="table-responsive">
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th class="text-truncate">Tên chức vụ</th>
+                <th class="text-truncate">Lương cơ bản</th>
+                <th class="text-truncate">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div>
+                                <h6 class="mb-0 text-truncate">@item.Tenchucvu</h6>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-truncate">@item.Luongcoban</td>
+                    <td>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Quản lý nhân sự") || User.IsInRole("Quản lý khách sạn"))
+                        {
+                            <a asp-controller="Chucvus" asp-action="Edit" asp-route-id="@item.Tenchucvu" class="btn btn-sm btn-outline-primary ajax-action">Sửa</a>
+                            <a asp-controller="Chucvus" asp-action="Delete" asp-route-id="@item.Tenchucvu" class="btn btn-sm btn-outline-danger ajax-action">Xóa</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<div class="mt-3">
+    <a asp-action="Index"
+       asp-route-pageNumber="@(Model.PageIndex - 1)"
+       class="btn btn-outline-primary @prevDisabled ajax-link">
+        <i class="bx bx-chevron-left"></i> Trước
+    </a>
+    <a asp-action="Index"
+       asp-route-pageNumber="@(Model.PageIndex + 1)"
+       class="btn btn-outline-primary @nextDisabled ajax-link">
+        Sau <i class="bx bx-chevron-right"></i>
+    </a>
+    <span class="ms-2 text-muted">
+        Trang @Model.PageIndex / @Model.TotalPages
+    </span>
+</div>

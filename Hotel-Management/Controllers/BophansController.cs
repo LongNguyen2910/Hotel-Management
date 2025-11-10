@@ -27,17 +27,25 @@ namespace Hotel_Management.Controllers
         public async Task<IActionResult> Index(int? pageNumber)
         {
             int pageSize = 10;
-            return View(await PaginatedList<Bophan>.CreateAsync(_context.Bophans.AsNoTracking(), pageNumber ?? 1, pageSize));
+            var paginatedList = await PaginatedList<Bophan>.CreateAsync(_context.Bophans.AsNoTracking(), pageNumber ?? 1, pageSize);
+
+            bool isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+            if (isAjax)
+            {
+                return PartialView("BophanTable", paginatedList);
+            }
+
+            return View(paginatedList);
         }
 
-        [Authorize(Roles = "Admin, Quản lý nhân sự")]
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         // GET: Bophans/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        [Authorize(Roles = "Admin, Quản lý nhân sự")]
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         // POST: Bophans/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -59,7 +67,7 @@ namespace Hotel_Management.Controllers
             return View(bophan);
         }
 
-        [Authorize(Roles = "Admin, Quản lý nhân sự")]
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         // GET: Bophans/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -76,7 +84,7 @@ namespace Hotel_Management.Controllers
             return View(bophan);
         }
 
-        [Authorize(Roles = "Admin, Quản lý nhân sự")]
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         // POST: Bophans/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -120,7 +128,7 @@ namespace Hotel_Management.Controllers
             return View(bophan);
         }
 
-        [Authorize(Roles = "Admin, Quản lý nhân sự")]
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         // GET: Bophans/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -139,7 +147,7 @@ namespace Hotel_Management.Controllers
             return View(bophan);
         }
 
-        [Authorize(Roles = "Admin, Quản lý nhân sự")]
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         // POST: Bophans/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

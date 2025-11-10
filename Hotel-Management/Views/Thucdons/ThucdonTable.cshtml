@@ -1,0 +1,62 @@
+﻿@model Hotel_Management.Helpers.PaginatedList<Hotel_Management.Models.Thucdon>
+
+<div class="table-responsive">
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th class="text-truncate">Ngày áp dùng</th>
+                <th class="text-truncate">Ngày tạo</th>
+                <th class="text-truncate">Các món ăn</th>
+                <th class="text-truncate">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-truncate">
+                        @item.Ngayapdung
+                    </td>
+                    <td class="text-truncate">@item.Ngaytao</td>
+                    <td>
+                        @if (item.Mamons != null && item.Mamons.Any())
+                        {
+                            @string.Join("\n", item.Mamons.Select(m => m.Tenmon))
+                        }
+                        else
+                        {
+                            <span class="text-muted">Chưa có món</span>
+                        }
+                    </td>
+                    <td>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Quản lý nhà hàng") || User.IsInRole("Quản lý khách sạn")) {
+                        <a asp-controller="Thucdons" asp-action="Edit" asp-route-id="@item.Mathucdon" asp-route-date="@item.Ngayapdung" class="btn btn-sm btn-outline-primary ajax-action">Sửa</a>
+                        <a asp-controller="Thucdons" asp-action="Delete" asp-route-id="@item.Mathucdon" asp-route-date="@item.Ngayapdung" class="btn btn-sm btn-outline-danger ajax-action">Xóa</a>
+                    }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<div class="mt-3">
+    <a asp-action="Index"
+       asp-route-pageNumber="@(Model.PageIndex - 1)"
+       class="btn btn-outline-primary @prevDisabled ajax-link">
+        <i class="bx bx-chevron-left"></i> Trước
+    </a>
+    <a asp-action="Index"
+       asp-route-pageNumber="@(Model.PageIndex + 1)"
+       class="btn btn-outline-primary @nextDisabled ajax-link">
+        Sau <i class="bx bx-chevron-right"></i>
+    </a>
+    <span class="ms-2 text-muted">
+        Trang @Model.PageIndex / @Model.TotalPages
+    </span>
+</div>

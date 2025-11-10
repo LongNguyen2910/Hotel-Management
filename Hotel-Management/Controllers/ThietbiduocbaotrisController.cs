@@ -22,7 +22,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Thietbiduocbaotris
-        public async Task<IActionResult> Index(int? searchMathietbi, int? pageNumber)
+        public async Task<IActionResult> Index(string searchMathietbi, int? pageNumber)
         {
             ViewData["CurrentFilter"] = searchMathietbi?.ToString() ?? string.Empty;
 
@@ -30,16 +30,43 @@ namespace Hotel_Management.Controllers
                 .AsNoTracking()
                 .AsQueryable();
 
-            if (searchMathietbi.HasValue)
+            if (!string.IsNullOrEmpty(searchMathietbi))
             {
-                query = query.Where(t => t.Mathietbi == searchMathietbi.Value);
+                if (int.TryParse(searchMathietbi, out int mathietbi))
+                {
+                    query = query.Where(t => t.Mathietbi == mathietbi);
+                }
+                else
+                {
+                    query = query.Join(_context.Thietbis,
+                                       t => t.Mathietbi,
+                                       tb => tb.Mathietbi,
+                                       (t, tb) => new { Thietbiduocbaotri = t, Thietbi = tb })
+                                 .Where(x => x.Thietbi.Tenthietbi.Contains(searchMathietbi))
+                                 .Select(x => x.Thietbiduocbaotri);
+                }
             }
 
             query = query.OrderByDescending(t => t.Ngaybatdau);
 
             int pageSize = 10;
-            return View(await PaginatedList<Thietbiduocbaotri>.CreateAsync(query, pageNumber ?? 1, pageSize));
+            var model = await PaginatedList<Thietbiduocbaotri>.CreateAsync(query, pageNumber ?? 1, pageSize);
+
+            // lưu trạng thái (nếu bạn dùng)
+            HttpContext.Session.SetString("Thietbiduocbaotris_Search", searchMathietbi ?? string.Empty);
+            HttpContext.Session.SetInt32("Thietbiduocbaotris_Page", model.PageIndex);
+
+            if (IsAjaxRequest())
+            {
+                return PartialView("_ThietBiBaoTrisList", model);
+            }
+
+            return View(model);
         }
+
+        // helper để detect AJAX (nếu chưa có trong controller/base)
+        private bool IsAjaxRequest()
+            => string.Equals(Request.Headers["X-Requested-With"], "XMLHttpRequest", StringComparison.OrdinalIgnoreCase);
 
         // GET: Thietbiduocbaotris/Create
         public async Task<IActionResult> Create()

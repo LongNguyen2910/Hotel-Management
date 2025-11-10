@@ -21,14 +21,21 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Calamviecs
-        [Authorize(Roles = "Nhân Viên")]
+        [Authorize(Policy = "CanViewData")]
         public async Task<IActionResult> Index(int? pageNumber)
         {
             int pageSize = 10;
-            return View(await PaginatedList<Calamviec>.CreateAsync(_context.Calamviecs.AsNoTracking(),pageNumber ?? 1, pageSize));
+            var paginatedList = await PaginatedList<Calamviec>.CreateAsync(_context.Calamviecs.AsNoTracking(), pageNumber ?? 1, pageSize);
+            bool isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+            if (isAjax)
+            {
+                return PartialView("ThucdonTable", paginatedList);
+            }
+            return View(paginatedList);
         }
 
         // GET: Calamviecs/Create
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         public IActionResult Create()
         {
             return View();
@@ -37,6 +44,7 @@ namespace Hotel_Management.Controllers
         // POST: Calamviecs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Macalamviec,Thoigianbatdau,Thoigianketthuc")] Calamviec calamviec)
@@ -56,6 +64,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Calamviecs/Edit/5
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -74,6 +83,7 @@ namespace Hotel_Management.Controllers
         // POST: Calamviecs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Macalamviec,Thoigianbatdau,Thoigianketthuc")] Calamviec calamviec)
@@ -107,6 +117,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Calamviecs/Delete/5
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -125,6 +136,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Calamviecs/Delete/5
+        [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)

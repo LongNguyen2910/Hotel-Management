@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Hotel_Management.Helpers;
+using Hotel_Management.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Hotel_Management.Models;
-using Hotel_Management.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Hotel_Management.Controllers
 {
@@ -19,16 +20,24 @@ namespace Hotel_Management.Controllers
             _context = context;
         }
 
+        [Authorize(Policy = "CanViewData")]
         // GET: Thucdons
         public async Task<IActionResult> Index(int? pageNumber)
         {
             var thucdons = _context.Thucdons.Include(t => t.Mamons);
 
             int pageSize = 10;
+            var paginatedList = await PaginatedList<Thucdon>.CreateAsync(thucdons.AsNoTracking(), pageNumber ?? 1, pageSize);
 
-            return View(await PaginatedList<Thucdon>.CreateAsync(thucdons.AsNoTracking(),pageNumber ?? 1,pageSize));
+            bool isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+            if (isAjax)
+            {
+                return PartialView("ThucdonTable", paginatedList);
+            }
+
+            return View(paginatedList);
         }
-
+        [Authorize(Roles = "Admin, Quản lý nhà hàng, Quản lý khách sạn")]
         // GET: Thucdons/Create
         public async Task<IActionResult> Create()
         {
@@ -39,6 +48,7 @@ namespace Hotel_Management.Controllers
         // POST: Thucdons/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Quản lý nhà hàng, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Mathucdon,Ngayapdung,Ngaytao")] 
@@ -73,6 +83,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Thucdons/Edit/5
+        [Authorize(Roles = "Admin, Quản lý nhà hàng, Quản lý khách sạn")]
         public async Task<IActionResult> Edit(int? id, DateTime? date)
         {
             if (id == null || date == null)
@@ -96,6 +107,7 @@ namespace Hotel_Management.Controllers
         // POST: Thucdons/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin, Quản lý nhà hàng, Quản lý khách sạn")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, DateTime? date,[Bind("Mathucdon,Ngayapdung,Ngaytao")] 
@@ -163,6 +175,7 @@ namespace Hotel_Management.Controllers
         }
 
         // GET: Thucdons/Delete/5
+        [Authorize(Roles = "Admin, Quản lý nhà hàng, Quản lý khách sạn")]
         public async Task<IActionResult> Delete(int? id, DateTime? date)
         {
             if (id == null && date == null)
@@ -182,6 +195,7 @@ namespace Hotel_Management.Controllers
         }
 
         // POST: Thucdons/Delete/5
+        [Authorize(Roles = "Admin, Quản lý nhà hàng, Quản lý khách sạn")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id, DateTime date)

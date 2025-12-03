@@ -504,10 +504,10 @@ public partial class AppDbContext : DbContext
                 .HasColumnName("TENCHUCVU");
             entity.Property(e => e.Trangthai)
                 .HasColumnName("TRANGTHAI");
-            entity.Property(e => e.Anhnv)
+            entity.Property(e => e.AnhNhanVien)
                 .HasMaxLength(100)
                 .IsUnicode(false)
-                .HasColumnName("ANHNV");
+                .HasColumnName("ANHNHANVIEN");
 
             entity.HasOne(d => d.MabophanNavigation).WithMany(p => p.Nhanviens)
                 .HasForeignKey(d => d.Mabophan)

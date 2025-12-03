@@ -31,7 +31,7 @@ public partial class Nhanvien
     public DateTime? Ngayvaolam { get; set; }
     [Display(Name = "Trạng thái")]
     public byte? Trangthai { get; set; }
-    public string? Anhnv { get; set; }
+    public string? AnhNhanVien { get; set; }
     public string? Mabophan { get; set; }
     
     public string? Tenchucvu { get; set; }

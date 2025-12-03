@@ -13,7 +13,7 @@
         <div class="card-body">
             <dl class="row">
                 <div class="col-md-4 text-center">
-                    @if (!string.IsNullOrEmpty(Model.Anhnv))
+                    @if (!string.IsNullOrEmpty(Model.AnhNhanVien))
                     {
                         <img src="@Url.Action("GetImage", "Nhanviens", new { id = Model.Manv })"
                              alt="@Model.Hoten"

@@ -17,7 +17,7 @@
                 <tr class="clickable-row" data-href="@Url.Action("Details", new { id = item.Manv })" style="cursor: pointer;">
                     <td>
                         <div class="d-flex align-items-center">
-                            @if (!string.IsNullOrEmpty(item.Anhnv))
+                            @if (!string.IsNullOrEmpty(item.AnhNhanVien))
                             {
                                 <img src="@Url.Action("GetImage", "Nhanviens", new { id = item.Manv })"
                                      alt="@item.Hoten"

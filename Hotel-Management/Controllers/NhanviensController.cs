@@ -103,7 +103,7 @@ namespace Hotel_Management.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("Manv,Hoten,Gioitinh,Ngaysinh,Sodienthoai,Cccd,Ngayvaolam,Trangthai,Mabophan,Tenchucvu,Nhanvienlamcas,Anhnv")] 
+            [Bind("Manv,Hoten,Gioitinh,Ngaysinh,Sodienthoai,Cccd,Ngayvaolam,Trangthai,Mabophan,Tenchucvu,Nhanvienlamcas,AnhNhanVien")] 
             Nhanvien nhanvien, string[] selectedCalamviec, IFormFile? AnhFile)
         {
             if (NhanvienExists(nhanvien.Manv))
@@ -144,7 +144,7 @@ namespace Hotel_Management.Controllers
                     }
 
                     // Lưu tên file vào DB
-                    nhanvien.Anhnv = fileName;
+                    nhanvien.AnhNhanVien = fileName;
                 }
                 _context.Add(nhanvien);
 
@@ -208,7 +208,7 @@ namespace Hotel_Management.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, 
-            [Bind("Manv,Hoten,Gioitinh,Ngaysinh,Sodienthoai,Cccd,Ngayvaolam,Trangthai,Mabophan,Tenchucvu,Nhanvienlamcas,Anhnv")] 
+            [Bind("Manv,Hoten,Gioitinh,Ngaysinh,Sodienthoai,Cccd,Ngayvaolam,Trangthai,Mabophan,Tenchucvu,Nhanvienlamcas,AnhNhanVien")] 
             Nhanvien nhanvien, string[] selectedCalamviec, IFormFile? AnhFile)
         {
             if (id != nhanvien.Manv)
@@ -225,7 +225,7 @@ namespace Hotel_Management.Controllers
             {
                 return NotFound();
             }
-            string oldAnhnv = originalNV.Anhnv;
+            string oldAnhNhanVien = originalNV.AnhNhanVien;
 
             if (nhanvienToUpdate == null)
             {
@@ -234,7 +234,7 @@ namespace Hotel_Management.Controllers
 
             if (ModelState.IsValid)
             {
-                string newAnhnv = oldAnhnv;
+                string newAnhNhanVien = oldAnhNhanVien;
 
                 if (AnhFile != null && AnhFile.Length > 0)
                 {
@@ -248,7 +248,7 @@ namespace Hotel_Management.Controllers
                     if (!allowedExts.Contains(ext))
                     {
                         ModelState.AddModelError("AnhFile", "Định dạng ảnh không hợp lệ. Chỉ chấp nhận JPG, PNG.");
-                        nhanvien.Anhnv = oldAnhnv; // Gán lại ảnh cũ để hiển thị nếu lỗi
+                        nhanvien.AnhNhanVien = oldAnhNhanVien; // Gán lại ảnh cũ để hiển thị nếu lỗi
                         return View(nhanvien);
                     }
 
@@ -268,11 +268,11 @@ namespace Hotel_Management.Controllers
                     }
 
                     // Cập nhật tên file mới
-                    newAnhnv = fileName;
+                    newAnhNhanVien = fileName;
                 }
 
                 // Gán tên file (cũ hoặc mới) vào đối tượng 'mon' trước khi Update
-                nhanvien.Anhnv = newAnhnv;
+                nhanvien.AnhNhanVien = newAnhNhanVien;
                 try
                 {
                     nhanvienToUpdate.Hoten = nhanvien.Hoten;
@@ -284,7 +284,7 @@ namespace Hotel_Management.Controllers
                     nhanvienToUpdate.Trangthai = nhanvien.Trangthai;
                     nhanvienToUpdate.Mabophan = nhanvien.Mabophan;
                     nhanvienToUpdate.Tenchucvu = nhanvien.Tenchucvu;
-                    nhanvienToUpdate.Anhnv = newAnhnv;
+                    nhanvienToUpdate.AnhNhanVien = newAnhNhanVien;
 
                     nhanvienToUpdate.Nhanvienlamcas.Clear();
 
@@ -315,9 +315,9 @@ namespace Hotel_Management.Controllers
                         throw;
                     }
                 }
-                if (newAnhnv != oldAnhnv && !string.IsNullOrEmpty(oldAnhnv))
+                if (newAnhNhanVien != oldAnhNhanVien && !string.IsNullOrEmpty(oldAnhNhanVien))
                 {
-                    var oldFilePath = Path.Combine(_env.ContentRootPath, "App_Data", "Uploads", "Nhanviens", oldAnhnv);
+                    var oldFilePath = Path.Combine(_env.ContentRootPath, "App_Data", "Uploads", "Nhanviens", oldAnhNhanVien);
                     if (System.IO.File.Exists(oldFilePath))
                     {
                         System.IO.File.Delete(oldFilePath);
@@ -333,7 +333,7 @@ namespace Hotel_Management.Controllers
                 new SelectListItem { Text = "Nghỉ việc", Value = "0" },
                 new SelectListItem { Text = "Đang làm", Value = "1" }
             };
-            nhanvien.Anhnv = oldAnhnv;
+            nhanvien.AnhNhanVien = oldAnhNhanVien;
             return View(nhanvien);
         }
         [Authorize(Roles = "Admin, Quản lý nhân sự, Quản lý khách sạn")]
@@ -359,9 +359,9 @@ namespace Hotel_Management.Controllers
             {
                 // 1. Xoá ảnh cũ (nếu có)
                 string uploadsFolder = Path.Combine(_env.ContentRootPath, "App_Data", "Uploads", "Nhanviens");
-                if (!string.IsNullOrEmpty(nhanvienToUpdate.Anhnv))
+                if (!string.IsNullOrEmpty(nhanvienToUpdate.AnhNhanVien))
                 {
-                    string oldFilePath = Path.Combine(uploadsFolder, nhanvienToUpdate.Anhnv);
+                    string oldFilePath = Path.Combine(uploadsFolder, nhanvienToUpdate.AnhNhanVien);
                     if (System.IO.File.Exists(oldFilePath)) System.IO.File.Delete(oldFilePath);
                 }
 
@@ -374,7 +374,7 @@ namespace Hotel_Management.Controllers
                 }
 
                 // 3. Cập nhật CSDL
-                nhanvienToUpdate.Anhnv = uniqueFileName;
+                nhanvienToUpdate.AnhNhanVien = uniqueFileName;
                 await _context.SaveChangesAsync();
             }
 
@@ -418,11 +418,11 @@ namespace Hotel_Management.Controllers
             }
             
             
-            if (!string.IsNullOrEmpty(nhanvien.Anhnv))
+            if (!string.IsNullOrEmpty(nhanvien.AnhNhanVien))
             {
                 try
                 {
-                    var filePath = Path.Combine(_env.ContentRootPath, "App_Data", "Uploads", "Nhanviens", nhanvien.Anhnv);
+                    var filePath = Path.Combine(_env.ContentRootPath, "App_Data", "Uploads", "Nhanviens", nhanvien.AnhNhanVien);
                     if (System.IO.File.Exists(filePath))
                     {
                         System.IO.File.Delete(filePath);
@@ -457,12 +457,12 @@ namespace Hotel_Management.Controllers
             var nhanvien = _context.Nhanviens.Find(id);
                 
 
-            if (nhanvien == null || string.IsNullOrEmpty(nhanvien.Anhnv))
+            if (nhanvien == null || string.IsNullOrEmpty(nhanvien.AnhNhanVien))
                 return NotFound();
 
             // Xác định đường dẫn vật lý tới file
             var folderPath = Path.Combine(_env.ContentRootPath, "App_Data", "Uploads", "Nhanviens");
-            var filePath = Path.Combine(folderPath, nhanvien.Anhnv);
+            var filePath = Path.Combine(folderPath, nhanvien.AnhNhanVien);
 
             if (!System.IO.File.Exists(filePath))
                 return NotFound();

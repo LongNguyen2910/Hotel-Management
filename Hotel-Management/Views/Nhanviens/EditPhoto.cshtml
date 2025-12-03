@@ -16,7 +16,7 @@
                 <input type="hidden" asp-for="Manv" />
 
                 <div class="mb-4">
-                    @if (!string.IsNullOrEmpty(Model.Anhnv))
+                    @if (!string.IsNullOrEmpty(Model.AnhNhanVien))
                     {
                         <img src="@Url.Action("GetImage", "Nhanviens", new { id = Model.Manv })"
                              alt="@Model.Hoten"
